@@ -21,8 +21,17 @@ export const setAuthToken = (token) => {
 };
 
 export const getProfileImage = (userId) => {
-  const timestamp = Date.now();
-  return `${serverUrl}/images/${userId}?t=${timestamp}`;
+  if (!userId) {
+    return `${serverUrl}/default.png`;
+  }
+  return `${serverUrl}/images/${userId}`;
+};
+
+export const getProfileImageWithFallback = (userId) => {
+  if (!userId) {
+    return `${serverUrl}/default.png`;
+  }
+  return `${serverUrl}/images/${userId}`;
 };
 
 export const formatDate = (date) => {

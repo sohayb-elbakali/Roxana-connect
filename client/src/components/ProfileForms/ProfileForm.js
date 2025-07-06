@@ -1,14 +1,14 @@
 import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import defaultImg from "../../assets/default.png";
 import {
-    createProfile,
-    getCurrentProfile,
-    uploadProfileImage,
+  createProfile,
+  getCurrentProfile,
+  uploadProfileImage,
 } from "../../redux/modules/profiles";
 import { getProfileImage } from "../../utils";
+import ProfileImage from "../ProfileImage";
 
 const initialState = {
   company: "",
@@ -36,6 +36,7 @@ const ProfileForm = ({
   const [formData, setFormData] = useState(initialState);
   const [displaySocialInputs, toggleSocialInputs] = useState(false);
   const [imagePreview, setImagePreview] = useState("");
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => {
     if (!profile) {
@@ -96,9 +97,23 @@ const ProfileForm = ({
     createProfile(formData, navigate, profile ? true : false);
   };
 
-  const onFileChange = (e) => {
+  const onFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        alert("Please select an image file");
+        return;
+      }
+
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        alert("File size must be less than 5MB");
+        return;
+      }
+
+      setUploadingImage(true);
+
       // Create preview of selected image
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -106,15 +121,26 @@ const ProfileForm = ({
       };
       reader.readAsDataURL(file);
 
-      // Upload the image
-      const data = new FormData();
-      data.append("file", file);
-      uploadProfileImage(data);
-    }
-  };
+      try {
+        // Upload the image
+        const data = new FormData();
+        data.append("file", file);
+        await uploadProfileImage(data);
 
-  const handleImageError = () => {
-    setImagePreview(defaultImg);
+        // After successful upload, update preview to use server image
+        if (profile?.user?._id) {
+          // Add timestamp to force refresh
+          setImagePreview(
+            `${getProfileImage(profile.user._id)}?t=${Date.now()}`
+          );
+        }
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        alert("Failed to upload image. Please try again.");
+      } finally {
+        setUploadingImage(false);
+      }
+    }
   };
 
   const onChange = (e) => {
@@ -169,19 +195,28 @@ const ProfileForm = ({
               </label>
 
               {/* Image Preview */}
-              {imagePreview && (
-                <div className="mb-4 text-center">
+              <div className="mb-4 text-center">
+                {imagePreview ? (
                   <img
                     src={imagePreview}
                     alt="Profile preview"
                     className="w-24 h-24 rounded-full mx-auto border-4 border-purple-200 shadow-lg object-cover"
-                    onError={handleImageError}
+                    onError={() => setImagePreview("")}
                   />
-                  <p className="text-sm text-gray-500 mt-2">
-                    Current profile image
-                  </p>
-                </div>
-              )}
+                ) : (
+                  <div className="w-24 h-24 mx-auto rounded-full border-4 border-purple-200 shadow-lg overflow-hidden">
+                    <ProfileImage
+                      userId={profile?.user?._id}
+                      userName={profile?.user?.name || "User"}
+                      size="w-full h-full"
+                      textSize="text-xl"
+                    />
+                  </div>
+                )}
+                <p className="text-sm text-gray-500 mt-2">
+                  {uploadingImage ? "Uploading..." : "Current profile image"}
+                </p>
+              </div>
 
               <input
                 type="file"

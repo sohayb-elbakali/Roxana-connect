@@ -1,31 +1,18 @@
 import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
-import defaultImg from "../assets/default.png";
 import { getCurrentProfile } from "../redux/modules/profiles";
-import { getProfileImage } from "../utils";
+import ProfileImage from "./ProfileImage";
 
 function Sidebar({ users: { user, isAuthenticated }, getCurrentProfile }) {
-  const [image, setImage] = useState("");
-  const [errored, setErrored] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     if (isAuthenticated) {
       getCurrentProfile();
-      if (user) {
-        setImage(getProfileImage(user._id));
-      }
     }
-  }, [getCurrentProfile, user, isAuthenticated]);
-
-  function onError() {
-    if (!errored) {
-      setErrored(true);
-      setImage(defaultImg);
-    }
-  }
+  }, [getCurrentProfile, isAuthenticated]);
 
   const isActive = (path) => location.pathname === path;
 
@@ -68,12 +55,15 @@ function Sidebar({ users: { user, isAuthenticated }, getCurrentProfile }) {
               className="block"
               onClick={() => setIsMobileOpen(false)}
             >
-              <img
-                src={image}
-                onError={onError}
-                className="w-20 h-20 rounded-full mx-auto border-4 border-white/30 shadow-lg object-cover hover:border-white/50 transition-all duration-200"
-                alt="Profile"
-              />
+              <div className="mx-auto w-20 h-20 rounded-full border-4 border-white shadow-lg hover:shadow-xl transition-all duration-200 overflow-hidden">
+                <ProfileImage
+                  userId={user?._id}
+                  userName={user?.name || "User"}
+                  size="w-full h-full"
+                  className=""
+                  textSize="text-lg"
+                />
+              </div>
             </Link>
           </div>
 

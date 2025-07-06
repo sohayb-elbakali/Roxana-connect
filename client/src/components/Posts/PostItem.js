@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import defaultAvatar from "../../assets/default.png";
 import { addLike, deletePost, removeLike } from "../../redux/modules/posts";
 import { formatDate, getProfileImage } from "../../utils";
 
@@ -11,6 +13,12 @@ const PostItem = ({
   post: { _id, text, name, user, likes, unlikes, comments, date },
   showActions,
 }) => {
+  const [imageError, setImageError] = useState(false);
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
       <div className="p-6">
@@ -18,7 +26,8 @@ const PostItem = ({
           <img
             className="w-16 h-16 rounded-full object-cover border-2 border-purple-200 shadow-md"
             alt=""
-            src={getProfileImage(user)}
+            src={imageError ? defaultAvatar : getProfileImage(user)}
+            onError={handleImageError}
           />
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-semibold text-gray-900 mb-1">{name}</h3>

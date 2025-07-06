@@ -1,5 +1,6 @@
-import React from "react";
+import { useState } from "react";
 import { connect } from "react-redux";
+import defaultAvatar from "../../assets/default.png";
 import { deleteComment } from "../../redux/modules/posts";
 import { formatDate, getProfileImage } from "../../utils";
 
@@ -9,6 +10,12 @@ const CommentItem = ({
   users,
   deleteComment,
 }) => {
+  const [imageError, setImageError] = useState(false);
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow duration-200">
       <div className="flex space-x-4">
@@ -16,7 +23,8 @@ const CommentItem = ({
           <img
             className="w-12 h-12 rounded-full object-cover border-2 border-purple-200 shadow-sm"
             alt={name}
-            src={getProfileImage(user)}
+            src={imageError ? defaultAvatar : getProfileImage(user)}
+            onError={handleImageError}
           />
         </div>
         <div className="flex-1 min-w-0">

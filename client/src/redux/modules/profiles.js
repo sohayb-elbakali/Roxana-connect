@@ -341,7 +341,7 @@ export const deleteAccount = () => async (dispatch) => {
 
       // Clear the auth token and redirect to login
       localStorage.removeItem("token");
-      window.location.href = "/login";
+      window.location.href = "/roxana";
     } catch (err) {
       console.log("Delete account error:", err);
       if (err.response) {

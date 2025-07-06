@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import defaultImg from "../assets/default.png";
 import { getProfiles } from "../redux/modules/profiles";
-import { getProfileImage } from "../utils";
+import ProfileImage from "./ProfileImage";
 
 function Developers({ user, getProfiles, profiles: { profiles, loading } }) {
   useEffect(() => {
@@ -49,26 +48,15 @@ function Developers({ user, getProfiles, profiles: { profiles, loading } }) {
 }
 
 function Developer({ profile }) {
-  const [errored, setErrored] = useState(false);
-  const [image, setImage] = useState(
-    profile && profile.user ? getProfileImage(profile.user._id) : defaultImg
-  );
-
-  function onError() {
-    if (!errored) {
-      setErrored(true);
-      setImage(defaultImg);
-    }
-  }
-
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-      <div className="aspect-square overflow-hidden">
-        <img
-          onError={onError}
-          src={image}
-          alt=""
-          className="w-full h-full object-cover"
+      <div className="aspect-square overflow-hidden flex items-center justify-center">
+        <ProfileImage
+          userId={profile?.user?._id}
+          userName={profile?.user?.name || "Developer"}
+          size="w-full h-full"
+          className="rounded-none border-0"
+          textSize="text-4xl"
         />
       </div>
       <div className="p-4">
