@@ -1,0 +1,4 @@
+{
+  "mongoConnectionString": "mongodb+srv://your-username:your-password@your-cluster.mongodb.net/your-database?retryWrites=true&w=majority",
+  "jwtSecret": "your-super-secure-jwt-secret-key-here"
+}
