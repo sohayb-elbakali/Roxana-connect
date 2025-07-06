@@ -62,7 +62,7 @@ const Navbar = ({ users: { isAuthenticated }, logout }) => {
           <div className="flex items-center">
             <Link
               className="text-2xl font-bold text-white hover:text-pink-200 transition-colors duration-200"
-              to="/"
+              to={isAuthenticated ? "/home" : "/"}
             >
               Roxana
             </Link>
