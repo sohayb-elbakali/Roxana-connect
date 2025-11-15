@@ -10,14 +10,18 @@ function Developers({ user, getProfiles, profiles: { profiles, loading } }) {
   }, [getProfiles]);
 
   return (
-    <div className="pt-16 min-h-screen bg-gray-50 lg:ml-64">
+    <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 md:mb-8">
-          Developers
-        </h1>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Developers
+          </h1>
+          <p className="text-gray-600">Connect with other developers in the community</p>
+        </div>
         {loading ? (
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+          <div className="text-center py-16">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-3 border-blue-600 mx-auto"></div>
+            <p className="text-gray-600 mt-4">Loading developers...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 md:gap-6">
@@ -49,21 +53,20 @@ function Developers({ user, getProfiles, profiles: { profiles, loading } }) {
 
 function Developer({ profile }) {
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-      <div className="aspect-square overflow-hidden flex items-center justify-center">
-        <ProfileImage
-          userId={profile?.user?._id}
-          userName={profile?.user?.name || "Developer"}
-          size="w-full h-full"
-          className="rounded-none border-0"
-          textSize="text-4xl"
-        />
-      </div>
-      <div className="p-4">
-        <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-1 truncate">
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:border-blue-300 hover:shadow-md transition-all duration-200">
+      <div className="p-6 flex flex-col items-center">
+        <div className="mb-4">
+          <ProfileImage
+            userId={profile?.user?._id}
+            userName={profile?.user?.name || "Developer"}
+            size="w-24 h-24"
+            textSize="text-2xl"
+          />
+        </div>
+        <h3 className="text-base font-semibold text-gray-900 mb-1 text-center">
           {profile && profile.user ? profile.user.name : "Unknown User"}
         </h3>
-        <p className="text-purple-600 font-medium text-sm md:text-base truncate">
+        <p className="text-blue-600 font-medium text-sm text-center">
           {profile ? profile.status : "No Status"}
         </p>
       </div>

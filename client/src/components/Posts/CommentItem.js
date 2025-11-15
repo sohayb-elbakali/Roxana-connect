@@ -2,7 +2,7 @@ import { useState } from "react";
 import { connect } from "react-redux";
 import defaultAvatar from "../../assets/default.png";
 import { deleteComment } from "../../redux/modules/posts";
-import { formatDate, getProfileImage } from "../../utils";
+import { formatRelativeTime, getProfileImage } from "../../utils";
 
 const CommentItem = ({
   postId,
@@ -17,11 +17,11 @@ const CommentItem = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow duration-200">
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 hover:border-blue-300 transition-all duration-200">
       <div className="flex space-x-4">
         <div className="flex-shrink-0">
           <img
-            className="w-12 h-12 rounded-full object-cover border-2 border-purple-200 shadow-sm"
+            className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
             alt={name}
             src={imageError ? defaultAvatar : getProfileImage(user)}
             onError={handleImageError}
@@ -30,7 +30,7 @@ const CommentItem = ({
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-2">
             <h4 className="text-sm font-semibold text-gray-900">{name}</h4>
-            {!users.loading && user === users.user._id && (
+            {!users.loading && users.user && user === users.user._id && (
               <button
                 onClick={() => deleteComment(postId, _id)}
                 type="button"
@@ -44,7 +44,7 @@ const CommentItem = ({
           <p className="text-gray-700 text-sm leading-relaxed mb-2">{text}</p>
           <p className="text-xs text-gray-500">
             <i className="fas fa-clock mr-1"></i>
-            {formatDate(date)}
+            {formatRelativeTime(date)}
           </p>
         </div>
       </div>

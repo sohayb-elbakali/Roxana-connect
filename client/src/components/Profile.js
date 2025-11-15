@@ -6,26 +6,52 @@ import ProfileImage from "./ProfileImage";
 import BasicInfo from "./ProfileInfo/BasicInfo";
 import Education from "./ProfileInfo/Education";
 import Experience from "./ProfileInfo/Experience";
+import InternshipStats from "./ProfileInfo/InternshipStats";
+import InternshipPreferences from "./ProfileInfo/InternshipPreferences";
 
-const Profile = ({ getProfileById, profiles: { profile } }) => {
+const Profile = ({ getProfileById, profiles: { profile, loading, error }, auth }) => {
   let { id } = useParams();
 
   useEffect(() => {
     getProfileById(id);
   }, [getProfileById, id]);
 
+  const isOwnProfile = auth?.user && auth.user._id === id;
+
   return (
-    <div className="pt-16 min-h-screen bg-gray-50 lg:ml-64">
+    <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {profile === null ? (
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+        {loading ? (
+          <div className="text-center py-16">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-3 border-blue-600 mx-auto"></div>
+            <p className="text-gray-600 mt-4">Loading profile...</p>
           </div>
-        ) : (
-          <div className="space-y-8">
+        ) : error && error.msg ? (
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-12 text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <i className="fas fa-user-slash text-3xl text-red-600"></i>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">
+              Profile Not Found
+            </h2>
+            <p className="text-gray-600 mb-6">
+              {error.msg === "There is no profile for the given user"
+                ? "This user hasn't created a profile yet."
+                : error.msg}
+            </p>
+            <a
+              href="/developers"
+              className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-sm"
+            >
+              <i className="fas fa-users mr-2"></i>
+              View All Developers
+            </a>
+          </div>
+        ) : profile ? (
+          <div className="space-y-6">
             {/* Profile Header */}
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-              <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-8">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+              <div className="bg-[#BFDBFE] px-6 py-8">
                 <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
                   <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white shadow-lg overflow-hidden">
                     <ProfileImage
@@ -36,10 +62,10 @@ const Profile = ({ getProfileById, profiles: { profile } }) => {
                     />
                   </div>
                   <div className="text-center md:text-left">
-                    <h1 className="text-2xl md:text-3xl font-bold text-white">
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
                       {profile.user.name}
                     </h1>
-                    <p className="text-purple-200 text-base md:text-lg">
+                    <p className="text-gray-700 text-base md:text-lg">
                       {profile.status}
                     </p>
                   </div>
@@ -58,7 +84,7 @@ const Profile = ({ getProfileById, profiles: { profile } }) => {
                           rel="noreferrer"
                           target="_blank"
                           href={profile.social[media]}
-                          className="text-gray-600 hover:text-purple-600 transition-colors duration-200"
+                          className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
                         >
                           <i className={`fab fa-${media} fa-2x`}></i>
                         </a>
@@ -69,12 +95,12 @@ const Profile = ({ getProfileById, profiles: { profile } }) => {
             </div>
 
             {/* Basic Info and Skills */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Basic Info */}
-              <div className="bg-white rounded-lg shadow-lg p-6">
+              <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
                 <div className="flex items-center mb-6">
-                  <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center mr-3">
-                    <i className="fas fa-user text-white"></i>
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                    <i className="fas fa-user text-blue-600"></i>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900">
                     Basic Information
@@ -84,10 +110,10 @@ const Profile = ({ getProfileById, profiles: { profile } }) => {
               </div>
 
               {/* Skills */}
-              <div className="bg-white rounded-lg shadow-lg p-6">
+              <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
                 <div className="flex items-center mb-6">
-                  <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center mr-3">
-                    <i className="fas fa-code text-white"></i>
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                    <i className="fas fa-code text-blue-600"></i>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900">Skills</h3>
                 </div>
@@ -96,16 +122,16 @@ const Profile = ({ getProfileById, profiles: { profile } }) => {
                     profile.skills.map((skill, index) => (
                       <span
                         key={index}
-                        className="px-3 py-2 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 rounded-full text-sm font-medium border border-purple-200 hover:from-purple-200 hover:to-pink-200 transition-all duration-200"
+                        className="px-3 py-2 bg-blue-50 text-blue-700 rounded-md text-sm font-medium border border-blue-200 hover:bg-blue-100 transition-all duration-200"
                       >
-                        <i className="fas fa-check mr-2 text-purple-600"></i>
+                        <i className="fas fa-check mr-2 text-blue-600"></i>
                         {skill}
                       </span>
                     ))
                   ) : (
                     <div className="text-center py-8 w-full">
-                      <div className="w-12 h-12 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <i className="fas fa-code text-purple-500"></i>
+                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i className="fas fa-code text-blue-600"></i>
                       </div>
                       <p className="text-gray-500 text-sm">
                         No skills added yet
@@ -117,12 +143,12 @@ const Profile = ({ getProfileById, profiles: { profile } }) => {
             </div>
 
             {/* Education and Experience */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Education */}
-              <div className="bg-white rounded-lg shadow-lg p-6">
+              <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
                 <div className="flex items-center mb-6">
-                  <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center mr-3">
-                    <i className="fas fa-graduation-cap text-white"></i>
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                    <i className="fas fa-graduation-cap text-blue-600"></i>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900">Education</h3>
                 </div>
@@ -130,10 +156,10 @@ const Profile = ({ getProfileById, profiles: { profile } }) => {
               </div>
 
               {/* Experience */}
-              <div className="bg-white rounded-lg shadow-lg p-6">
+              <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
                 <div className="flex items-center mb-6">
-                  <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center mr-3">
-                    <i className="fas fa-briefcase text-white"></i>
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                    <i className="fas fa-briefcase text-blue-600"></i>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900">
                     Experience
@@ -142,6 +168,48 @@ const Profile = ({ getProfileById, profiles: { profile } }) => {
                 <Experience profile={profile} />
               </div>
             </div>
+
+            {/* Internship Statistics - Only for own profile */}
+            {isOwnProfile && (
+              <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+                <div className="flex items-center mb-6">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                    <i className="fas fa-chart-line text-blue-600"></i>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900">
+                    My Internship Activity
+                  </h3>
+                </div>
+                <InternshipStats userId={id} isOwnProfile={isOwnProfile} />
+              </div>
+            )}
+
+            {/* Internship Preferences - Only for own profile */}
+            {isOwnProfile && (
+              <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+                <div className="flex items-center mb-6">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                    <i className="fas fa-bullseye text-blue-600"></i>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900">
+                    Target Companies & Roles
+                  </h3>
+                </div>
+                <InternshipPreferences />
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-12 text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <i className="fas fa-exclamation-circle text-3xl text-red-600"></i>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">
+              Something Went Wrong
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Unable to load the profile. Please try again later.
+            </p>
           </div>
         )}
       </div>
@@ -150,7 +218,8 @@ const Profile = ({ getProfileById, profiles: { profile } }) => {
 };
 
 const mapStateToProps = (state) => ({
-  profiles: state.profiles,
+  profiles: state.profiles || { profile: null, loading: true, error: {} },
+  auth: state.auth || { user: null, isAuthenticated: false },
 });
 
 export default connect(mapStateToProps, { getProfileById })(Profile);

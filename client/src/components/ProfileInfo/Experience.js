@@ -7,8 +7,8 @@ const Experience = ({ profile, deleteExperience }) => {
   if (!profile.experience || profile.experience.length === 0) {
     return (
       <div className="text-center py-8">
-        <div className="w-16 h-16 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <i className="fas fa-briefcase text-2xl text-purple-500"></i>
+        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i className="fas fa-briefcase text-2xl text-blue-600"></i>
         </div>
         <h4 className="text-lg font-semibold text-gray-700 mb-2">
           No Experience Added
@@ -25,20 +25,17 @@ const Experience = ({ profile, deleteExperience }) => {
       {profile.experience.map((experience, index) => (
         <div
           key={experience._id}
-          className={`relative bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-100 hover:border-purple-200 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1 ${
-            hoveredId === experience._id ? "ring-2 ring-purple-200" : ""
+          className={`relative bg-white rounded-lg p-4 border border-gray-200 hover:border-blue-300 transition-all duration-200 hover:shadow-md ${
+            hoveredId === experience._id ? "ring-1 ring-blue-300" : ""
           }`}
           onMouseEnter={() => setHoveredId(experience._id)}
           onMouseLeave={() => setHoveredId(null)}
-          style={{
-            animationDelay: `${index * 100}ms`,
-          }}
         >
           {/* Delete Button */}
           {deleteExperience && (
             <button
               onClick={() => deleteExperience(experience._id)}
-              className={`absolute top-3 right-3 p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full transition-all duration-200 ${
+              className={`absolute top-3 right-3 p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200 ${
                 hoveredId === experience._id ? "opacity-100" : "opacity-0"
               }`}
               title="Delete experience"
@@ -49,26 +46,26 @@ const Experience = ({ profile, deleteExperience }) => {
 
           {/* Experience Icon */}
           <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center shadow-md">
-              <i className="fas fa-briefcase text-white text-lg"></i>
+            <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <i className="fas fa-briefcase text-blue-600 text-lg"></i>
             </div>
 
             <div className="flex-1 min-w-0">
               {/* Job Title */}
               <div className="mb-2">
-                <h4 className="text-lg font-bold text-gray-900 leading-tight">
+                <h4 className="text-base font-bold text-gray-900 leading-tight">
                   {experience.title}
                 </h4>
-                <p className="text-purple-600 font-medium">
+                <p className="text-gray-600 font-medium text-sm">
                   {experience.company}
                 </p>
               </div>
 
               {/* Location */}
               {experience.location && (
-                <div className="mb-3">
-                  <div className="flex items-center text-gray-700">
-                    <i className="fas fa-map-marker-alt mr-2 text-purple-500"></i>
+                <div className="mb-2">
+                  <div className="flex items-center text-gray-700 text-sm">
+                    <i className="fas fa-map-marker-alt mr-2 text-gray-500"></i>
                     <span className="font-medium">{experience.location}</span>
                   </div>
                 </div>
@@ -76,8 +73,8 @@ const Experience = ({ profile, deleteExperience }) => {
 
               {/* Date Range */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center text-sm text-gray-600">
-                  <i className="fas fa-calendar-alt mr-2 text-purple-500"></i>
+                <div className="flex items-center text-xs text-gray-600">
+                  <i className="fas fa-calendar-alt mr-2 text-gray-400"></i>
                   <span>
                     {formatDate(experience.from)} -{" "}
                     {experience.current ? (

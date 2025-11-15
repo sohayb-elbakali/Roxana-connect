@@ -12,12 +12,12 @@ const CommentForm = ({ postId, addComment }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6">
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
       <div className="flex items-center mb-4">
-        <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
-          <i className="fas fa-comment text-white text-sm"></i>
+        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+          <i className="fas fa-comment text-blue-600 text-sm"></i>
         </div>
-        <h3 className="text-lg font-bold text-gray-800 ml-3">
+        <h3 className="text-lg font-bold text-gray-900 ml-3">
           Leave a Comment
         </h3>
       </div>
@@ -31,14 +31,14 @@ const CommentForm = ({ postId, addComment }) => {
             onChange={(e) => setText(e.target.value)}
             required
             rows="3"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 resize-none placeholder-gray-400"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 resize-none placeholder-gray-400"
           />
         </div>
 
         <div className="flex justify-end">
           <button
             type="submit"
-            className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg shadow hover:from-purple-700 hover:to-pink-700 transition-all duration-200 flex items-center"
+            className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200 flex items-center disabled:opacity-50"
             disabled={!text.trim()}
           >
             <i className="fas fa-paper-plane mr-2"></i>

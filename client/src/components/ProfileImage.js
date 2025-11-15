@@ -7,7 +7,8 @@ const ProfileImage = ({
   userName = "User",
   size = "w-24 h-24",
   className = "",
-  textSize = "text-xl"
+  textSize = "text-xl",
+  roundedClass = "rounded-full"
 }) => {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -43,7 +44,7 @@ const ProfileImage = ({
       <img
         src={getProfileImage(userId)}
         alt={`${userName}'s profile`}
-        className={`${size} rounded-full object-cover ${
+        className={`${size} ${roundedClass} object-cover ${
           imageLoaded ? 'opacity-100' : 'opacity-0'
         } transition-opacity duration-300`}
         style={{ aspectRatio: '1/1' }}
@@ -54,7 +55,7 @@ const ProfileImage = ({
       {/* Show loading state while image is loading */}
       {!imageLoaded && !imageError && (
         <div
-          className={`${size} rounded-full bg-gradient-to-br from-gray-300 to-gray-400 animate-pulse absolute top-0 left-0 flex items-center justify-center`}
+          className={`${size} ${roundedClass} bg-gradient-to-br from-gray-300 to-gray-400 animate-pulse absolute top-0 left-0 flex items-center justify-center`}
           style={{ aspectRatio: '1/1' }}
         >
           <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -65,3 +66,4 @@ const ProfileImage = ({
 };
 
 export default ProfileImage;
+  
