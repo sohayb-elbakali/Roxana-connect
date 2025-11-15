@@ -5,9 +5,7 @@ import { hideAlertMessage } from "../redux/modules/alerts";
 
 const Alert = ({ alert, hideAlertMessage }) => {
   useEffect(() => {
-    console.log("inside useEffect ", alert);
     if (alert.show) {
-      console.log("showing the alert...");
       // Update to handle different toast types:
       const toastMethod =
         alert.type === "error"

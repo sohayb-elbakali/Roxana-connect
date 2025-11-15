@@ -3,10 +3,7 @@ const config = require("config");
 const multer = require("multer");
 
 const auth = (req, res, next) => {
-  // Get the token from the request header
-  console.log("in auth before token")
   const token = req.header("x-auth-token");
-  console.log("token:"+token)
 
   if (!token) {
     return res
@@ -21,15 +18,12 @@ const auth = (req, res, next) => {
           .status(401)
           .json({ msg: "Token is not valid, authorization denied." });
       } else {
-        console.log("inside else: ")
-        console.log("DECODED "+ JSON.stringify(decoded.user))
         req.user = decoded.user;
         next();
       }
     });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ msg: err.message });
+    res.status(500).json({ msg: "Server error during authentication" });
   }
 };
 
@@ -44,4 +38,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage: storage}).single("file");
 
-module.exports = { auth, upload };
+const deadlineUtils = require("./deadlineUtils");
+
+module.exports = { auth, upload, deadlineUtils };
