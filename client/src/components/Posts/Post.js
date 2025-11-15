@@ -15,10 +15,10 @@ function Post({getPost, posts: {post, loading}}){
 
     if (loading) {
       return (
-        <div className="pt-16 min-h-screen bg-gray-50 lg:ml-64">
+        <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="flex justify-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+            <div className="flex justify-center py-16">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-3 border-blue-600"></div>
             </div>
           </div>
         </div>
@@ -27,9 +27,12 @@ function Post({getPost, posts: {post, loading}}){
 
     if (post === null) {
       return (
-        <div className="pt-16 min-h-screen bg-gray-50 lg:ml-64">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
             <div className="text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i className="fas fa-exclamation-circle text-3xl text-red-600"></i>
+              </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
                 Post Not Found
               </h2>
@@ -38,7 +41,7 @@ function Post({getPost, posts: {post, loading}}){
               </p>
               <Link
                 to="/posts"
-                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200"
+                className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm"
               >
                 <i className="fas fa-arrow-left mr-2"></i>
                 Back to Posts
@@ -50,14 +53,14 @@ function Post({getPost, posts: {post, loading}}){
     }
 
     return (
-      <div className="pt-16 min-h-screen bg-gray-50 lg:ml-64">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+      <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="space-y-6">
             {/* Back Button */}
             <div className="flex items-center">
               <Link
                 to="/posts"
-                className="inline-flex items-center px-4 py-2 text-sm font-medium text-purple-700 bg-purple-100 rounded-lg hover:bg-purple-200 transition-colors duration-200"
+                className="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 transition-colors duration-200"
               >
                 <i className="fas fa-arrow-left mr-2"></i>
                 Back to Posts

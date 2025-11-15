@@ -148,12 +148,12 @@ const ProfileForm = ({
   };
 
   return (
-    <div className="pt-16 min-h-screen bg-gray-50 lg:ml-64">
+    <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-xl shadow-lg p-8">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <i className="fas fa-user-edit text-white text-2xl"></i>
+            <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <i className="fas fa-user-edit text-blue-600 text-2xl"></i>
             </div>
             <h2 className="text-3xl font-bold text-gray-900 mb-2">
               {profile ? "Edit Profile" : "Create Profile"}
@@ -174,7 +174,7 @@ const ProfileForm = ({
                 value={status}
                 onChange={onChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 bg-white"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 bg-white"
               >
                 <option value="">* Select Professional Status</option>
                 <option value="Developer">Developer</option>
@@ -200,11 +200,11 @@ const ProfileForm = ({
                   <img
                     src={imagePreview}
                     alt="Profile preview"
-                    className="w-24 h-24 rounded-full mx-auto border-4 border-purple-200 shadow-lg object-cover"
+                    className="w-24 h-24 rounded-full mx-auto border-4 border-blue-200 shadow-lg object-cover"
                     onError={() => setImagePreview("")}
                   />
                 ) : (
-                  <div className="w-24 h-24 mx-auto rounded-full border-4 border-purple-200 shadow-lg overflow-hidden">
+                  <div className="w-24 h-24 mx-auto rounded-full border-4 border-blue-200 shadow-lg overflow-hidden">
                     <ProfileImage
                       userId={profile?.user?._id}
                       userName={profile?.user?.name || "User"}
@@ -222,7 +222,7 @@ const ProfileForm = ({
                 type="file"
                 accept="image/*"
                 onChange={onFileChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               />
               <p className="text-sm text-gray-500 mt-1">
                 Upload a new image to replace your current profile picture
@@ -241,7 +241,7 @@ const ProfileForm = ({
                   name="company"
                   value={company}
                   onChange={onChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
               </div>
               <div>
@@ -254,7 +254,7 @@ const ProfileForm = ({
                   name="website"
                   value={website}
                   onChange={onChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
               </div>
             </div>
@@ -271,7 +271,7 @@ const ProfileForm = ({
                   name="location"
                   value={location}
                   onChange={onChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
               </div>
               <div>
@@ -284,7 +284,7 @@ const ProfileForm = ({
                   name="country"
                   value={country}
                   onChange={onChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
               </div>
             </div>
@@ -301,7 +301,7 @@ const ProfileForm = ({
                 value={skills}
                 onChange={onChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
               <p className="text-sm text-gray-500 mt-1">
                 Please use comma separated values (eg. HTML,CSS,JavaScript,PHP)
@@ -319,7 +319,7 @@ const ProfileForm = ({
                 value={bio}
                 onChange={onChange}
                 rows="4"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 resize-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 resize-none"
               />
             </div>
 
@@ -327,7 +327,7 @@ const ProfileForm = ({
             <div className="text-center">
               <button
                 type="button"
-                className="px-6 py-3 bg-gray-100 text-purple-700 font-semibold rounded-lg hover:bg-purple-50 transition-all duration-200 border border-gray-300"
+                className="px-6 py-3 bg-blue-50 text-blue-700 font-semibold rounded-lg hover:bg-blue-100 transition-all duration-200 border border-blue-200"
                 onClick={() => toggleSocialInputs(!displaySocialInputs)}
               >
                 {displaySocialInputs ? "Hide" : "Add"} Social Networks
@@ -350,7 +350,7 @@ const ProfileForm = ({
                       name="twitter"
                       value={twitter}
                       onChange={onChange}
-                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                   </div>
 
@@ -362,7 +362,7 @@ const ProfileForm = ({
                       name="facebook"
                       value={facebook}
                       onChange={onChange}
-                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                   </div>
 
@@ -374,7 +374,7 @@ const ProfileForm = ({
                       name="youtube"
                       value={youtube}
                       onChange={onChange}
-                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                   </div>
 
@@ -386,7 +386,7 @@ const ProfileForm = ({
                       name="linkedin"
                       value={linkedin}
                       onChange={onChange}
-                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                   </div>
 
@@ -398,7 +398,7 @@ const ProfileForm = ({
                       name="instagram"
                       value={instagram}
                       onChange={onChange}
-                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                   </div>
 
@@ -410,7 +410,7 @@ const ProfileForm = ({
                       name="github"
                       value={github}
                       onChange={onChange}
-                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
                   </div>
                 </div>
@@ -421,13 +421,13 @@ const ProfileForm = ({
             <div className="flex flex-col sm:flex-row gap-4 pt-6">
               <button
                 type="submit"
-                className="flex-1 py-3 px-8 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold shadow hover:from-purple-700 hover:to-pink-700 transition-all text-lg"
+                className="flex-1 py-3 px-8 rounded-lg bg-blue-600 text-white font-semibold shadow-sm hover:bg-blue-700 transition-all text-lg"
               >
                 {profile ? "Update Profile" : "Create Profile"}
               </button>
               <Link
                 to="/home"
-                className="flex-1 py-3 px-8 rounded-lg bg-gray-100 text-purple-700 font-semibold shadow hover:bg-purple-50 transition-all text-lg text-center"
+                className="flex-1 py-3 px-8 rounded-lg bg-gray-100 text-gray-700 font-semibold shadow-sm hover:bg-gray-200 transition-all text-lg text-center"
               >
                 Cancel
               </Link>

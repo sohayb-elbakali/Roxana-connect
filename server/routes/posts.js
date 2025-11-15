@@ -38,25 +38,27 @@ router.post(
       const post = await newPost.save();
       res.json(post);
     } catch (err) {
-      console.error(err.message);
-      return res.status(500).send(err.message);
+      return res.status(500).send("Server error creating post");
     }
   }
 );
 
 router.get("/", auth, async (req, res) => {
   try {
-    const posts = await Post.find().sort({ date: -1 });
+    const posts = await Post.find()
+      .select("-__v")
+      .sort({ date: -1 })
+      .limit(50);
     res.json(posts);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error " + err.message);
+    res.status(500).send("Server error fetching posts");
   }
 });
 
 router.get("/:id", auth, async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id)
+      .select("-__v");
 
     if (!post) {
       return res.status(404).json({ msg: "Post not found" });
@@ -64,8 +66,7 @@ router.get("/:id", auth, async (req, res) => {
 
     res.json(post);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error " + err.message);
+    res.status(500).send("Server error fetching post");
   }
 });
 
@@ -73,24 +74,29 @@ router.put("/like/:id", auth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
 
-    if (post.likes.some((like) => like.user.toString() === req.user.id)) {
-      return res.status(400).json({ msg: "Post already liked" });
+    // Check if user has already liked the post
+    const alreadyLiked = post.likes.some((like) => like.user.toString() === req.user.id);
+
+    if (alreadyLiked) {
+      // Remove the like (toggle off)
+      post.likes = post.likes.filter(
+        (like) => like.user.toString() !== req.user.id
+      );
+    } else {
+      // Remove from unlikes if user had unliked it
+      post.unlikes = post.unlikes.filter(
+        (unlike) => unlike.user.toString() !== req.user.id
+      );
+
+      // Add to likes
+      post.likes.unshift({ user: req.user.id });
     }
-
-    // Remove from unlikes if user had unliked it
-    post.unlikes = post.unlikes.filter(
-      (unlike) => unlike.user.toString() !== req.user.id
-    );
-
-    // Add to likes
-    post.likes.unshift({ user: req.user.id });
 
     await post.save();
 
     return res.json({ likes: post.likes, unlikes: post.unlikes });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error " + err.message);
+    res.status(500).send("Server error updating post");
   }
 });
 
@@ -99,26 +105,28 @@ router.put("/unlike/:id", auth, async (req, res) => {
     const post = await Post.findById(req.params.id);
 
     // Check if user has already unliked the post
-    if (post.unlikes.some((unlike) => unlike.user.toString() === req.user.id)) {
-      return res
-        .status(400)
-        .json({ msg: "User has already unliked this post!" });
+    const alreadyUnliked = post.unlikes.some((unlike) => unlike.user.toString() === req.user.id);
+
+    if (alreadyUnliked) {
+      // Remove the unlike (toggle off)
+      post.unlikes = post.unlikes.filter(
+        (unlike) => unlike.user.toString() !== req.user.id
+      );
+    } else {
+      // Remove from likes if user had liked it
+      post.likes = post.likes.filter(
+        (like) => like.user.toString() !== req.user.id
+      );
+
+      // Add to unlikes
+      post.unlikes.unshift({ user: req.user.id });
     }
-
-    // Remove from likes if user had liked it
-    post.likes = post.likes.filter(
-      (like) => like.user.toString() !== req.user.id
-    );
-
-    // Add to unlikes
-    post.unlikes.unshift({ user: req.user.id });
 
     await post.save();
 
     return res.json({ likes: post.likes, unlikes: post.unlikes });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error " + err.message);
+    res.status(500).send("Server error updating post");
   }
 });
 
@@ -146,8 +154,7 @@ router.post(
       await post.save();
       res.json(post.comments);
     } catch (err) {
-      console.error(err.message);
-      res.status(500).send("Server Error " + err.message);
+      res.status(500).send("Server error adding comment");
     }
   }
 );
@@ -175,8 +182,7 @@ router.delete("/comment/:id/:comment_id", auth, async (req, res) => {
     await post.save();
     return res.json(post.comments);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error " + err.message);
+    res.status(500).send("Server error deleting comment");
   }
 });
 
@@ -198,8 +204,7 @@ router.delete("/:id", auth, async (req, res) => {
 
     res.json({ msg: "Post is removed" });
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error " + err.message);
+    res.status(500).send("Server error deleting post");
   }
 });
 

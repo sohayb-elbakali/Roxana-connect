@@ -107,6 +107,14 @@ const ProfileSchema = new mongoose.Schema({
       type: String,
     },
   },
+  targetCompanies: {
+    type: [String],
+    default: [],
+  },
+  targetRoles: {
+    type: [String],
+    default: [],
+  },
   date: {
     type: Date,
     default: Date.now,

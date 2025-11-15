@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import defaultAvatar from "../../assets/default.png";
 import { addLike, deletePost, removeLike } from "../../redux/modules/posts";
-import { formatDate, getProfileImage } from "../../utils";
+import { formatRelativeTime, getProfileImage } from "../../utils";
 
 const PostItem = ({
   addLike,
@@ -11,7 +11,7 @@ const PostItem = ({
   deletePost,
   users,
   post: { _id, text, name, user, likes, unlikes, comments, date },
-  showActions,
+  showActions = true,
 }) => {
   const [imageError, setImageError] = useState(false);
 
@@ -20,39 +20,42 @@ const PostItem = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:border-blue-300 hover:shadow-md transition-all duration-200">
       <div className="p-6">
         <div className="flex items-start space-x-4">
           <img
-            className="w-16 h-16 rounded-full object-cover border-2 border-purple-200 shadow-md"
+            className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
             alt=""
             src={imageError ? defaultAvatar : getProfileImage(user)}
             onError={handleImageError}
           />
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">{name}</h3>
-            <p className="text-gray-700 leading-relaxed mb-4">{text}</p>
-            <p className="text-sm text-gray-500 mb-4">
-              Posted at {formatDate(date)}
+            <div className="mb-2">
+              <p className="text-xs text-gray-500">Posted by</p>
+              <h3 className="text-base font-semibold text-gray-900">{name}</h3>
+            </div>
+            <p className="text-gray-700 leading-relaxed mb-3">{text}</p>
+            <p className="text-xs text-gray-500 mb-4">
+              {formatRelativeTime(date)}
             </p>
 
             {showActions && (
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center gap-2 flex-wrap">
                 <button
                   type="button"
-                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-200"
+                  className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
                   onClick={() => addLike(_id)}
                 >
-                  <i className="fas fa-thumbs-up mr-2 text-purple-600" />
+                  <i className="fas fa-thumbs-up mr-1.5 text-blue-600" />
                   <span>{likes.length > 0 && <span>{likes.length}</span>}</span>
                 </button>
 
                 <button
                   type="button"
-                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-200"
+                  className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors duration-200"
                   onClick={() => removeLike(_id)}
                 >
-                  <i className="fas fa-thumbs-down mr-2 text-red-600" />
+                  <i className="fas fa-thumbs-down mr-1.5 text-red-600" />
                   <span>
                     {unlikes && unlikes.length > 0 && (
                       <span>{unlikes.length}</span>
@@ -62,23 +65,23 @@ const PostItem = ({
 
                 <Link
                   to={`/posts/${_id}`}
-                  className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200"
+                  className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all duration-200"
                 >
                   Discussion
                   {comments.length > 0 && (
-                    <span className="ml-2 bg-white/20 text-white px-2 py-1 rounded-full text-xs">
+                    <span className="ml-1.5 bg-white/20 text-white px-1.5 py-0.5 rounded text-xs">
                       {comments.length}
                     </span>
                   )}
                 </Link>
 
-                {!users.loading && user === users.user._id && (
+                {!users.loading && users.user && user === users.user._id && (
                   <button
                     type="button"
-                    className="inline-flex items-center px-4 py-2 text-sm font-medium text-red-700 bg-red-100 rounded-lg hover:bg-red-200 transition-colors duration-200"
+                    className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-red-700 bg-red-100 rounded-lg hover:bg-red-200 transition-colors duration-200"
                     onClick={() => deletePost(_id)}
                   >
-                    <i className="fas fa-trash mr-2" />
+                    <i className="fas fa-trash mr-1.5" />
                     Delete
                   </button>
                 )}
@@ -89,10 +92,6 @@ const PostItem = ({
       </div>
     </div>
   );
-};
-
-PostItem.defaultProps = {
-  showActions: true,
 };
 
 const mapStateToProps = (state) => ({

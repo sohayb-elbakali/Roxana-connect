@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 
 const TITLES = [
-  "Create your Roxana profile and connect with other developers",
-  "Roxana is the first website in the Arab World to connect engineers",
-  "Build a professional network with other developers",
+  "Discover internship opportunities shared by your trusted network",
+  "Track your applications and manage deadlines in one place",
+  "Share insights and collaborate with friends on your internship journey",
 ];
 
 const LandingTitle = () => {

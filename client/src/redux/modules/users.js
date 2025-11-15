@@ -1,4 +1,4 @@
-import { api, setAuthToken } from "../../utils";
+import { api, setAuthToken, clearAllImageCache } from "../../utils";
 import { showAlertMessage } from "./alerts";
 
 const REGISTER_SUCCESS = "users/REGISTER_SUCCESS";
@@ -75,7 +75,25 @@ export function login(email, password) {
 }
 
 export const logout = () => (dispatch) => {
+  // Clear all caches and tokens
+  setAuthToken(null);
+  clearAllImageCache();
+  localStorage.clear(); // Clear all localStorage data
+  sessionStorage.clear(); // Clear all sessionStorage data
+  
   dispatch({ type: LOGOUT });
+};
+
+export const resendVerification = () => async (dispatch) => {
+  try {
+    const res = await api.post("/users/resend-verification");
+    dispatch(showAlertMessage(res.data.message || "Verification email sent!", "success"));
+    return { success: true };
+  } catch (error) {
+    const message = error.response?.data?.message || "Failed to send verification email";
+    dispatch(showAlertMessage(message, "error"));
+    return { success: false };
+  }
 };
 
 const initialState = {

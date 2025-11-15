@@ -23,104 +23,114 @@ function Sidebar({ users: { user, isAuthenticated }, getCurrentProfile }) {
 
   return (
     <>
-      {/* Mobile menu button */}
-      <div className="lg:hidden fixed top-20 left-4 z-50">
-        <button
-          onClick={() => setIsMobileOpen(!isMobileOpen)}
-          className="p-2 rounded-md bg-purple-600 text-white shadow-lg"
-        >
-          <i className={`fas ${isMobileOpen ? "fa-times" : "fa-bars"}`}></i>
-        </button>
-      </div>
-
-      {/* Mobile overlay */}
-      {isMobileOpen && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={() => setIsMobileOpen(false)}
-        ></div>
-      )}
-
-      {/* Sidebar */}
-      <div
-        className={`fixed left-0 top-16 h-full w-64 bg-gradient-to-b from-purple-600 to-pink-600 shadow-xl z-40 transform transition-transform duration-300 ease-in-out ${
-          isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-        }`}
-      >
-        <div className="flex flex-col h-full">
+      {/* Icon-only Sidebar - Desktop */}
+      <div className="hidden lg:block fixed left-0 top-16 h-[calc(100vh-4rem)] w-16 bg-white border-r border-gray-200 shadow-sm z-30">
+        <div className="flex flex-col h-full py-4">
           {/* Profile Section */}
-          <div className="p-6 border-b border-white/20">
-            <Link
-              to="/home"
-              className="block"
-              onClick={() => setIsMobileOpen(false)}
-            >
-              <div className="mx-auto w-20 h-20 rounded-full border-4 border-white shadow-lg hover:shadow-xl transition-all duration-200 overflow-hidden">
-                <ProfileImage
-                  userId={user?._id}
-                  userName={user?.name || "User"}
-                  size="w-full h-full"
-                  className=""
-                  textSize="text-lg"
-                />
-              </div>
-            </Link>
-          </div>
+          <Link
+            to={`/profile/${user?._id}`}
+            className="flex items-center justify-center mb-4 group"
+            title="Profile"
+          >
+            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-200 group-hover:border-blue-500 transition-all duration-200">
+              <ProfileImage
+                userId={user?._id}
+                userName={user?.name || "User"}
+                size="w-full h-full"
+                textSize="text-xs"
+              />
+            </div>
+          </Link>
+
+          <div className="w-10 h-px bg-gray-200 mx-auto mb-4"></div>
 
           {/* Navigation Links */}
-          <nav className="flex-1 px-4 py-6 space-y-2">
+          <nav className="flex-1 space-y-2">
             <Link
               to="/home"
-              onClick={() => setIsMobileOpen(false)}
-              className={`flex items-center px-4 py-3 rounded-lg transition-all duration-200 ${
+              title="Home"
+              className={`flex items-center justify-center w-full h-12 rounded-lg transition-all duration-200 ${
                 isActive("/home")
-                  ? "bg-white/20 text-white shadow-lg"
-                  : "text-white/80 hover:bg-white/10 hover:text-white"
+                  ? "bg-blue-50 text-blue-600"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-blue-600"
               }`}
             >
-              <i className="fas fa-home mr-3"></i>
-              Home
+              <i className="fas fa-home text-lg"></i>
+            </Link>
+
+            <Link
+              to="/feed"
+              title="Internships"
+              className={`flex items-center justify-center w-full h-12 rounded-lg transition-all duration-200 ${
+                isActive("/feed")
+                  ? "bg-blue-50 text-blue-600"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-blue-600"
+              }`}
+            >
+              <i className="fas fa-briefcase text-lg"></i>
+            </Link>
+
+            <Link
+              to="/tracker"
+              title="Tracker"
+              className={`flex items-center justify-center w-full h-12 rounded-lg transition-all duration-200 ${
+                isActive("/tracker")
+                  ? "bg-blue-50 text-blue-600"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-blue-600"
+              }`}
+            >
+              <i className="fas fa-tasks text-lg"></i>
             </Link>
 
             <Link
               to="/posts"
-              onClick={() => setIsMobileOpen(false)}
-              className={`flex items-center px-4 py-3 rounded-lg transition-all duration-200 ${
+              title="Posts"
+              className={`flex items-center justify-center w-full h-12 rounded-lg transition-all duration-200 ${
                 isActive("/posts")
-                  ? "bg-white/20 text-white shadow-lg"
-                  : "text-white/80 hover:bg-white/10 hover:text-white"
+                  ? "bg-blue-50 text-blue-600"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-blue-600"
               }`}
             >
-              <i className="fas fa-comments mr-3"></i>
-              Posts
+              <i className="fas fa-comments text-lg"></i>
             </Link>
 
             <Link
               to="/developers"
-              onClick={() => setIsMobileOpen(false)}
-              className={`flex items-center px-4 py-3 rounded-lg transition-all duration-200 ${
+              title="Developers"
+              className={`flex items-center justify-center w-full h-12 rounded-lg transition-all duration-200 ${
                 isActive("/developers")
-                  ? "bg-white/20 text-white shadow-lg"
-                  : "text-white/80 hover:bg-white/10 hover:text-white"
+                  ? "bg-blue-50 text-blue-600"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-blue-600"
               }`}
             >
-              <i className="fas fa-users mr-3"></i>
-              Developers
+              <i className="fas fa-users text-lg"></i>
             </Link>
 
-            <Link
-              to="/settings"
-              onClick={() => setIsMobileOpen(false)}
-              className={`flex items-center px-4 py-3 rounded-lg transition-all duration-200 ${
-                isActive("/settings")
-                  ? "bg-white/20 text-white shadow-lg"
-                  : "text-white/80 hover:bg-white/10 hover:text-white"
-              }`}
-            >
-              <i className="fas fa-cog mr-3"></i>
-              Settings
-            </Link>
+            {user?.role === "admin" && (
+              <Link
+                to="/admin"
+                title="Admin Dashboard"
+                className={`flex items-center justify-center w-full h-12 rounded-lg transition-all duration-200 ${
+                  isActive("/admin")
+                    ? "bg-red-50 text-red-600"
+                    : "text-gray-600 hover:bg-red-100 hover:text-red-600"
+                }`}
+              >
+                <i className="fas fa-user-shield text-lg"></i>
+              </Link>
+            )}
           </nav>
+
+          {/* Quick Action Button at Bottom - Only for admins and Level 2-3 users */}
+          {(user?.role === 'admin' || (user?.level && user.level >= 2)) && (
+            <Link
+              to="/internship/create"
+              title="Post Internship"
+              className="flex items-center justify-center w-full h-12 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200"
+            >
+              <i className="fas fa-plus text-lg"></i>
+            </Link>
+          )}
         </div>
       </div>
     </>

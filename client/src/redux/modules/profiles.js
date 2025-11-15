@@ -7,6 +7,7 @@ export const UPDATE_PROFILE = "profile/UPDATE_PROFILE";
 export const PROFILE_ERROR = "profile/PROFILE_ERROR";
 export const UPLOAD_PROFILE_IMAGE = "profile/UPLOAD_PROFILE_IMAGE";
 export const CLEAR_PROFILE = "profile/CLEAR_PROFILE";
+export const UPDATE_INTERNSHIP_PREFERENCES = "profile/UPDATE_INTERNSHIP_PREFERENCES";
 
 export const getCurrentProfile = () => async (dispatch) => {
   try {
@@ -165,15 +166,21 @@ export const getProfileById = (userId) => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
-    // Only show error for server errors, not client errors (like 404 for non-existent profile)
-    if (err.response && err.response.status >= 500) {
-      dispatch({
-        type: PROFILE_ERROR,
-        payload: {
-          msg: err.response?.statusText || "Network error",
-          status: err.response?.status || 500,
-        },
-      });
+    const errorMsg = err.response?.data?.msg || 
+                     err.response?.statusText || 
+                     "Error loading profile";
+    
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: {
+        msg: errorMsg,
+        status: err.response?.status || 500,
+      },
+    });
+    
+    // Show user-friendly message for 400 errors (profile not found)
+    if (err.response && err.response.status === 400) {
+      dispatch(showAlertMessage("Profile not found for this user", "error"));
     }
   }
 };
@@ -368,6 +375,37 @@ export const deleteAccount = () => async (dispatch) => {
   }
 };
 
+// Update internship preferences
+export const updateInternshipPreferences = (targetCompanies, targetRoles) => async (dispatch) => {
+  try {
+    const res = await api.put("/profiles/internship-preferences", {
+      targetCompanies,
+      targetRoles,
+    });
+
+    dispatch({
+      type: UPDATE_INTERNSHIP_PREFERENCES,
+      payload: res.data,
+    });
+
+    dispatch(showAlertMessage("Internship preferences updated", "success"));
+  } catch (err) {
+    if (err.response && err.response.data && err.response.data.msg) {
+      dispatch(showAlertMessage(err.response.data.msg, "error"));
+    } else {
+      dispatch(showAlertMessage("Error updating preferences", "error"));
+    }
+
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: {
+        msg: err.response?.statusText || "An error occurred",
+        status: err.response?.status || 500,
+      },
+    });
+  }
+};
+
 const initialState = {
   profile: null,
   profiles: [],
@@ -382,6 +420,7 @@ export default function reducer(state = initialState, action) {
   switch (type) {
     case GET_PROFILE:
     case UPDATE_PROFILE:
+    case UPDATE_INTERNSHIP_PREFERENCES:
       return {
         ...state,
         profile: payload,
@@ -406,6 +445,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         profile: null,
+        loading: false,
       };
     case UPLOAD_PROFILE_IMAGE:
       return {

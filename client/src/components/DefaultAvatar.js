@@ -18,17 +18,17 @@ const DefaultAvatar = ({
 
   // Generate a consistent color based on the name
   const getAvatarColor = (fullName) => {
-    if (!fullName) return "from-purple-400 to-purple-600";
+    if (!fullName) return "from-blue-400 to-blue-600";
     
     const colors = [
-      "from-purple-400 to-purple-600",
       "from-blue-400 to-blue-600",
+      "from-teal-400 to-teal-600",
       "from-green-400 to-green-600",
       "from-yellow-400 to-yellow-600",
       "from-red-400 to-red-600",
       "from-indigo-400 to-indigo-600",
-      "from-pink-400 to-pink-600",
-      "from-teal-400 to-teal-600",
+      "from-cyan-400 to-cyan-600",
+      "from-emerald-400 to-emerald-600",
     ];
     
     // Simple hash function to get consistent color for same name

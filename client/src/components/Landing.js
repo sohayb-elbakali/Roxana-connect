@@ -4,35 +4,50 @@ import LandingTitle from "./LandingTitle";
 
 const Landing = () => {
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-roxanaPurple-light to-roxanaPink-light pt-16">
-      <div className="w-full max-w-2xl mx-auto text-center p-8 bg-white bg-opacity-90 rounded-xl shadow-lg mt-12">
-        <div className="flex flex-col items-center mb-4">
-          <span className="text-6xl mb-2">💡</span>
-          <h1 className="text-5xl font-extrabold text-roxanaPurple-dark mb-2 tracking-tight">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      <div className="w-full max-w-4xl mx-auto text-center px-6 py-12">
+        {/* Title */}
+        <div className="flex flex-col items-center mb-8">
+          <h1 className="text-6xl md:text-7xl font-extrabold text-gray-900 mb-4 tracking-tight">
             Roxana
           </h1>
+          <p className="text-2xl md:text-3xl text-blue-600 font-bold tracking-wide">
+            Track. Collaborate. Succeed.
+          </p>
         </div>
-        <p className="text-xl text-roxanaGray font-semibold mb-4">
-          Innovate. Inspire. Impact.
+
+        {/* Description */}
+        <p className="text-base md:text-lg text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+          Your community-powered internship tracker. Discover opportunities,
+          share insights, and manage your applications all in one place with
+          friends you trust.
         </p>
-        <p className="text-lg text-gray-500 mb-6">
-          The first platform for engineers and developers in the Arab World to
-          showcase their talents, connect with peers, and unlock new
-          opportunities.
-        </p>
+
+        {/* Feature Highlight */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-md border border-blue-100 p-6 mb-10 max-w-xl mx-auto">
+          <p className="text-sm md:text-base text-gray-700 font-medium">
+            <i className="fas fa-lightbulb text-yellow-500 mr-2"></i>
+            Discover internship opportunities shared by your trusted network
+          </p>
+        </div>
+
         <LandingTitle />
-        <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
+
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row justify-center gap-4 mt-10">
           <Link
             to="/register"
-            className="px-6 py-3 rounded-lg bg-gradient-to-r from-roxanaPurple to-roxanaPink text-white font-semibold shadow hover:from-roxanaPurple-dark hover:to-roxanaPink-dark transition-all text-lg flex items-center justify-center gap-2"
+            className="group px-10 py-4 rounded-xl bg-blue-600 text-white font-bold shadow-lg hover:bg-blue-700 hover:shadow-xl transition-all duration-300 text-lg flex items-center justify-center gap-3 transform hover:scale-105"
           >
-            <i className="fas fa-user-plus"></i> Sign Up
+            <i className="fas fa-user-plus group-hover:scale-110 transition-transform"></i> 
+            Get Started
           </Link>
           <Link
             to="/login"
-            className="px-6 py-3 rounded-lg bg-white border border-roxanaPurple text-roxanaPurple font-semibold shadow hover:bg-roxanaPurple-light/20 transition-all text-lg flex items-center justify-center gap-2"
+            className="group px-10 py-4 rounded-xl bg-white border-2 border-blue-600 text-blue-600 font-bold shadow-md hover:bg-blue-50 hover:shadow-lg transition-all duration-300 text-lg flex items-center justify-center gap-3 transform hover:scale-105"
           >
-            <i className="fas fa-sign-in-alt"></i> Login
+            <i className="fas fa-sign-in-alt group-hover:scale-110 transition-transform"></i> 
+            Sign In
           </Link>
         </div>
       </div>
