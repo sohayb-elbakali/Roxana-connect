@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Backend Service
   backend:
@@ -9,14 +7,8 @@ services:
     container_name: roxana-backend
     ports:
       - "5000:5000"
-    environment:
-      - NODE_ENV=production
-      - PORT=5000
-      - MONGO_URI=${MONGO_URI}
-      - JWT_SECRET=${JWT_SECRET}
-      - BREVO_API_KEY=${BREVO_API_KEY}
-      - EMAIL_FROM=${EMAIL_FROM}
-      - CLIENT_URL=http://localhost:3000
+    env_file:
+      - ./server/.env
     volumes:
       - ./server/public/images:/app/public/images
     restart: unless-stopped
