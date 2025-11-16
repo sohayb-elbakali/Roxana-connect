@@ -11,7 +11,7 @@ node_modules/
 # Configuration files with sensitive data
 config/default.json
 config/production.json
-config/db.js
+# config/db.js - NO LONGER IGNORED (uses env vars now)
 
 # Logs
 logs

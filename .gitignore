@@ -19,7 +19,7 @@ dist/
 # Configuration files with sensitive data
 server/config/default.json
 server/config/production.json
-server/config/db.js
+# server/config/db.js - NO LONGER IGNORED (uses env vars now)
 
 # Logs
 logs
