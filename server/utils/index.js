@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const config = require("config");
 const multer = require("multer");
 
 const auth = (req, res, next) => {
@@ -12,7 +11,12 @@ const auth = (req, res, next) => {
   }
 
   try {
-    jwt.verify(token, config.get("jwtSecret"), (error, decoded) => {
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      return res.status(500).json({ msg: "Server configuration error" });
+    }
+    
+    jwt.verify(token, jwtSecret, (error, decoded) => {
       if (error) {
         return res
           .status(401)

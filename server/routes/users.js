@@ -5,9 +5,17 @@ const { check, validationResult } = require("express-validator");
 const User = require("../models/User.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const config = require("config");
 const crypto = require("crypto");
 const { sendVerificationEmail, sendPasswordResetEmail } = require("../utils/email.js");
+
+// Get JWT secret from environment
+const getJwtSecret = () => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('JWT_SECRET environment variable is not defined');
+  }
+  return secret;
+};
 
 /*
  Get the request body
@@ -58,7 +66,7 @@ router.post(
       // Generate verification token
       const verificationToken = jwt.sign(
         { userId: user.id },
-        config.get("jwtSecret"),
+        getJwtSecret(),
         { expiresIn: "24h" }
       );
       user.verificationToken = verificationToken;
@@ -79,14 +87,14 @@ router.post(
       // Generate access token (short-lived)
       const accessToken = jwt.sign(
         payload,
-        config.get("jwtSecret"),
+        getJwtSecret(),
         { expiresIn: "15m" }
       );
 
       // Generate refresh token (long-lived)
       const refreshToken = jwt.sign(
         payload,
-        config.get("jwtSecret"),
+        getJwtSecret(),
         { expiresIn: "7d" }
       );
 
@@ -148,14 +156,14 @@ router.post(
       // Generate access token (short-lived)
       const accessToken = jwt.sign(
         payload,
-        config.get("jwtSecret"),
+        getJwtSecret(),
         { expiresIn: "15m" }
       );
 
       // Generate refresh token (long-lived)
       const refreshToken = jwt.sign(
         payload,
-        config.get("jwtSecret"),
+        getJwtSecret(),
         { expiresIn: "7d" }
       );
 
@@ -202,7 +210,7 @@ router.post("/refresh-token", async (req, res) => {
     }
 
     // Verify refresh token
-    const decoded = jwt.verify(refreshToken, config.get("jwtSecret"));
+    const decoded = jwt.verify(refreshToken, getJwtSecret());
 
     // Find user and verify refresh token matches
     const user = await User.findById(decoded.user.id);
@@ -219,7 +227,7 @@ router.post("/refresh-token", async (req, res) => {
 
     const newAccessToken = jwt.sign(
       payload,
-      config.get("jwtSecret"),
+      getJwtSecret(),
       { expiresIn: "15m" }
     );
 
@@ -239,7 +247,7 @@ router.get("/verify-email/:token", async (req, res) => {
     const { token } = req.params;
 
     // Verify token
-    const decoded = jwt.verify(token, config.get("jwtSecret"));
+    const decoded = jwt.verify(token, getJwtSecret());
 
     // Find user and update verified status
     const user = await User.findById(decoded.userId);
@@ -287,7 +295,7 @@ router.post(
       // Generate reset token
       const resetToken = jwt.sign(
         { userId: user.id },
-        config.get("jwtSecret"),
+        getJwtSecret(),
         { expiresIn: "1h" }
       );
 
@@ -325,7 +333,7 @@ router.post(
       const { password } = req.body;
 
       // Verify token
-      const decoded = jwt.verify(token, config.get("jwtSecret"));
+      const decoded = jwt.verify(token, getJwtSecret());
 
       // Find user and check token validity
       const user = await User.findById(decoded.userId);
@@ -372,7 +380,7 @@ router.post("/resend-verification", auth, async (req, res) => {
     // Generate new verification token
     const verificationToken = jwt.sign(
       { userId: user.id },
-      config.get("jwtSecret"),
+      getJwtSecret(),
       { expiresIn: "24h" }
     );
 
