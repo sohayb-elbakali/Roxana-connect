@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
-    // Use MONGO_URI from environment variable (required for deployment)
     const mongoURI = process.env.MONGO_URI;
     
     if (!mongoURI) {
