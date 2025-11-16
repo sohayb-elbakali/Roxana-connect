@@ -78,7 +78,7 @@ jspm_packages/
 
 # Gatsby files
 .cache/
-public
+# public - COMMENTED OUT (client/public is needed for React app)
 
 # Storybook build outputs
 .out
