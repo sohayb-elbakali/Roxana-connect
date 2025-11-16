@@ -1,6 +1,6 @@
 {
   "name": "roxana-client",
-  "homepage": "http://localhost:3000/roxana",
+  "homepage": "http://localhost:3000",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

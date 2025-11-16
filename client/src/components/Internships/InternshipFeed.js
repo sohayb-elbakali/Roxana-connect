@@ -156,7 +156,7 @@ const InternshipFeed = ({
               </button>
             ) : (
               <a
-                href="/roxana/internship/create"
+                href="/internship/create"
                 className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm"
               >
                 <i className="fas fa-plus mr-2"></i>
@@ -186,7 +186,7 @@ const InternshipFeed = ({
               </p>
             </div>
             <a
-              href="/roxana/internship/create"
+              href="/internship/create"
               className="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200"
             >
               <i className="fas fa-plus mr-2"></i>

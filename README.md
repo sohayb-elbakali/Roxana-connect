@@ -40,7 +40,7 @@ cp server/config/config.template.json server/config/default.json
 # 4. Start development
 npm run dev
 
-# Access at http://localhost:3000/roxana
+# Access at http://localhost:3000
 ```
 
 ## 🔧 Configuration

@@ -13,7 +13,7 @@ const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
  * Send verification email
  */
 const sendVerificationEmail = async (email, name, verificationToken) => {
-  const verificationUrl = `${process.env.CLIENT_URL || 'http://localhost:3000'}/roxana/verify-email/${verificationToken}`;
+  const verificationUrl = `${process.env.CLIENT_URL || 'http://localhost:3000'}/verify-email/${verificationToken}`;
   
   const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
   sendSmtpEmail.sender = { 
@@ -55,7 +55,7 @@ const sendVerificationEmail = async (email, name, verificationToken) => {
  * Send password reset email
  */
 const sendPasswordResetEmail = async (email, name, resetToken) => {
-  const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:3000'}/roxana/reset-password/${resetToken}`;
+  const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:3000'}/reset-password/${resetToken}`;
   
   const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
   sendSmtpEmail.sender = { 

@@ -40,8 +40,8 @@ api.interceptors.response.use(
       delete api.defaults.headers.common["x-auth-token"];
       
       // Redirect to login if on a protected route
-      if (window.location.pathname !== "/roxana/login" && window.location.pathname !== "/roxana/register") {
-        window.location.href = "/roxana/login";
+      if (window.location.pathname !== "/login" && window.location.pathname !== "/register") {
+        window.location.href = "/login";
       }
     }
 

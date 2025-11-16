@@ -196,7 +196,7 @@ const TrackerDashboard = ({
               Start tracking internships from the feed to see them here
             </p>
             <a
-              href="/roxana/feed"
+              href="/feed"
               className="inline-flex items-center px-6 py-3 text-sm font-semibold text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition-all duration-200"
             >
               <i className="fas fa-search mr-2"></i>

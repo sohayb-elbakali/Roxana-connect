@@ -10,22 +10,17 @@ const TrackerCard = ({ tracking }) => {
 
   const { _id, internship, status, privateNotes } = tracking;
 
-  // Handle case where internship might be populated or just an ID
+  // Handle case where internship might be populated, just an ID, or null
   const internshipData =
-    typeof internship === "object" ? internship : { _id: internship };
+    typeof internship === "object" && internship !== null 
+      ? internship 
+      : { _id: internship };
 
   const {
     company = "Unknown Company",
     positionTitle = "Unknown Position",
     applicationDeadline,
-  } = internshipData;
-
-  // Truncate notes for preview
-  const getNotesPreview = () => {
-    if (!privateNotes) return "No notes added";
-    if (privateNotes.length <= 80) return privateNotes;
-    return privateNotes.substring(0, 80) + "...";
-  };
+  } = internshipData || {};
 
   return (
     <>
