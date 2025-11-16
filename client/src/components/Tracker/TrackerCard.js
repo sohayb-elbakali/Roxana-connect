@@ -14,11 +14,13 @@ const TrackerCard = ({ tracking }) => {
   const internshipData =
     typeof internship === "object" && internship !== null 
       ? internship 
-      : { _id: internship };
+      : internship 
+        ? { _id: internship }
+        : { _id: null };
 
   const {
-    company = "Unknown Company",
-    positionTitle = "Unknown Position",
+    company = "Deleted Internship",
+    positionTitle = "This internship has been removed",
     applicationDeadline,
   } = internshipData || {};
 
@@ -60,13 +62,23 @@ const TrackerCard = ({ tracking }) => {
 
         {/* Action Buttons */}
         <div className="grid grid-cols-2 gap-2">
-          <Link
-            to={`/internship/${internshipData._id}`}
-            className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-bold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md hover:scale-105"
-          >
-            <i className="fas fa-arrow-right"></i>
-            <span>View</span>
-          </Link>
+          {internshipData._id ? (
+            <Link
+              to={`/internship/${internshipData._id}`}
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-bold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md hover:scale-105"
+            >
+              <i className="fas fa-arrow-right"></i>
+              <span>View</span>
+            </Link>
+          ) : (
+            <button
+              disabled
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-bold text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed"
+            >
+              <i className="fas fa-trash"></i>
+              <span>Deleted</span>
+            </button>
+          )}
           <button
             onClick={() => setShowNotesEditor(true)}
             className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-bold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all duration-200 relative"

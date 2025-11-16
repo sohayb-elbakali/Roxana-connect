@@ -29,6 +29,11 @@ const TrackerDashboard = ({
     };
 
     items.forEach((tracking) => {
+      // Skip tracking records with null or undefined internship (deleted internships)
+      if (!tracking.internship) {
+        return;
+      }
+      
       const status = tracking.status;
       // Group accepted and offer_received together as "Offers"
       if (status === "accepted" || status === "offer_received") {
@@ -41,8 +46,13 @@ const TrackerDashboard = ({
     // Sort each group by deadline (urgent opportunities first)
     Object.keys(groups).forEach((status) => {
       groups[status].sort((a, b) => {
-        const internshipA = typeof a.internship === "object" ? a.internship : {};
-        const internshipB = typeof b.internship === "object" ? b.internship : {};
+        const internshipA = (typeof a.internship === "object" && a.internship !== null) ? a.internship : null;
+        const internshipB = (typeof b.internship === "object" && b.internship !== null) ? b.internship : null;
+        
+        // Handle missing internship data (put at the end)
+        if (!internshipA && !internshipB) return 0;
+        if (!internshipA) return 1;
+        if (!internshipB) return -1;
         
         const daysA = getDaysUntilDeadline(internshipA.applicationDeadline);
         const daysB = getDaysUntilDeadline(internshipB.applicationDeadline);

@@ -86,14 +86,15 @@ const InternshipCard = ({
   // Status badge configuration
   const getStatusConfig = (status) => {
     const configs = {
-      saved: { label: "Saved", color: "bg-gray-100 text-gray-700", icon: "fa-bookmark" },
+      not_applied: { label: "Saved", color: "bg-gray-100 text-gray-700", icon: "fa-bookmark" },
       applied: { label: "Applied", color: "bg-blue-100 text-blue-700", icon: "fa-paper-plane" },
       interviewing: { label: "Interviewing", color: "bg-yellow-100 text-yellow-700", icon: "fa-comments" },
       offer_received: { label: "Offer", color: "bg-green-100 text-green-700", icon: "fa-check-circle" },
       accepted: { label: "Accepted", color: "bg-emerald-100 text-emerald-700", icon: "fa-handshake" },
       rejected: { label: "Rejected", color: "bg-red-100 text-red-700", icon: "fa-times-circle" },
+      declined: { label: "Declined", color: "bg-gray-100 text-gray-700", icon: "fa-ban" },
     };
-    return configs[status] || configs.saved;
+    return configs[status] || configs.not_applied;
   };
 
   return (
@@ -103,7 +104,7 @@ const InternshipCard = ({
         <div className="flex items-start justify-between gap-4 mb-5">
           <div className="flex-1 min-w-0">
             <h3 className="text-xl font-bold text-gray-900 mb-1 truncate">
-              {positionTitle}
+              {positionTitle || "Position Not Specified"}
             </h3>
             <p className="text-base text-gray-600 font-medium">
               {company}
@@ -122,10 +123,12 @@ const InternshipCard = ({
 
         {/* Metadata Row */}
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-5 text-sm text-gray-600">
-          <div className="flex items-center">
-            <i className="fas fa-map-marker-alt mr-1.5 text-blue-600 text-xs"></i>
-            <span>{location}</span>
-          </div>
+          {location && (
+            <div className="flex items-center">
+              <i className="fas fa-map-marker-alt mr-1.5 text-blue-600 text-xs"></i>
+              <span>{location}</span>
+            </div>
+          )}
           {locationType && (
             <div className="flex items-center">
               <i className="fas fa-laptop-house mr-1.5 text-blue-600 text-xs"></i>

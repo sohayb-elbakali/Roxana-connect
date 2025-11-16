@@ -122,7 +122,7 @@ const InternshipDetail = ({
             </Link>
             <span className="text-gray-400">/</span>
             <span className="text-gray-900 font-medium">
-              {internship.company} - {internship.positionTitle}
+              {internship.company} - {internship.positionTitle || "Position Not Specified"}
             </span>
           </nav>
 
@@ -147,7 +147,7 @@ const InternshipDetail = ({
                     {internship.company}
                   </h1>
                   <h2 className="text-xl font-semibold text-gray-700 mb-4">
-                    {internship.positionTitle}
+                    {internship.positionTitle || "Position Not Specified"}
                   </h2>
                 </div>
                 <DeadlineBadge deadline={internship.applicationDeadline} size="lg" />
@@ -155,10 +155,12 @@ const InternshipDetail = ({
 
               {/* Location and Details */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div className="flex items-center text-gray-700">
-                  <i className="fas fa-map-marker-alt mr-3 text-blue-600 w-5"></i>
-                  <span>{internship.location}</span>
-                </div>
+                {internship.location && (
+                  <div className="flex items-center text-gray-700">
+                    <i className="fas fa-map-marker-alt mr-3 text-blue-600 w-5"></i>
+                    <span>{internship.location}</span>
+                  </div>
+                )}
                 {internship.locationType && (
                   <div className="flex items-center text-gray-700">
                     <i className="fas fa-laptop-house mr-3 text-blue-600 w-5"></i>

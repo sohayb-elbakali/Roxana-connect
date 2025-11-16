@@ -35,15 +35,6 @@ export const fetchTrackedInternships = () => async (dispatch) => {
 // Track a new internship
 export const trackInternship = (internshipId, status = "not_applied") => async (dispatch) => {
   try {
-    // Optimistically update insights immediately - only saved count
-    dispatch({
-      type: "internships/UPDATE_INSIGHTS",
-      payload: { 
-        internshipId, 
-        saved: 1
-      },
-    });
-
     const res = await api.post("/tracking", { 
       internship: internshipId,
       status 
@@ -59,6 +50,17 @@ export const trackInternship = (internshipId, status = "not_applied") => async (
       type: "internships/UPDATE_TRACKING_COUNT",
       payload: { internshipId, increment: 1 },
     });
+
+    // Refetch insights from server to get accurate counts
+    try {
+      const insightsRes = await api.get(`/tracking/insights/${internshipId}`);
+      dispatch({
+        type: "internships/SET_INSIGHTS",
+        payload: { internshipId, insights: insightsRes.data },
+      });
+    } catch (err) {
+      console.error('Error fetching insights:', err);
+    }
 
     dispatch(showAlertMessage("Internship added to tracker", "success"));
   } catch (err) {
@@ -85,14 +87,29 @@ export const updateTrackingStatus = (trackingId, status, applicationDate = null)
       data.applicationDate = applicationDate;
     }
 
-    // Status updates don't affect insights (only track/untrack does)
-
     const res = await api.put(`/tracking/${trackingId}`, data);
 
     dispatch({
       type: UPDATE_TRACKING_STATUS,
       payload: res.data,
     });
+
+    // Refetch insights for this internship to update the counts
+    const internshipId = res.data.internship?._id || res.data.internship;
+    if (internshipId) {
+      try {
+        const insightsRes = await api.get(`/tracking/insights/${internshipId}`);
+        dispatch({
+          type: "internships/SET_INSIGHTS",
+          payload: { internshipId, insights: insightsRes.data },
+        });
+      } catch (err) {
+        console.error('Error fetching insights:', err);
+      }
+    }
+
+    // Fetch updated stats to keep progress indicator in sync
+    dispatch(fetchTrackingStats());
 
     dispatch(showAlertMessage("Status updated", "success"));
   } catch (err) {
@@ -121,17 +138,6 @@ export const untrackInternship = (trackingId) => async (dispatch, getState) => {
     const tracking = getState().tracking.items.find(item => item._id === trackingId);
     const internshipId = tracking?.internship?._id || tracking?.internship;
 
-    // Optimistically update insights immediately - only saved count
-    if (internshipId) {
-      dispatch({
-        type: "internships/UPDATE_INSIGHTS",
-        payload: { 
-          internshipId, 
-          saved: -1
-        },
-      });
-    }
-
     await api.delete(`/tracking/${trackingId}`);
 
     dispatch({
@@ -145,6 +151,17 @@ export const untrackInternship = (trackingId) => async (dispatch, getState) => {
         type: "internships/UPDATE_TRACKING_COUNT",
         payload: { internshipId, increment: -1 },
       });
+
+      // Refetch insights from server to get accurate counts
+      try {
+        const insightsRes = await api.get(`/tracking/insights/${internshipId}`);
+        dispatch({
+          type: "internships/SET_INSIGHTS",
+          payload: { internshipId, insights: insightsRes.data },
+        });
+      } catch (err) {
+        console.error('Error fetching insights:', err);
+      }
     }
 
     dispatch(showAlertMessage("Internship removed from tracker", "success"));

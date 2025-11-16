@@ -35,6 +35,17 @@ const InternshipForm = ({
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+  // Set default deadline to January 1st of next year for new internships
+  useEffect(() => {
+    if (!isEditMode && !formData.applicationDeadline) {
+      const today = new Date();
+      const nextYear = today.getFullYear() + 1;
+      const defaultDeadline = `${nextYear}-01-01`;
+      setFormData(prev => ({ ...prev, applicationDeadline: defaultDeadline }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEditMode]);
+
   // Load internship data for editing
   useEffect(() => {
     if (isEditMode) {
@@ -65,6 +76,7 @@ const InternshipForm = ({
         });
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditMode, id, internships.current, fetchInternship, auth.user, navigate]);
 
   const {
@@ -98,9 +110,7 @@ const InternshipForm = ({
       newErrors.positionTitle = "Position title is required";
     }
 
-    if (!location.trim()) {
-      newErrors.location = "Location is required";
-    }
+    // location is now optional
 
     if (!applicationDeadline) {
       newErrors.applicationDeadline = "Application deadline is required";
@@ -123,7 +133,7 @@ const InternshipForm = ({
 
     // URL validation
     if (applicationLink && applicationLink.trim()) {
-      const urlPattern = /^(https?:\/\/)([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+      const urlPattern = /^(https?:\/\/)([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
       if (!urlPattern.test(applicationLink)) {
         newErrors.applicationLink = "Please enter a valid URL";
       }
@@ -145,8 +155,8 @@ const InternshipForm = ({
     // Prepare data for submission
     const submitData = {
       company: company.trim(),
-      positionTitle: positionTitle.trim(),
-      location: location.trim(),
+      positionTitle: positionTitle.trim() || undefined,
+      location: location.trim() || undefined,
       locationType,
       applicationDeadline,
       description: description.trim(),
@@ -156,6 +166,13 @@ const InternshipForm = ({
         .map((tag) => tag.trim())
         .filter((tag) => tag !== ""),
     };
+
+    // Remove undefined values
+    Object.keys(submitData).forEach(key => {
+      if (submitData[key] === undefined) {
+        delete submitData[key];
+      }
+    });
 
     try {
       if (id) {
@@ -270,7 +287,7 @@ const InternshipForm = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Location <span className="text-red-500">*</span>
+                  Location
                 </label>
                 <input
                   type="text"

@@ -25,7 +25,6 @@ router.post(
   [
     check("company", "Company name is required").notEmpty(),
     check("positionTitle", "Position title is required").notEmpty(),
-    check("location", "Location is required").notEmpty(),
     check("applicationDeadline", "Application deadline is required").notEmpty(),
     check("description", "Description is required").notEmpty(),
   ],
@@ -184,7 +183,7 @@ router.put(
   [
     check("company", "Company name is required").optional().notEmpty(),
     check("positionTitle", "Position title is required").optional().notEmpty(),
-    check("location", "Location is required").optional().notEmpty(),
+    check("location", "Location cannot be empty if provided").optional().notEmpty(),
     check("applicationDeadline", "Application deadline is required").optional().notEmpty(),
     check("description", "Description is required").optional().notEmpty(),
   ],

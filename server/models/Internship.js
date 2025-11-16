@@ -18,7 +18,7 @@ const InternshipSchema = new mongoose.Schema({
   },
   location: {
     type: String,
-    required: true,
+    required: false,
   },
   locationType: {
     type: String,

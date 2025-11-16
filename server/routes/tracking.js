@@ -354,7 +354,7 @@ router.get("/insights/:internshipId", async (req, res) => {
     // Calculate anonymous statistics
     const insights = {
       totalTracking: trackings.length,
-      saved: 0, // Only saved (not_applied status)
+      saved: trackings.length, // Total number tracking (regardless of status)
       applied: 0, // Actually applied
       interviewing: 0,
       offers: 0,
@@ -366,7 +366,6 @@ router.get("/insights/:internshipId", async (req, res) => {
 
     // Count statuses and recent activity (all anonymous)
     trackings.forEach((tracking) => {
-      if (tracking.status === "not_applied") insights.saved++;
       if (tracking.status === "applied") insights.applied++;
       if (tracking.status === "interviewing") insights.interviewing++;
       if (tracking.status === "offer_received" || tracking.status === "accepted") insights.offers++;

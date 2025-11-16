@@ -212,11 +212,27 @@ const Navbar = ({ users: { isAuthenticated, user }, trackingCount, logout }) => 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link
-              className="text-xl font-bold text-white hover:text-blue-50 transition-colors duration-200 flex items-center"
+              className="group flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-white/10 transition-all duration-300"
               to={isAuthenticated ? "/home" : "/"}
             >
-              <img src={`${process.env.PUBLIC_URL}/internlogo.png`} alt="Roxana Logo" className="h-8 w-8 mr-2 rounded-full" />
-              Roxana
+              {/* Logo Icon with Gradient Background */}
+              <div className="relative">
+                <div className="w-10 h-10 bg-gradient-to-br from-white to-blue-100 rounded-xl flex items-center justify-center shadow-lg transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                  <i className="fas fa-briefcase text-blue-600 text-lg"></i>
+                </div>
+                {/* Decorative Badge */}
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full border-2 border-blue-600 animate-pulse"></div>
+              </div>
+              
+              {/* Logo Text */}
+              <div className="flex flex-col">
+                <span className="text-2xl font-extrabold text-white tracking-tight group-hover:tracking-wide transition-all duration-300">
+                  Roxana
+                </span>
+                <span className="text-[10px] font-medium text-blue-100 -mt-1 tracking-widest uppercase opacity-90">
+                  Connect
+                </span>
+              </div>
             </Link>
             <Fragment>{isAuthenticated ? authLinks : links}</Fragment>
           </div>
