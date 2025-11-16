@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { formatDate } from "../../utils";
 
-const Experience = ({ profile, deleteExperience }) => {
+const Experience = ({ profile, deleteExperience, isOwnProfile }) => {
   const [hoveredId, setHoveredId] = useState(null);
 
   if (!profile.experience || profile.experience.length === 0) {
@@ -13,15 +13,36 @@ const Experience = ({ profile, deleteExperience }) => {
         <h4 className="text-lg font-semibold text-gray-700 mb-2">
           No Experience Added
         </h4>
-        <p className="text-gray-500 text-sm">
+        <p className="text-gray-500 text-sm mb-4">
           Add your work experience to showcase your professional journey
         </p>
+        {isOwnProfile && (
+          <a
+            href="/add-experience"
+            className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md"
+          >
+            <i className="fas fa-plus mr-2"></i>
+            Add Experience
+          </a>
+        )}
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
+      {isOwnProfile && (
+        <div className="flex justify-end mb-3">
+          <a
+            href="/add-experience"
+            className="inline-flex items-center justify-center px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md"
+            title="Add More Experience"
+          >
+            <i className="fas fa-plus mr-1.5"></i>
+            Add More
+          </a>
+        </div>
+      )}
       {profile.experience.map((experience, index) => (
         <div
           key={experience._id}

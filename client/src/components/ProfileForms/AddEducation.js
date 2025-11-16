@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { addEducation } from "../../redux/modules/profiles";
 
 const AddEducation = ({ addEducation }) => {
@@ -100,19 +100,22 @@ const AddEducation = ({ addEducation }) => {
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:bg-gray-100"
             />
           </div>
-          <div className="flex flex-col sm:flex-row gap-4 mt-6">
+          <div className="flex flex-col sm:flex-row gap-3 mt-6">
             <button
               type="submit"
-              className="w-full sm:w-auto py-3 px-8 rounded-lg bg-blue-600 text-white font-semibold shadow-sm hover:bg-blue-700 transition-all text-lg"
+              className="flex-1 sm:flex-none inline-flex items-center justify-center px-6 py-2.5 bg-blue-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200 hover:shadow-md"
             >
+              <i className="fas fa-check mr-2"></i>
               Add Education
             </button>
-            <Link
-              className="w-full sm:w-auto py-3 px-8 rounded-lg bg-gray-100 text-purple-700 font-semibold shadow hover:bg-purple-50 transition-all text-lg text-center"
-              to="/home"
+            <button
+              type="button"
+              onClick={() => window.history.back()}
+              className="flex-1 sm:flex-none inline-flex items-center justify-center px-6 py-2.5 bg-gray-100 text-gray-700 font-semibold text-sm rounded-lg hover:bg-gray-200 transition-all duration-200 text-center"
             >
-              Go Back
-            </Link>
+              <i className="fas fa-arrow-left mr-2"></i>
+              Cancel
+            </button>
           </div>
         </form>
       </div>

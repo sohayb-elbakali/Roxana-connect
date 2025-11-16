@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { logout } from "../redux/modules/users";
 import ProfileImage from "./ProfileImage";
 
-const Navbar = ({ users: { isAuthenticated, user }, logout }) => {
+const Navbar = ({ users: { isAuthenticated, user }, trackingCount, logout }) => {
   const location = useLocation();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -28,13 +28,18 @@ const Navbar = ({ users: { isAuthenticated, user }, logout }) => {
           <Link
             key={link.to}
             to={link.to}
-            className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
+            className={`relative px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
               isActive(link.to)
                 ? "bg-white text-blue-600"
                 : "text-white hover:bg-white/10"
             }`}
           >
             {link.label}
+            {link.badge > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                {link.badge > 99 ? '99+' : link.badge}
+              </span>
+            )}
           </Link>
         ))}
       </div>
@@ -131,7 +136,7 @@ const Navbar = ({ users: { isAuthenticated, user }, logout }) => {
                   key={link.to}
                   to={link.to}
                   onClick={() => setShowMobileMenu(false)}
-                  className={`flex items-center px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 ${
+                  className={`relative flex items-center px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 ${
                     isActive(link.to)
                       ? "bg-blue-50 text-blue-600"
                       : "text-gray-700 hover:bg-gray-50"
@@ -139,6 +144,11 @@ const Navbar = ({ users: { isAuthenticated, user }, logout }) => {
                 >
                   <i className={`fas ${link.icon} w-5 text-gray-400`}></i>
                   <span className="ml-3">{link.label}</span>
+                  {link.badge > 0 && (
+                    <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                      {link.badge > 99 ? '99+' : link.badge}
+                    </span>
+                  )}
                 </Link>
               ))}
               <hr className="my-2 border-gray-200" />
@@ -205,7 +215,7 @@ const Navbar = ({ users: { isAuthenticated, user }, logout }) => {
               className="text-xl font-bold text-white hover:text-blue-50 transition-colors duration-200 flex items-center"
               to={isAuthenticated ? "/home" : "/"}
             >
-              <img src={`${process.env.PUBLIC_URL}/internlogo.png`} alt="Roxana Logo" className="h-8 w-8 mr-2" />
+              <img src={`${process.env.PUBLIC_URL}/internlogo.png`} alt="Roxana Logo" className="h-8 w-8 mr-2 rounded-full" />
               Roxana
             </Link>
             <Fragment>{isAuthenticated ? authLinks : links}</Fragment>
@@ -218,6 +228,7 @@ const Navbar = ({ users: { isAuthenticated, user }, logout }) => {
 
 const mapStateToProps = (state) => ({
   users: state.users,
+  trackingCount: state.tracking?.items?.length || 0,
 });
 
 export default connect(mapStateToProps, { logout })(Navbar);

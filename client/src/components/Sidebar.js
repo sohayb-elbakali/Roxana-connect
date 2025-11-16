@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { connect } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { getCurrentProfile } from "../redux/modules/profiles";
 import ProfileImage from "./ProfileImage";
 
-function Sidebar({ users: { user, isAuthenticated }, getCurrentProfile }) {
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
+function Sidebar({ users: { user, isAuthenticated }, trackingCount, getCurrentProfile }) {
   const location = useLocation();
 
   useEffect(() => {
@@ -73,13 +72,18 @@ function Sidebar({ users: { user, isAuthenticated }, getCurrentProfile }) {
             <Link
               to="/tracker"
               title="Tracker"
-              className={`flex items-center justify-center w-full h-12 rounded-lg transition-all duration-200 ${
+              className={`relative flex items-center justify-center w-full h-12 rounded-lg transition-all duration-200 ${
                 isActive("/tracker")
                   ? "bg-blue-50 text-blue-600"
                   : "text-gray-600 hover:bg-gray-100 hover:text-blue-600"
               }`}
             >
               <i className="fas fa-tasks text-lg"></i>
+              {trackingCount > 0 && (
+                <span className="absolute top-1 right-1 bg-red-500 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">
+                  {trackingCount > 9 ? '9+' : trackingCount}
+                </span>
+              )}
             </Link>
 
             <Link
@@ -139,6 +143,7 @@ function Sidebar({ users: { user, isAuthenticated }, getCurrentProfile }) {
 
 const mapStateToProps = (state) => ({
   users: state.users,
+  trackingCount: state.tracking?.items?.length || 0,
 });
 
 export default connect(mapStateToProps, { getCurrentProfile })(Sidebar);

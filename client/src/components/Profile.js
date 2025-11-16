@@ -152,7 +152,7 @@ const Profile = ({ getProfileById, profiles: { profile, loading, error }, auth }
                   </div>
                   <h3 className="text-xl font-bold text-gray-900">Education</h3>
                 </div>
-                <Education profile={profile} />
+                <Education profile={profile} isOwnProfile={isOwnProfile} />
               </div>
 
               {/* Experience */}
@@ -165,7 +165,7 @@ const Profile = ({ getProfileById, profiles: { profile, loading, error }, auth }
                     Experience
                   </h3>
                 </div>
-                <Experience profile={profile} />
+                <Experience profile={profile} isOwnProfile={isOwnProfile} />
               </div>
             </div>
 
@@ -195,7 +195,7 @@ const Profile = ({ getProfileById, profiles: { profile, loading, error }, auth }
                     Target Companies & Roles
                   </h3>
                 </div>
-                <InternshipPreferences />
+                <InternshipPreferences profile={profile} />
               </div>
             )}
           </div>
@@ -219,7 +219,7 @@ const Profile = ({ getProfileById, profiles: { profile, loading, error }, auth }
 
 const mapStateToProps = (state) => ({
   profiles: state.profiles || { profile: null, loading: true, error: {} },
-  auth: state.auth || { user: null, isAuthenticated: false },
+  auth: state.users || { user: null, isAuthenticated: false },
 });
 
 export default connect(mapStateToProps, { getProfileById })(Profile);

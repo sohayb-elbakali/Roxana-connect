@@ -137,28 +137,27 @@ export const getProfiles = () => async (dispatch) => {
   dispatch({ type: CLEAR_PROFILE });
 
   try {
-    console.log("profiles: ");
     const res = await api.get("/profiles");
-    console.log("profiles: " + res.data);
     dispatch({
       type: GET_PROFILES,
       payload: res.data,
     });
   } catch (err) {
-    // Only show error for server errors, not client errors
-    if (err.response && err.response.status >= 500) {
-      dispatch({
-        type: PROFILE_ERROR,
-        payload: {
-          msg: err.response?.statusText || "Network error",
-          status: err.response?.status || 500,
-        },
-      });
-    }
+    // Silently handle errors for getProfiles - don't show alert to user
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: {
+        msg: err.response?.statusText || "Network error",
+        status: err.response?.status || 500,
+      },
+    });
   }
 };
 
 export const getProfileById = (userId) => async (dispatch) => {
+  // Clear any previous profile/error before fetching
+  dispatch({ type: CLEAR_PROFILE });
+  
   try {
     const res = await api.get(`/profiles/user/${userId}`);
     dispatch({
@@ -178,14 +177,11 @@ export const getProfileById = (userId) => async (dispatch) => {
       },
     });
     
-    // Show user-friendly message for 400 errors (profile not found)
-    if (err.response && err.response.status === 400) {
-      dispatch(showAlertMessage("Profile not found for this user", "error"));
-    }
+    // Don't show alert notification - the UI will handle displaying the error
   }
 };
 
-export const addExperience = (formData, navigate) => async (dispatch) => {
+export const addExperience = (formData, navigate) => async (dispatch, getState) => {
   try {
     const res = await api.put("/profiles/experience", formData);
 
@@ -196,7 +192,8 @@ export const addExperience = (formData, navigate) => async (dispatch) => {
 
     dispatch(showAlertMessage("Experience added", "success"));
 
-    navigate("/home");
+    const userId = getState().users.user._id;
+    navigate(`/profile/${userId}`);
   } catch (err) {
     // Check if err.response exists before accessing its properties
     if (err.response && err.response.data && err.response.data.errors) {
@@ -225,7 +222,7 @@ export const addExperience = (formData, navigate) => async (dispatch) => {
   }
 };
 
-export const addEducation = (formData, navigate) => async (dispatch) => {
+export const addEducation = (formData, navigate) => async (dispatch, getState) => {
   try {
     const res = await api.put("/profiles/education", formData);
 
@@ -236,7 +233,8 @@ export const addEducation = (formData, navigate) => async (dispatch) => {
 
     dispatch(showAlertMessage("Education added", "success"));
 
-    navigate("/home");
+    const userId = getState().users.user._id;
+    navigate(`/profile/${userId}`);
   } catch (err) {
     // Check if err.response exists before accessing its properties
     if (err.response && err.response.data && err.response.data.errors) {
@@ -445,7 +443,8 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         profile: null,
-        loading: false,
+        loading: true,
+        error: {},
       };
     case UPLOAD_PROFILE_IMAGE:
       return {

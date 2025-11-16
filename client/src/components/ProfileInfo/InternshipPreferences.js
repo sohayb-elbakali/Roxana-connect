@@ -2,19 +2,20 @@ import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { updateInternshipPreferences } from "../../redux/modules/profiles";
 
-const InternshipPreferences = ({ profile, updateInternshipPreferences }) => {
+const InternshipPreferences = ({ profile, currentProfile, updateInternshipPreferences }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [targetCompanies, setTargetCompanies] = useState([]);
-  const [targetRoles, setTargetRoles] = useState([]);
+  const activeProfile = profile || currentProfile;
+  const [targetCompanies, setTargetCompanies] = useState(activeProfile?.targetCompanies || []);
+  const [targetRoles, setTargetRoles] = useState(activeProfile?.targetRoles || []);
   const [companyInput, setCompanyInput] = useState("");
   const [roleInput, setRoleInput] = useState("");
 
   useEffect(() => {
-    if (profile) {
-      setTargetCompanies(profile.targetCompanies || []);
-      setTargetRoles(profile.targetRoles || []);
+    if (activeProfile) {
+      setTargetCompanies(activeProfile.targetCompanies || []);
+      setTargetRoles(activeProfile.targetRoles || []);
     }
-  }, [profile]);
+  }, [activeProfile, activeProfile?.targetCompanies, activeProfile?.targetRoles]);
 
   const handleAddCompany = (e) => {
     e.preventDefault();
@@ -40,14 +41,14 @@ const InternshipPreferences = ({ profile, updateInternshipPreferences }) => {
     setTargetRoles(targetRoles.filter((r) => r !== role));
   };
 
-  const handleSave = () => {
-    updateInternshipPreferences(targetCompanies, targetRoles);
+  const handleSave = async () => {
+    await updateInternshipPreferences(targetCompanies, targetRoles);
     setIsEditing(false);
   };
 
   const handleCancel = () => {
-    setTargetCompanies(profile?.targetCompanies || []);
-    setTargetRoles(profile?.targetRoles || []);
+    setTargetCompanies(activeProfile?.targetCompanies || []);
+    setTargetRoles(activeProfile?.targetRoles || []);
     setIsEditing(false);
   };
 
@@ -210,7 +211,7 @@ const InternshipPreferences = ({ profile, updateInternshipPreferences }) => {
 };
 
 const mapStateToProps = (state) => ({
-  profile: state.profiles.profile,
+  currentProfile: state.profiles.profile,
 });
 
 export default connect(mapStateToProps, { updateInternshipPreferences })(

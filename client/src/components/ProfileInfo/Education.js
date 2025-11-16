@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { formatDate } from "../../utils";
 
-const Education = ({ profile, deleteEducation }) => {
+const Education = ({ profile, deleteEducation, isOwnProfile }) => {
   const [hoveredId, setHoveredId] = useState(null);
 
   if (!profile.education || profile.education.length === 0) {
@@ -13,15 +13,36 @@ const Education = ({ profile, deleteEducation }) => {
         <h4 className="text-lg font-semibold text-gray-700 mb-2">
           No Education Added
         </h4>
-        <p className="text-gray-500 text-sm">
+        <p className="text-gray-500 text-sm mb-4">
           Add your educational background to showcase your qualifications
         </p>
+        {isOwnProfile && (
+          <a
+            href="/add-education"
+            className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md"
+          >
+            <i className="fas fa-plus mr-2"></i>
+            Add Education
+          </a>
+        )}
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
+      {isOwnProfile && (
+        <div className="flex justify-end mb-3">
+          <a
+            href="/add-education"
+            className="inline-flex items-center justify-center px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md"
+            title="Add More Education"
+          >
+            <i className="fas fa-plus mr-1.5"></i>
+            Add More
+          </a>
+        </div>
+      )}
       {profile.education.map((education, index) => (
         <div
           key={education._id}

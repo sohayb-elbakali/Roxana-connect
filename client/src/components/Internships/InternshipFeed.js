@@ -171,23 +171,23 @@ const InternshipFeed = ({
 
   // Main feed with internships
   return (
-    <div className="pt-20 min-h-screen bg-gray-50">
-      {/* Header Section */}
-      <div className="bg-white border-b border-gray-200 mb-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">
+      {/* Header Section - Attractive Card Design */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-6">
+        <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl shadow-lg p-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-1">
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold text-white mb-2">
                 Internship Opportunities
               </h1>
-              <p className="text-gray-600 text-sm">
+              <p className="text-blue-100 text-sm">
                 Discover {internships.length}{" "}
                 {internships.length === 1 ? "opportunity" : "opportunities"} • Find your perfect internship
               </p>
             </div>
             <a
               href="/internship/create"
-              className="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200"
+              className="inline-flex items-center px-6 py-3 bg-white text-blue-600 font-semibold text-sm rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all duration-200"
             >
               <i className="fas fa-plus mr-2"></i>
               Post Internship
@@ -197,7 +197,7 @@ const InternshipFeed = ({
       </div>
 
       {/* Main Content Container - Centered */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 pt-6">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Filters Sidebar - Compact */}
           <aside className="lg:w-72 flex-shrink-0">

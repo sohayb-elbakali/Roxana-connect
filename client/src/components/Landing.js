@@ -1,8 +1,14 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import { connect } from "react-redux";
 import LandingTitle from "./LandingTitle";
 
-const Landing = () => {
+const Landing = ({ isAuthenticated }) => {
+  // Redirect authenticated users to home
+  if (isAuthenticated) {
+    return <Navigate to="/home" />;
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       <div className="w-full max-w-4xl mx-auto text-center px-6 py-12">
@@ -55,4 +61,8 @@ const Landing = () => {
   );
 };
 
-export default Landing;
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.users.isAuthenticated,
+});
+
+export default connect(mapStateToProps)(Landing);
