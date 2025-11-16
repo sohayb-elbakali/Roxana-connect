@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { connect } from "react-redux";
 import defaultAvatar from "../../assets/default.png";
 import { deleteInternshipComment, reactToComment, likeComment, unlikeComment } from "../../redux/modules/internships";
-import { formatRelativeTime, getProfileImage, api } from "../../utils";
+import { formatRelativeTime, getProfileImage } from "../../utils";
 
 const CommentSection = ({ 
   comments = [], 
@@ -21,10 +21,6 @@ const CommentSection = ({
 
   const handleDeleteComment = (commentId) => {
     deleteInternshipComment(internshipId, commentId);
-  };
-
-  const handleReaction = (commentId, reactionType) => {
-    reactToComment(internshipId, commentId, reactionType);
   };
 
   const handleLike = (commentId) => {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { connect } from "react-redux";
 import { setFilters, fetchInternships } from "../../redux/modules/internships";
 
