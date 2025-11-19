@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getProfileImage } from "../utils";
-import DefaultAvatar from "./DefaultAvatar";
+
+const serverUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 const ProfileImage = ({
   userId,
@@ -15,8 +15,8 @@ const ProfileImage = ({
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  // Get the image URL - prioritize avatar prop, then profile.avatar, then fall back to userId
-  const imageUrl = avatar || profile?.avatar || (userId ? getProfileImage(userId) : null);
+  // Get the image URL - prioritize avatar prop, then profile.avatar, then fall back to server default
+  const imageUrl = avatar || profile?.avatar || `${serverUrl}/default.png`;
 
   // Reset error state when imageUrl changes
   useEffect(() => {
@@ -26,28 +26,20 @@ const ProfileImage = ({
 
   const handleImageError = () => {
     setImageError(true);
+    setImageLoaded(false);
   };
 
   const handleImageLoad = () => {
     setImageLoaded(true);
   };
 
-  // If no image URL or image failed to load, show default avatar
-  if (!imageUrl || imageError) {
-    return (
-      <DefaultAvatar
-        name={userName}
-        size={size}
-        className={className}
-        textSize={textSize}
-      />
-    );
-  }
+  // If image failed to load, use server default
+  const displayUrl = imageError ? `${serverUrl}/default.png` : imageUrl;
 
   return (
     <div className={`${size} ${className} relative`} style={{ aspectRatio: '1/1' }}>
       <img
-        src={imageUrl}
+        src={displayUrl}
         alt={`${userName}'s profile`}
         className={`${size} ${roundedClass} object-cover ${
           imageLoaded ? 'opacity-100' : 'opacity-0'
@@ -58,12 +50,12 @@ const ProfileImage = ({
       />
       
       {/* Show loading state while image is loading */}
-      {!imageLoaded && !imageError && (
+      {!imageLoaded && (
         <div
-          className={`${size} ${roundedClass} bg-gradient-to-br from-gray-300 to-gray-400 animate-pulse absolute top-0 left-0 flex items-center justify-center`}
+          className={`${size} ${roundedClass} bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse absolute top-0 left-0 flex items-center justify-center`}
           style={{ aspectRatio: '1/1' }}
         >
-          <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          <i className={`fas fa-user text-gray-400 ${textSize}`}></i>
         </div>
       )}
     </div>

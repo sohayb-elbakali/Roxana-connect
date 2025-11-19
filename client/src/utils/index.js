@@ -59,39 +59,75 @@ export const setAuthToken = (token) => {
   }
 };
 
-// Cache for profile image URLs with timestamps
-const imageCache = new Map();
+// Cache for profile images - maps userId to avatar URL
+const profileImageCache = new Map();
 
-// Get profile image from profile object or userId
-export const getProfileImage = (userIdOrProfile, profileData = null) => {
-  // If first param is a profile object with avatar
-  if (typeof userIdOrProfile === 'object' && userIdOrProfile?.avatar) {
-    return userIdOrProfile.avatar;
+// Get profile image from userId - fetches from backend if needed
+export const getProfileImage = async (userId) => {
+  if (!userId) {
+    return `${serverUrl}/default.png`;
   }
   
-  // If profileData is provided and has avatar
-  if (profileData?.avatar) {
-    return profileData.avatar;
+  // Check cache first
+  if (profileImageCache.has(userId)) {
+    return profileImageCache.get(userId);
   }
   
-  // Fall back to default avatar
-  return `${serverUrl}/default.png`;
+  try {
+    // Fetch profile to get avatar
+    const response = await api.get(`/profiles/user/${userId}`);
+    const avatar = response.data?.avatar || `${serverUrl}/default.png`;
+    
+    // Cache the result
+    profileImageCache.set(userId, avatar);
+    return avatar;
+  } catch (err) {
+    // If profile not found or error, use default
+    const defaultImg = `${serverUrl}/default.png`;
+    profileImageCache.set(userId, defaultImg);
+    return defaultImg;
+  }
+};
+
+// Synchronous version that returns cached value or default immediately
+export const getProfileImageSync = (userId) => {
+  if (!userId) {
+    return `${serverUrl}/default.png`;
+  }
+  
+  // Return cached value or default
+  return profileImageCache.get(userId) || `${serverUrl}/default.png`;
+};
+
+// Preload profile image into cache
+export const preloadProfileImage = async (userId) => {
+  if (!userId || profileImageCache.has(userId)) {
+    return;
+  }
+  
+  try {
+    const response = await api.get(`/profiles/user/${userId}`);
+    const avatar = response.data?.avatar || `${serverUrl}/default.png`;
+    profileImageCache.set(userId, avatar);
+  } catch (err) {
+    profileImageCache.set(userId, `${serverUrl}/default.png`);
+  }
 };
 
 export const getProfileImageWithFallback = (userIdOrProfile, profileData = null) => {
-  return getProfileImage(userIdOrProfile, profileData);
+  return getProfileImageSync(userIdOrProfile, profileData);
 };
 
 // Clear image cache for a specific user (call after profile image update)
 export const clearImageCache = (userId) => {
   if (userId) {
-    imageCache.delete(userId);
+    profileImageCache.delete(userId);
   }
 };
 
 // Clear all cached images (call on logout)
 export const clearAllImageCache = () => {
-  imageCache.clear();
+  profileImageCache.clear();
 };
 
 export const formatDate = (date) => {

@@ -100,20 +100,29 @@ router.post(
 // @access  Private
 router.get("/", auth, parseInternshipFilters, async (req, res) => {
   try {
+    const Profile = require("../models/Profile");
+    
     // Use filters and sort options from middleware
     const internships = await Internship.find(req.filters)
       .select("-__v")
       .populate("user", "name avatar")
       .sort(req.sortOption);
     
-    // Add name field to each internship for easier access
-    const internshipsWithName = internships.map(internship => {
-      const internshipObj = internship.toObject();
-      internshipObj.name = internship.user?.name || "Unknown User";
-      return internshipObj;
-    });
+    // Add name field and populate profiles with avatars
+    const internshipsWithProfiles = await Promise.all(
+      internships.map(async (internship) => {
+        const internshipObj = internship.toObject();
+        internshipObj.name = internship.user?.name || "Unknown User";
+        
+        // Get profile avatar
+        const profile = await Profile.findOne({ user: internship.user?._id || internship.user }).select("avatar");
+        internshipObj.userProfile = profile;
+        
+        return internshipObj;
+      })
+    );
     
-    res.json(internshipsWithName);
+    res.json(internshipsWithProfiles);
   } catch (err) {
     res.status(500).send("Server Error: " + err.message);
   }
@@ -151,6 +160,8 @@ router.get("/company/:name", auth, async (req, res) => {
 // @access  Private
 router.get("/:id", auth, async (req, res) => {
   try {
+    const Profile = require("../models/Profile");
+    
     const internship = await Internship.findById(req.params.id)
       .select("-__v")
       .populate("user", "name avatar");
@@ -159,9 +170,26 @@ router.get("/:id", auth, async (req, res) => {
       return res.status(404).json({ msg: "Internship not found" });
     }
 
-    // Add name field for easier access
+    // Add name field and profile with avatar
     const internshipObj = internship.toObject();
     internshipObj.name = internship.user?.name || "Unknown User";
+    
+    // Get profile avatar
+    const profile = await Profile.findOne({ user: internship.user?._id || internship.user }).select("avatar");
+    internshipObj.userProfile = profile;
+    
+    // Populate comment user profiles
+    if (internshipObj.comments && internshipObj.comments.length > 0) {
+      internshipObj.comments = await Promise.all(
+        internshipObj.comments.map(async (comment) => {
+          const commentProfile = await Profile.findOne({ user: comment.user }).select("avatar");
+          return {
+            ...comment,
+            userProfile: commentProfile
+          };
+        })
+      );
+    }
 
     res.json(internshipObj);
   } catch (err) {

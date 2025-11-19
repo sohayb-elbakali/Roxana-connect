@@ -6,8 +6,11 @@ import ProfileImage from "./ProfileImage";
 
 function Developers({ user, getProfiles, profiles: { profiles, loading } }) {
   useEffect(() => {
-    getProfiles();
-  }, [getProfiles]);
+    // Only fetch profiles if we don't have them or the list is empty
+    if (!profiles || profiles.length === 0) {
+      getProfiles();
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">

@@ -13,6 +13,7 @@ import Navbar from "./components/Navbar";
 import Post from "./components/Posts/Post";
 import Posts from "./components/Posts/Posts";
 import Private from "./components/Private";
+import ProfileRequired from "./components/ProfileRequired";
 import { InternshipFeed, InternshipDetail, InternshipForm } from "./components/Internships";
 import { TrackerDashboard } from "./components/Tracker";
 import Profile from "./components/Profile";
@@ -108,37 +109,37 @@ const App = () => {
             <Route
               exact
               path="/posts"
-              element={<Private component={Posts} />}
+              element={<Private component={() => <ProfileRequired component={Posts} />} />}
             />
             <Route
               exact
               path="/posts/:id"
-              element={<Private component={Post} />}
+              element={<Private component={() => <ProfileRequired component={Post} />} />}
             />
             <Route
               exact
               path="/feed"
-              element={<Private component={InternshipFeed} />}
+              element={<Private component={() => <ProfileRequired component={InternshipFeed} />} />}
             />
             <Route
               exact
               path="/tracker"
-              element={<Private component={TrackerDashboard} />}
+              element={<Private component={() => <ProfileRequired component={TrackerDashboard} />} />}
             />
             <Route
               exact
               path="/internship/:id"
-              element={<Private component={InternshipDetail} />}
+              element={<Private component={() => <ProfileRequired component={InternshipDetail} />} />}
             />
             <Route
               exact
               path="/internship/create"
-              element={<Private component={InternshipForm} />}
+              element={<Private component={() => <ProfileRequired component={InternshipForm} />} />}
             />
             <Route
               exact
               path="/internship/edit/:id"
-              element={<Private component={InternshipForm} />}
+              element={<Private component={() => <ProfileRequired component={InternshipForm} />} />}
             />
             <Route
               exact

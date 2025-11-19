@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import defaultAvatar from "../../assets/default.png";
 import { trackInternship } from "../../redux/modules/tracking";
 import { likeInternship } from "../../redux/modules/internships";
-import { api, formatRelativeTime, getProfileImage } from "../../utils";
+import { api, formatRelativeTime } from "../../utils";
 import DeadlineBadge from "./DeadlineBadge";
 import ApplyNowButton from "./ApplyNowButton";
 import ReactionButton from "./ReactionButton";
+import ProfileImage from "../ProfileImage";
 
 const InternshipCard = ({
   internship,
@@ -34,12 +34,7 @@ const InternshipCard = ({
     date,
   } = internship;
 
-  const [imageError, setImageError] = useState(false);
   const insights = reduxInsights[_id] || { totalTracking: 0, saved: 0, applied: 0, interestLevel: "Low", recentActivity: 0 };
-
-  const handleImageError = () => {
-    setImageError(true);
-  };
 
   // Fetch insights for this internship on mount
   useEffect(() => {
@@ -167,11 +162,13 @@ const InternshipCard = ({
         {/* Posted By and Metadata Footer */}
         <div className="flex items-center justify-between py-4 mb-4 border-t border-b border-gray-200">
           <div className="flex items-center space-x-2.5">
-            <img
-              className="w-9 h-9 rounded-full object-cover ring-2 ring-gray-200"
-              alt=""
-              src={imageError ? defaultAvatar : getProfileImage(typeof user === 'string' ? user : user?._id)}
-              onError={handleImageError}
+            <ProfileImage
+              userId={typeof user === 'string' ? user : user?._id}
+              userName={name}
+              avatar={internship.userProfile?.avatar}
+              profile={internship.userProfile}
+              size="w-9 h-9"
+              textSize="text-xs"
             />
             <div>
               <p className="text-xs text-gray-500">Posted by</p>

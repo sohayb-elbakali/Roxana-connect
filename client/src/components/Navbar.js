@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState } from "react";
 import { connect } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { logout } from "../redux/modules/users";
@@ -10,11 +10,7 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
-  useEffect(() => {
-    if (isAuthenticated && !profile) {
-      getCurrentProfile();
-    }
-  }, [isAuthenticated, profile, getCurrentProfile]);
+
 
   const navLinks = [
     { to: "/home", label: "Home", icon: "fa-home" },

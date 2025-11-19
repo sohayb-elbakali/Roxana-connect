@@ -8,6 +8,7 @@ import {
   uploadProfileImage,
 } from "../../redux/modules/profiles";
 import ProfileImage from "../ProfileImage";
+import CustomAlert from "../CustomAlert";
 
 const initialState = {
   company: "",
@@ -36,11 +37,15 @@ const ProfileForm = ({
   const [displaySocialInputs, toggleSocialInputs] = useState(false);
   const [imagePreview, setImagePreview] = useState("");
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [alertConfig, setAlertConfig] = useState({
+    isOpen: false,
+    type: "error",
+    title: "",
+    message: ""
+  });
 
   useEffect(() => {
-    if (!profile) {
-      getCurrentProfile();
-    }
+    // Only populate form if we have a profile (editing mode)
     if (profile && !loading) {
       const profileData = { ...initialState };
 
@@ -75,7 +80,7 @@ const ProfileForm = ({
         setImagePreview(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/default.png`);
       }
     }
-  }, [loading, getCurrentProfile, profile]);
+  }, [loading, profile]);
 
   const {
     company,
@@ -103,13 +108,23 @@ const ProfileForm = ({
     if (file) {
       // Validate file type
       if (!file.type.startsWith("image/")) {
-        alert("Please select an image file");
+        setAlertConfig({
+          isOpen: true,
+          type: "error",
+          title: "Invalid File Type",
+          message: "Please select an image file (PNG, JPG, GIF, etc.)"
+        });
         return;
       }
 
       // Validate file size (5MB limit)
       if (file.size > 5 * 1024 * 1024) {
-        alert("File size must be less than 5MB");
+        setAlertConfig({
+          isOpen: true,
+          type: "error",
+          title: "File Too Large",
+          message: "File size must be less than 5MB. Please choose a smaller image."
+        });
         return;
       }
 
@@ -134,7 +149,12 @@ const ProfileForm = ({
         }
       } catch (error) {
         console.error("Error uploading image:", error);
-        alert("Failed to upload image. Please try again.");
+        setAlertConfig({
+          isOpen: true,
+          type: "error",
+          title: "Upload Failed",
+          message: "Failed to upload image. Please check your connection and try again."
+        });
       } finally {
         setUploadingImage(false);
       }
@@ -471,6 +491,16 @@ const ProfileForm = ({
           </form>
         </div>
       </div>
+
+      {/* Custom Alert */}
+      <CustomAlert
+        isOpen={alertConfig.isOpen}
+        onClose={() => setAlertConfig({ ...alertConfig, isOpen: false })}
+        type={alertConfig.type}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        confirmText="OK"
+      />
     </div>
   );
 };

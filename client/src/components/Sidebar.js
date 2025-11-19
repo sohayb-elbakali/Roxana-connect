@@ -1,17 +1,10 @@
-import { useEffect } from "react";
+
 import { connect } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
-import { getCurrentProfile } from "../redux/modules/profiles";
 import ProfileImage from "./ProfileImage";
 
-function Sidebar({ users: { user, isAuthenticated }, profiles: { profile }, trackingCount, getCurrentProfile }) {
+function Sidebar({ users: { user, isAuthenticated }, profiles: { profile }, trackingCount }) {
   const location = useLocation();
-
-  useEffect(() => {
-    if (isAuthenticated && !profile) {
-      getCurrentProfile();
-    }
-  }, [getCurrentProfile, isAuthenticated, profile]);
 
   const isActive = (path) => location.pathname === path;
 
@@ -149,4 +142,4 @@ const mapStateToProps = (state) => ({
   trackingCount: state.tracking?.items?.length || 0,
 });
 
-export default connect(mapStateToProps, { getCurrentProfile })(Sidebar);
+export default connect(mapStateToProps)(Sidebar);

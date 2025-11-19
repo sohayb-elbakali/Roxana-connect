@@ -4,10 +4,12 @@ import { Link } from "react-router-dom";
 import { deleteAccount } from "../redux/modules/profiles";
 import { resendVerification, loadUser } from "../redux/modules/users";
 import { api } from "../utils";
+import CustomAlert from "./CustomAlert";
 
 function Settings({ deleteAccount, resendVerification, loadUser, user }) {
   const [isResending, setIsResending] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -89,6 +91,17 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
           <p className="text-gray-600 mb-4">
             Manage your account and profile settings
           </p>
+        </div>
+
+        {/* Edit Profile Button */}
+        <div className="flex justify-center mb-6">
+          <Link
+            to="/edit-profile"
+            className="inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 shadow-sm min-w-[140px]"
+          >
+            <i className="fas fa-user-edit mr-2"></i>
+            Edit Profile
+          </Link>
         </div>
 
         <div className="space-y-4">
@@ -176,7 +189,7 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
               </div>
               <button
                 onClick={() => setShowPasswordModal(true)}
-                className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg text-white bg-purple-600 hover:bg-purple-700 transition-all duration-200 shadow-sm"
+                className="inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold rounded-lg text-white bg-purple-600 hover:bg-purple-700 transition-all duration-200 shadow-sm min-w-[140px]"
               >
                 <i className="fas fa-edit mr-2"></i>
                 Change Password
@@ -206,7 +219,7 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
                   </div>
                 </div>
                 <button
-                  className={`inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg text-white transition-all duration-200 shadow-sm ${
+                  className={`inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold rounded-lg text-white transition-all duration-200 shadow-sm min-w-[140px] ${
                     isResending
                       ? "bg-gray-400 cursor-not-allowed"
                       : "bg-yellow-600 hover:bg-yellow-700"
@@ -247,7 +260,7 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
                 </div>
               </div>
               <Link
-                className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 shadow-sm"
+                className="inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 shadow-sm min-w-[140px]"
                 to="/add-education"
               >
                 <i className="fas fa-plus mr-2"></i>
@@ -273,7 +286,7 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
                 </div>
               </div>
               <Link
-                className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 shadow-sm"
+                className="inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 shadow-sm min-w-[140px]"
                 to="/add-experience"
               >
                 <i className="fas fa-plus mr-2"></i>
@@ -299,16 +312,8 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
                 </div>
               </div>
               <button
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 transition-all duration-200 shadow-sm hover:shadow-md"
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      "Are you sure you want to delete your account? This action cannot be undone."
-                    )
-                  ) {
-                    deleteAccount();
-                  }
-                }}
+                className="inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold rounded-lg text-white bg-red-600 hover:bg-red-700 transition-all duration-200 shadow-sm min-w-[140px]"
+                onClick={() => setShowDeleteAlert(true)}
               >
                 <i className="fas fa-trash mr-2"></i>
                 Delete Account
@@ -487,6 +492,18 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
           </div>
         )}
       </div>
+
+      {/* Delete Account Confirmation Alert */}
+      <CustomAlert
+        isOpen={showDeleteAlert}
+        onClose={() => setShowDeleteAlert(false)}
+        onConfirm={deleteAccount}
+        type="delete"
+        title="Delete Account"
+        message="Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed."
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
     </div>
   );
 }

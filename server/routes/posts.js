@@ -45,11 +45,25 @@ router.post(
 
 router.get("/", auth, async (req, res) => {
   try {
+    const Profile = require("../models/Profile");
+    
     const posts = await Post.find()
       .select("-__v")
       .sort({ date: -1 })
       .limit(50);
-    res.json(posts);
+    
+    // Populate user profiles with avatars
+    const postsWithProfiles = await Promise.all(
+      posts.map(async (post) => {
+        const profile = await Profile.findOne({ user: post.user }).select("avatar");
+        return {
+          ...post.toObject(),
+          userProfile: profile
+        };
+      })
+    );
+    
+    res.json(postsWithProfiles);
   } catch (err) {
     res.status(500).send("Server error fetching posts");
   }
@@ -57,6 +71,8 @@ router.get("/", auth, async (req, res) => {
 
 router.get("/:id", auth, async (req, res) => {
   try {
+    const Profile = require("../models/Profile");
+    
     const post = await Post.findById(req.params.id)
       .select("-__v");
 
@@ -64,7 +80,27 @@ router.get("/:id", auth, async (req, res) => {
       return res.status(404).json({ msg: "Post not found" });
     }
 
-    res.json(post);
+    // Populate post author profile
+    const postProfile = await Profile.findOne({ user: post.user }).select("avatar");
+    
+    // Populate comment authors' profiles
+    const commentsWithProfiles = await Promise.all(
+      post.comments.map(async (comment) => {
+        const profile = await Profile.findOne({ user: comment.user }).select("avatar");
+        return {
+          ...comment.toObject(),
+          userProfile: profile
+        };
+      })
+    );
+
+    const postWithProfile = {
+      ...post.toObject(),
+      userProfile: postProfile,
+      comments: commentsWithProfiles
+    };
+
+    res.json(postWithProfile);
   } catch (err) {
     res.status(500).send("Server error fetching post");
   }

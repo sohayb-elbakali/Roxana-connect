@@ -12,6 +12,7 @@ export const UPDATE_INTERNSHIP_PREFERENCES = "profile/UPDATE_INTERNSHIP_PREFEREN
 export const getCurrentProfile = () => async (dispatch) => {
   try {
     const res = await api.get("/profiles/me");
+    console.log("Profile fetched successfully:", res.data);
     dispatch({
       type: GET_PROFILE,
       payload: res.data,
@@ -20,17 +21,14 @@ export const getCurrentProfile = () => async (dispatch) => {
     // Don't show error if user doesn't have a profile yet (status 400)
     // This is a normal state for new users
     if (err.response && err.response.status === 400) {
+      console.log("No profile found for user (400) - this is normal for new users");
       dispatch({
         type: CLEAR_PROFILE,
       });
     } else {
-      dispatch({
-        type: PROFILE_ERROR,
-        payload: {
-          msg: err.response?.statusText || "Network error",
-          status: err.response?.status || 500,
-        },
-      });
+      console.error("Error fetching profile:", err);
+      // Don't dispatch PROFILE_ERROR for network issues
+      // Just log it and keep the current state
     }
   }
 };
@@ -43,10 +41,13 @@ export const createProfile =
       console.log("Sending profile data:", formData);
       const res = await api.post("/profiles", formData);
       console.log("Profile creation response:", res.data);
+      
+      // Update the current user's profile
       dispatch({
         type: UPDATE_PROFILE,
         payload: res.data,
       });
+      console.log("Profile updated in Redux state:", res.data);
 
       dispatch(
         showAlertMessage(
@@ -59,7 +60,7 @@ export const createProfile =
         console.log("Navigating to home page...");
         setTimeout(() => {
           navigate("/home");
-        }, 1000); // Small delay to ensure the alert is shown
+        }, 500);
       }
     } catch (err) {
       console.log("Profile creation error:", err);
@@ -138,8 +139,6 @@ export const uploadProfileImage = (data) => async (dispatch) => {
 };
 
 export const getProfiles = () => async (dispatch) => {
-  dispatch({ type: CLEAR_PROFILE });
-
   try {
     const res = await api.get("/profiles");
     dispatch({
@@ -147,21 +146,13 @@ export const getProfiles = () => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
-    // Silently handle errors for getProfiles - don't show alert to user
-    dispatch({
-      type: PROFILE_ERROR,
-      payload: {
-        msg: err.response?.statusText || "Network error",
-        status: err.response?.status || 500,
-      },
-    });
+    // Silently handle errors for getProfiles - don't dispatch PROFILE_ERROR
+    // as it would clear the current user's profile
+    console.error("Error fetching profiles:", err);
   }
 };
 
 export const getProfileById = (userId) => async (dispatch) => {
-  // Clear any previous profile/error before fetching
-  dispatch({ type: CLEAR_PROFILE });
-  
   try {
     const res = await api.get(`/profiles/user/${userId}`);
     dispatch({
@@ -339,41 +330,39 @@ export const deleteEducation = (id) => async (dispatch) => {
 
 // Delete account & profile
 export const deleteAccount = () => async (dispatch) => {
-  if (window.confirm("Are you sure? This can NOT be undone!")) {
-    try {
-      console.log("Deleting account...");
-      await api.delete("/profiles");
+  try {
+    console.log("Deleting account...");
+    await api.delete("/profiles");
 
-      dispatch({ type: CLEAR_PROFILE });
+    dispatch({ type: CLEAR_PROFILE });
 
-      dispatch(showAlertMessage("Your account has been permanently deleted"));
+    dispatch(showAlertMessage("Your account has been permanently deleted"));
 
-      // Clear the auth token and redirect to login
-      localStorage.removeItem("token");
-      window.location.href = "/";
-    } catch (err) {
-      console.log("Delete account error:", err);
-      if (err.response) {
-        dispatch(
-          showAlertMessage(
-            err.response.data?.msg ||
-              err.response.statusText ||
-              "An error occurred while deleting account",
-            "error"
-          )
-        );
-      } else {
-        dispatch(showAlertMessage("Network error. Please try again.", "error"));
-      }
-
-      dispatch({
-        type: PROFILE_ERROR,
-        payload: {
-          msg: err.response?.statusText || "An error occurred",
-          status: err.response?.status || 500,
-        },
-      });
+    // Clear the auth token and redirect to login
+    localStorage.removeItem("token");
+    window.location.href = "/";
+  } catch (err) {
+    console.log("Delete account error:", err);
+    if (err.response) {
+      dispatch(
+        showAlertMessage(
+          err.response.data?.msg ||
+            err.response.statusText ||
+            "An error occurred while deleting account",
+          "error"
+        )
+      );
+    } else {
+      dispatch(showAlertMessage("Network error. Please try again.", "error"));
     }
+
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: {
+        msg: err.response?.statusText || "An error occurred",
+        status: err.response?.status || 500,
+      },
+    });
   }
 };
 
@@ -411,7 +400,7 @@ export const updateInternshipPreferences = (targetCompanies, targetRoles) => asy
 const initialState = {
   profile: null,
   profiles: [],
-  loading: true,
+  loading: false,
   error: {},
   image: null,
 };
@@ -441,13 +430,13 @@ export default function reducer(state = initialState, action) {
         ...state,
         error: payload,
         loading: false,
-        profile: null,
+        // Don't clear profile on error, only on explicit CLEAR_PROFILE
       };
     case CLEAR_PROFILE:
       return {
         ...state,
         profile: null,
-        loading: true,
+        loading: false,
         error: {},
       };
     case UPLOAD_PROFILE_IMAGE:
