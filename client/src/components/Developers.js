@@ -59,6 +59,8 @@ function Developer({ profile }) {
           <ProfileImage
             userId={profile?.user?._id}
             userName={profile?.user?.name || "Developer"}
+            avatar={profile?.avatar}
+            profile={profile}
             size="w-24 h-24"
             textSize="text-2xl"
           />

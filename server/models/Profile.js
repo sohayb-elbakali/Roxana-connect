@@ -115,6 +115,9 @@ const ProfileSchema = new mongoose.Schema({
     type: [String],
     default: [],
   },
+  avatar: {
+    type: String,
+  },
   date: {
     type: Date,
     default: Date.now,

@@ -82,6 +82,8 @@ app.use(express.static(path.join(__dirname, 'public'), {
   lastModified: true
 }));
 
+
+
 app.get("/images/:userId", (req, res) => {
   const userId = req.params.userId;
   const imagePath = path.join(__dirname, "public", "images", userId);
@@ -121,6 +123,7 @@ app.use("/api/posts", require("./routes/posts.js"));
 app.use("/api/internships", require("./routes/internships.js"));
 app.use("/api/tracking", require("./routes/tracking.js"));
 app.use("/api/admin", require("./routes/admin.js"));
+app.use("/api/upload", require("./routes/upload.js"));
 
 app.get("/", (req, res) => res.send("Server is working correctly"));
 

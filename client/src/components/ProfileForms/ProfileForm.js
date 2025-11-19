@@ -7,7 +7,6 @@ import {
   getCurrentProfile,
   uploadProfileImage,
 } from "../../redux/modules/profiles";
-import { getProfileImage } from "../../utils";
 import ProfileImage from "../ProfileImage";
 
 const initialState = {
@@ -69,9 +68,11 @@ const ProfileForm = ({
 
       setFormData(profileData);
 
-      // Set current profile image
-      if (profile.user && profile.user._id) {
-        setImagePreview(getProfileImage(profile.user._id));
+      // Set current profile image from Cloudinary or fallback
+      if (profile.avatar) {
+        setImagePreview(profile.avatar);
+      } else if (profile.user && profile.user._id) {
+        setImagePreview(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/default.png`);
       }
     }
   }, [loading, getCurrentProfile, profile]);
@@ -124,15 +125,12 @@ const ProfileForm = ({
       try {
         // Upload the image
         const data = new FormData();
-        data.append("file", file);
-        await uploadProfileImage(data);
-
-        // After successful upload, update preview to use server image
-        if (profile?.user?._id) {
-          // Add timestamp to force refresh
-          setImagePreview(
-            `${getProfileImage(profile.user._id)}?t=${Date.now()}`
-          );
+        data.append("image", file);
+        const response = await uploadProfileImage(data);
+        
+        // Update preview with Cloudinary URL immediately
+        if (response && response.url) {
+          setImagePreview(response.url);
         }
       } catch (error) {
         console.error("Error uploading image:", error);
@@ -194,39 +192,77 @@ const ProfileForm = ({
                 Profile Image
               </label>
 
-              {/* Image Preview */}
-              <div className="mb-4 text-center">
-                {imagePreview ? (
-                  <img
-                    src={imagePreview}
-                    alt="Profile preview"
-                    className="w-24 h-24 rounded-full mx-auto border-4 border-blue-200 shadow-lg object-cover"
-                    onError={() => setImagePreview("")}
-                  />
-                ) : (
-                  <div className="w-24 h-24 mx-auto rounded-full border-4 border-blue-200 shadow-lg overflow-hidden">
-                    <ProfileImage
-                      userId={profile?.user?._id}
-                      userName={profile?.user?.name || "User"}
-                      size="w-full h-full"
-                      textSize="text-xl"
-                    />
-                  </div>
-                )}
-                <p className="text-sm text-gray-500 mt-2">
-                  {uploadingImage ? "Uploading..." : "Current profile image"}
-                </p>
-              </div>
-
+              {/* Hidden File Input */}
               <input
                 type="file"
                 accept="image/*"
                 onChange={onFileChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                className="hidden"
+                id="profile-image-upload"
               />
-              <p className="text-sm text-gray-500 mt-1">
-                Upload a new image to replace your current profile picture
-              </p>
+
+              {/* Clickable Image Preview */}
+              <div className="text-center">
+                <label 
+                  htmlFor="profile-image-upload" 
+                  className="inline-block cursor-pointer group relative"
+                >
+                  <div className="relative">
+                    {imagePreview ? (
+                      <img
+                        src={imagePreview}
+                        alt="Profile preview"
+                        className="w-32 h-32 rounded-full mx-auto border-4 border-blue-200 shadow-lg object-cover group-hover:border-blue-400 transition-all duration-200"
+                        onError={() => setImagePreview("")}
+                      />
+                    ) : (
+                      <div className="w-32 h-32 mx-auto rounded-full border-4 border-blue-200 shadow-lg overflow-hidden group-hover:border-blue-400 transition-all duration-200">
+                        <ProfileImage
+                          userId={profile?.user?._id}
+                          userName={profile?.user?.name || "User"}
+                          avatar={profile?.avatar}
+                          profile={profile}
+                          size="w-full h-full"
+                          textSize="text-2xl"
+                        />
+                      </div>
+                    )}
+                    
+                    {/* Upload Overlay */}
+                    {!uploadingImage && (
+                      <div className="absolute inset-0 rounded-full bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 flex items-center justify-center">
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                          <i className="fas fa-camera text-white text-2xl"></i>
+                          <p className="text-white text-xs mt-1 font-semibold">Change Photo</p>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Loading Spinner */}
+                    {uploadingImage && (
+                      <div className="absolute inset-0 rounded-full bg-black bg-opacity-50 flex items-center justify-center">
+                        <i className="fas fa-spinner fa-spin text-white text-2xl"></i>
+                      </div>
+                    )}
+                  </div>
+                </label>
+                <p className="text-sm text-gray-500 mt-3">
+                  {uploadingImage ? (
+                    <span className="text-blue-600 font-semibold">
+                      <i className="fas fa-spinner fa-spin mr-1"></i>
+                      Uploading image...
+                    </span>
+                  ) : (
+                    <span>
+                      <i className="fas fa-info-circle mr-1"></i>
+                      Click on the image to upload a new profile picture
+                    </span>
+                  )}
+                </p>
+                <p className="text-xs text-gray-400 mt-1">
+                  Supported formats: JPG, PNG, GIF (Max 5MB)
+                </p>
+              </div>
             </div>
 
             {/* Company and Website */}

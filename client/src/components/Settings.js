@@ -7,7 +7,7 @@ import { api } from "../utils";
 
 function Settings({ deleteAccount, resendVerification, loadUser, user }) {
   const [isResending, setIsResending] = useState(false);
-  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -15,10 +15,6 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
   });
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [passwordMessage, setPasswordMessage] = useState({ type: "", text: "" });
-  const [isEditingName, setIsEditingName] = useState(false);
-  const [newName, setNewName] = useState("");
-  const [nameLoading, setNameLoading] = useState(false);
-  const [nameMessage, setNameMessage] = useState({ type: "", text: "" });
 
   // Reload user data when component mounts to get updated verification status
   useEffect(() => {
@@ -29,53 +25,6 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
     setIsResending(true);
     await resendVerification();
     setIsResending(false);
-  };
-
-  const handleNameEdit = () => {
-    setIsEditingName(true);
-    setNewName(user?.name || "");
-    setNameMessage({ type: "", text: "" });
-  };
-
-  const handleNameCancel = () => {
-    setIsEditingName(false);
-    setNewName("");
-    setNameMessage({ type: "", text: "" });
-  };
-
-  const handleNameSubmit = async (e) => {
-    e.preventDefault();
-    setNameMessage({ type: "", text: "" });
-
-    if (!newName.trim()) {
-      setNameMessage({ type: "error", text: "Name cannot be empty" });
-      return;
-    }
-
-    setNameLoading(true);
-
-    try {
-      const res = await api.put("/users/update-name", { name: newName.trim() });
-      setNameMessage({ type: "success", text: res.data.msg || "Name updated successfully!" });
-      
-      // Reload user data to get updated name
-      await loadUser();
-      
-      // Auto-hide form after success
-      setTimeout(() => {
-        setIsEditingName(false);
-        setNameMessage({ type: "", text: "" });
-      }, 2000);
-    } catch (err) {
-      setNameMessage({ 
-        type: "error", 
-        text: err.response?.data?.msg || 
-              err.response?.data?.errors?.[0]?.msg || 
-              "Failed to update name"
-      });
-    } finally {
-      setNameLoading(false);
-    }
   };
 
   const handlePasswordChange = (e) => {
@@ -110,11 +59,11 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
       setPasswordMessage({ type: "success", text: res.data.msg || "Password updated successfully!" });
       setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
       
-      // Auto-hide form after success
+      // Auto-hide modal after success
       setTimeout(() => {
-        setShowPasswordForm(false);
+        setShowPasswordModal(false);
         setPasswordMessage({ type: "", text: "" });
-      }, 3000);
+      }, 2000);
     } catch (err) {
       setPasswordMessage({ 
         type: "error", 
@@ -137,7 +86,7 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Settings
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 mb-4">
             Manage your account and profile settings
           </p>
         </div>
@@ -158,62 +107,13 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
               <div className="space-y-4">
                 {/* Name */}
                 <div className="flex items-center justify-between py-3 border-b border-gray-100">
-                  <div className="flex items-center space-x-3 flex-1">
+                  <div className="flex items-center space-x-3">
                     <i className="fas fa-user-circle text-gray-400 w-5"></i>
-                    <div className="flex-1">
+                    <div>
                       <p className="text-xs text-gray-500 uppercase tracking-wide">Full Name</p>
-                      {isEditingName ? (
-                        <form onSubmit={handleNameSubmit} className="mt-2">
-                          {nameMessage.text && (
-                            <div className={`mb-2 p-2 rounded text-xs ${
-                              nameMessage.type === "success" 
-                                ? "bg-green-50 text-green-800" 
-                                : "bg-red-50 text-red-800"
-                            }`}>
-                              {nameMessage.text}
-                            </div>
-                          )}
-                          <div className="flex items-center space-x-2">
-                            <input
-                              type="text"
-                              value={newName}
-                              onChange={(e) => setNewName(e.target.value)}
-                              required
-                              placeholder="Enter your name"
-                              className="flex-1 px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                            />
-                            <button
-                              type="submit"
-                              disabled={nameLoading}
-                              className={`px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition-all ${
-                                nameLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
-                              }`}
-                            >
-                              {nameLoading ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-check"></i>}
-                            </button>
-                            <button
-                              type="button"
-                              onClick={handleNameCancel}
-                              className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-gray-300 text-gray-700 hover:bg-gray-50 transition-all"
-                            >
-                              <i className="fas fa-times"></i>
-                            </button>
-                          </div>
-                        </form>
-                      ) : (
-                        <p className="text-sm font-semibold text-gray-900">{user.name}</p>
-                      )}
+                      <p className="text-sm font-semibold text-gray-900">{user.name}</p>
                     </div>
                   </div>
-                  {!isEditingName && (
-                    <button
-                      onClick={handleNameEdit}
-                      className="px-3 py-1.5 rounded-lg text-xs font-semibold text-blue-600 hover:bg-blue-50 transition-all"
-                    >
-                      <i className="fas fa-edit mr-1"></i>
-                      Edit
-                    </button>
-                  )}
                 </div>
 
                 {/* Email */}
@@ -258,15 +158,15 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
             </div>
           )}
 
-          {/* Password Management Card */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-            <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-key text-purple-600"></i>
+          {/* Password & Security Card */}
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 hover:border-purple-300 hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <i className="fas fa-key text-purple-600 text-lg"></i>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900">
+                  <h3 className="text-lg font-semibold text-gray-900">
                     Password & Security
                   </h3>
                   <p className="text-sm text-gray-600">
@@ -274,129 +174,14 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
                   </p>
                 </div>
               </div>
-              {!showPasswordForm && (
-                <button
-                  onClick={() => setShowPasswordForm(true)}
-                  className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg text-white bg-purple-600 hover:bg-purple-700 transition-all duration-200 shadow-sm"
-                >
-                  <i className="fas fa-edit mr-2"></i>
-                  Change Password
-                </button>
-              )}
+              <button
+                onClick={() => setShowPasswordModal(true)}
+                className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg text-white bg-purple-600 hover:bg-purple-700 transition-all duration-200 shadow-sm"
+              >
+                <i className="fas fa-edit mr-2"></i>
+                Change Password
+              </button>
             </div>
-
-            {showPasswordForm && (
-              <form onSubmit={handlePasswordSubmit} className="space-y-4 mt-4">
-                {/* Success/Error Messages */}
-                {passwordMessage.text && (
-                  <div className={`rounded-lg p-4 ${
-                    passwordMessage.type === "success" 
-                      ? "bg-green-50 border border-green-200" 
-                      : "bg-red-50 border border-red-200"
-                  }`}>
-                    <div className="flex items-start">
-                      <i className={`fas ${
-                        passwordMessage.type === "success" 
-                          ? "fa-check-circle text-green-600" 
-                          : "fa-exclamation-circle text-red-600"
-                      } mt-0.5 mr-3`}></i>
-                      <p className={`text-sm ${
-                        passwordMessage.type === "success" 
-                          ? "text-green-800" 
-                          : "text-red-800"
-                      }`}>
-                        {passwordMessage.text}
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Current Password */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Current Password
-                  </label>
-                  <input
-                    type="password"
-                    name="currentPassword"
-                    value={passwordData.currentPassword}
-                    onChange={handlePasswordChange}
-                    required
-                    placeholder="Enter current password"
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                  />
-                </div>
-
-                {/* New Password */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    New Password
-                  </label>
-                  <input
-                    type="password"
-                    name="newPassword"
-                    value={passwordData.newPassword}
-                    onChange={handlePasswordChange}
-                    required
-                    minLength={6}
-                    placeholder="Enter new password (min 6 characters)"
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                  />
-                </div>
-
-                {/* Confirm Password */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Confirm New Password
-                  </label>
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    value={passwordData.confirmPassword}
-                    onChange={handlePasswordChange}
-                    required
-                    placeholder="Confirm new password"
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                  />
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex space-x-3 pt-2">
-                  <button
-                    type="submit"
-                    disabled={passwordLoading}
-                    className={`flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-white font-semibold transition-all duration-200 shadow-sm ${
-                      passwordLoading
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-purple-600 hover:bg-purple-700"
-                    }`}
-                  >
-                    {passwordLoading ? (
-                      <>
-                        <i className="fas fa-spinner fa-spin mr-2"></i>
-                        Updating...
-                      </>
-                    ) : (
-                      <>
-                        <i className="fas fa-check mr-2"></i>
-                        Update Password
-                      </>
-                    )}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowPasswordForm(false);
-                      setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
-                      setPasswordMessage({ type: "", text: "" });
-                    }}
-                    className="px-4 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition-all duration-200"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            )}
           </div>
 
           {/* Email Verification Card - Only show if not verified */}
@@ -444,32 +229,6 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
               </div>
             </div>
           )}
-
-          {/* Edit Profile Card */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 hover:border-blue-300 hover:shadow-md transition-all duration-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-user-edit text-blue-600 text-lg"></i>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    Profile Information
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    Update your profile information and personal details
-                  </p>
-                </div>
-              </div>
-              <Link
-                className="inline-flex items-center px-4 py-2 text-sm font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 shadow-sm"
-                to="/edit-profile"
-              >
-                <i className="fas fa-edit mr-2"></i>
-                Edit Profile
-              </Link>
-            </div>
-          </div>
 
           {/* Add Education Card */}
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 hover:border-blue-300 hover:shadow-md transition-all duration-200">
@@ -557,6 +316,176 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
             </div>
           </div>
         </div>
+
+        {/* Password Change Modal */}
+        {showPasswordModal && (
+          <div className="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            {/* Background overlay */}
+            <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+              <div 
+                className="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity" 
+                aria-hidden="true"
+                onClick={() => {
+                  setShowPasswordModal(false);
+                  setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+                  setPasswordMessage({ type: "", text: "" });
+                }}
+              ></div>
+
+              {/* Center modal */}
+              <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+              {/* Modal panel */}
+              <div className="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                {/* Modal Header */}
+                <div className="bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                        <i className="fas fa-key text-white text-lg"></i>
+                      </div>
+                      <h3 className="text-xl font-bold text-white" id="modal-title">
+                        Change Password
+                      </h3>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setShowPasswordModal(false);
+                        setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+                        setPasswordMessage({ type: "", text: "" });
+                      }}
+                      className="text-white hover:text-gray-200 transition-colors"
+                    >
+                      <i className="fas fa-times text-xl"></i>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Modal Body */}
+                <form onSubmit={handlePasswordSubmit} className="px-6 py-6">
+                  {/* Success/Error Messages */}
+                  {passwordMessage.text && (
+                    <div className={`mb-4 rounded-lg p-4 ${
+                      passwordMessage.type === "success" 
+                        ? "bg-green-50 border border-green-200" 
+                        : "bg-red-50 border border-red-200"
+                    }`}>
+                      <div className="flex items-start">
+                        <i className={`fas ${
+                          passwordMessage.type === "success" 
+                            ? "fa-check-circle text-green-600" 
+                            : "fa-exclamation-circle text-red-600"
+                        } mt-0.5 mr-3`}></i>
+                        <p className={`text-sm ${
+                          passwordMessage.type === "success" 
+                            ? "text-green-800" 
+                            : "text-red-800"
+                        }`}>
+                          {passwordMessage.text}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="space-y-4">
+                    {/* Current Password */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <i className="fas fa-lock mr-2 text-gray-400"></i>
+                        Current Password
+                      </label>
+                      <input
+                        type="password"
+                        name="currentPassword"
+                        value={passwordData.currentPassword}
+                        onChange={handlePasswordChange}
+                        required
+                        placeholder="Enter your current password"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent transition-all"
+                      />
+                    </div>
+
+                    {/* New Password */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <i className="fas fa-key mr-2 text-gray-400"></i>
+                        New Password
+                      </label>
+                      <input
+                        type="password"
+                        name="newPassword"
+                        value={passwordData.newPassword}
+                        onChange={handlePasswordChange}
+                        required
+                        minLength={6}
+                        placeholder="Enter new password (min 6 characters)"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent transition-all"
+                      />
+                      <p className="mt-1 text-xs text-gray-500">
+                        <i className="fas fa-info-circle mr-1"></i>
+                        Password must be at least 6 characters long
+                      </p>
+                    </div>
+
+                    {/* Confirm Password */}
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <i className="fas fa-check-circle mr-2 text-gray-400"></i>
+                        Confirm New Password
+                      </label>
+                      <input
+                        type="password"
+                        name="confirmPassword"
+                        value={passwordData.confirmPassword}
+                        onChange={handlePasswordChange}
+                        required
+                        placeholder="Confirm your new password"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Modal Footer */}
+                  <div className="flex space-x-3 mt-6 pt-4 border-t border-gray-200">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowPasswordModal(false);
+                        setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+                        setPasswordMessage({ type: "", text: "" });
+                      }}
+                      className="flex-1 px-4 py-3 rounded-lg border-2 border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition-all duration-200"
+                    >
+                      <i className="fas fa-times mr-2"></i>
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={passwordLoading}
+                      className={`flex-1 inline-flex items-center justify-center px-4 py-3 rounded-lg text-white font-semibold transition-all duration-200 shadow-sm ${
+                        passwordLoading
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-purple-600 hover:bg-purple-700 shadow-lg hover:shadow-xl"
+                      }`}
+                    >
+                      {passwordLoading ? (
+                        <>
+                          <i className="fas fa-spinner fa-spin mr-2"></i>
+                          Updating...
+                        </>
+                      ) : (
+                        <>
+                          <i className="fas fa-check mr-2"></i>
+                          Update Password
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

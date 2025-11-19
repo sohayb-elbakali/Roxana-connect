@@ -4,14 +4,14 @@ import { Link, useLocation } from "react-router-dom";
 import { getCurrentProfile } from "../redux/modules/profiles";
 import ProfileImage from "./ProfileImage";
 
-function Sidebar({ users: { user, isAuthenticated }, trackingCount, getCurrentProfile }) {
+function Sidebar({ users: { user, isAuthenticated }, profiles: { profile }, trackingCount, getCurrentProfile }) {
   const location = useLocation();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && !profile) {
       getCurrentProfile();
     }
-  }, [getCurrentProfile, isAuthenticated]);
+  }, [getCurrentProfile, isAuthenticated, profile]);
 
   const isActive = (path) => location.pathname === path;
 
@@ -35,6 +35,8 @@ function Sidebar({ users: { user, isAuthenticated }, trackingCount, getCurrentPr
               <ProfileImage
                 userId={user?._id}
                 userName={user?.name || "User"}
+                avatar={profile?.avatar}
+                profile={profile}
                 size="w-full h-full"
                 textSize="text-xs"
               />
@@ -143,6 +145,7 @@ function Sidebar({ users: { user, isAuthenticated }, trackingCount, getCurrentPr
 
 const mapStateToProps = (state) => ({
   users: state.users,
+  profiles: state.profiles,
   trackingCount: state.tracking?.items?.length || 0,
 });
 

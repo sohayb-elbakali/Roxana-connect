@@ -1,5 +1,7 @@
 const express = require("express");
-const { auth, upload } = require("../utils/index.js");
+const { auth } = require("../utils/index.js");
+const uploadMiddleware = require("../config/multer");
+const cloudinary = require("../config/cloudinary");
 const router = express.Router();
 const { check, validationResult } = require("express-validator");
 const normalizeUrl = require("normalize-url");
@@ -170,21 +172,46 @@ router.delete("/", auth, async (req, res) => {
   }
 });
 
-router.post("/upload", auth, async (req, res) => {
+router.post("/upload", auth, uploadMiddleware.single("image"), async (req, res) => {
   try {
-    upload(req, res, async (err) => {
-      if (err) {
-        res.status(500).send(`Server Error: ${err}`);
-      } else {
+    console.log("Upload request received");
+    console.log("User ID:", req.user.id);
+    console.log("File:", req.file);
+
+    if (!req.file) {
+      return res.status(400).json({ msg: "No file uploaded" });
+    }
+
+    // Update user's profile with the image URL
+    const profile = await Profile.findOne({ user: req.user.id });
+    
+    console.log("Profile found:", profile ? "Yes" : "No");
+
+    if (profile) {
+      // If profile has an old image, delete it from Cloudinary
+      if (profile.avatar) {
         try {
-          res.status(200).send(req.user.id);
+          const publicId = profile.avatar.split('/').pop().split('.')[0];
+          await cloudinary.uploader.destroy(`my_app_uploads/${publicId}`);
         } catch (err) {
-          res.status(500).send(`Server Error: ${err}`);
+          console.error("Error deleting old image:", err);
         }
       }
+      
+      profile.avatar = req.file.path;
+      await profile.save();
+      console.log("Profile updated with avatar:", req.file.path);
+    }
+
+    res.json({
+      message: "Profile image uploaded successfully",
+      url: req.file.path,
+      publicId: req.file.filename
     });
   } catch (err) {
-    res.status(500).send(`Server Error: ${err}`);
+    console.error("Upload error:", err);
+    console.error("Error stack:", err.stack);
+    res.status(500).json({ msg: err.message || "Server error uploading image" });
   }
 });
 

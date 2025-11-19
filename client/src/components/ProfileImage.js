@@ -5,6 +5,8 @@ import DefaultAvatar from "./DefaultAvatar";
 const ProfileImage = ({
   userId,
   userName = "User",
+  avatar = null,
+  profile = null,
   size = "w-24 h-24",
   className = "",
   textSize = "text-xl",
@@ -13,11 +15,14 @@ const ProfileImage = ({
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  // Reset error state when userId changes
+  // Get the image URL - prioritize avatar prop, then profile.avatar, then fall back to userId
+  const imageUrl = avatar || profile?.avatar || (userId ? getProfileImage(userId) : null);
+
+  // Reset error state when imageUrl changes
   useEffect(() => {
     setImageError(false);
     setImageLoaded(false);
-  }, [userId]);
+  }, [imageUrl]);
 
   const handleImageError = () => {
     setImageError(true);
@@ -27,8 +32,8 @@ const ProfileImage = ({
     setImageLoaded(true);
   };
 
-  // If no userId provided or image failed to load, show default avatar
-  if (!userId || imageError) {
+  // If no image URL or image failed to load, show default avatar
+  if (!imageUrl || imageError) {
     return (
       <DefaultAvatar
         name={userName}
@@ -42,7 +47,7 @@ const ProfileImage = ({
   return (
     <div className={`${size} ${className} relative`} style={{ aspectRatio: '1/1' }}>
       <img
-        src={getProfileImage(userId)}
+        src={imageUrl}
         alt={`${userName}'s profile`}
         className={`${size} ${roundedClass} object-cover ${
           imageLoaded ? 'opacity-100' : 'opacity-0'

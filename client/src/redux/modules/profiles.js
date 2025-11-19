@@ -119,7 +119,10 @@ export const uploadProfileImage = (data) => async (dispatch) => {
     );
 
     // Refresh the current profile to get updated data
-    dispatch(getCurrentProfile());
+    await dispatch(getCurrentProfile());
+    
+    // Return the response data for immediate use
+    return res.data;
   } catch (err) {
     console.log("Image upload error:", err);
 
@@ -130,6 +133,7 @@ export const uploadProfileImage = (data) => async (dispatch) => {
         showAlertMessage("Failed to upload image. Please try again.", "error")
       );
     }
+    throw err;
   }
 };
 

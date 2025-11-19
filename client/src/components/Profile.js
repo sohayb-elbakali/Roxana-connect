@@ -57,6 +57,8 @@ const Profile = ({ getProfileById, profiles: { profile, loading, error }, auth }
                     <ProfileImage
                       userId={id}
                       userName={profile?.user?.name || "User"}
+                      avatar={profile?.avatar}
+                      profile={profile}
                       size="w-full h-full"
                       textSize="text-xl md:text-2xl"
                     />

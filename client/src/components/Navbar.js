@@ -1,13 +1,20 @@
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { logout } from "../redux/modules/users";
+import { getCurrentProfile } from "../redux/modules/profiles";
 import ProfileImage from "./ProfileImage";
 
-const Navbar = ({ users: { isAuthenticated, user }, trackingCount, logout }) => {
+const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, trackingCount, logout, getCurrentProfile }) => {
   const location = useLocation();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated && !profile) {
+      getCurrentProfile();
+    }
+  }, [isAuthenticated, profile, getCurrentProfile]);
 
   const navLinks = [
     { to: "/home", label: "Home", icon: "fa-home" },
@@ -66,6 +73,8 @@ const Navbar = ({ users: { isAuthenticated, user }, trackingCount, logout }) => 
               <ProfileImage
                 userId={user?._id}
                 userName={user?.name || "User"}
+                avatar={profile?.avatar}
+                profile={profile}
                 size="w-full h-full"
                 textSize="text-xs"
               />
@@ -244,7 +253,8 @@ const Navbar = ({ users: { isAuthenticated, user }, trackingCount, logout }) => 
 
 const mapStateToProps = (state) => ({
   users: state.users,
+  profiles: state.profiles,
   trackingCount: state.tracking?.items?.length || 0,
 });
 
-export default connect(mapStateToProps, { logout })(Navbar);
+export default connect(mapStateToProps, { logout, getCurrentProfile })(Navbar);

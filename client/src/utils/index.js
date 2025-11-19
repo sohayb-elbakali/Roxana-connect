@@ -61,39 +61,25 @@ export const setAuthToken = (token) => {
 
 // Cache for profile image URLs with timestamps
 const imageCache = new Map();
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
-export const getProfileImage = (userId) => {
-  if (!userId) {
-    return `${serverUrl}/default.png`;
+// Get profile image from profile object or userId
+export const getProfileImage = (userIdOrProfile, profileData = null) => {
+  // If first param is a profile object with avatar
+  if (typeof userIdOrProfile === 'object' && userIdOrProfile?.avatar) {
+    return userIdOrProfile.avatar;
   }
   
-  // Check cache
-  const cached = imageCache.get(userId);
-  const now = Date.now();
-  
-  if (cached && (now - cached.timestamp) < CACHE_DURATION) {
-    return cached.url;
+  // If profileData is provided and has avatar
+  if (profileData?.avatar) {
+    return profileData.avatar;
   }
   
-  // Create new URL with cache buster for updates
-  const url = `${serverUrl}/images/${userId}`;
-  imageCache.set(userId, { url, timestamp: now });
-  
-  // Clean old cache entries
-  if (imageCache.size > 100) {
-    const firstKey = imageCache.keys().next().value;
-    imageCache.delete(firstKey);
-  }
-  
-  return url;
+  // Fall back to default avatar
+  return `${serverUrl}/default.png`;
 };
 
-export const getProfileImageWithFallback = (userId) => {
-  if (!userId) {
-    return `${serverUrl}/default.png`;
-  }
-  return `${serverUrl}/images/${userId}`;
+export const getProfileImageWithFallback = (userIdOrProfile, profileData = null) => {
+  return getProfileImage(userIdOrProfile, profileData);
 };
 
 // Clear image cache for a specific user (call after profile image update)
