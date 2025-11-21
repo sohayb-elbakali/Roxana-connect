@@ -3,7 +3,7 @@
 import { connect } from "react-redux";
 import { deleteComment } from "../../lib/redux/modules/posts";
 import { formatRelativeTime } from "../../lib/utils";
-import ProfileImage from "../ProfileImage";
+import Avatar from "../Avatar";
 
 const CommentItem = ({
   postId,
@@ -15,13 +15,12 @@ const CommentItem = ({
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 hover:border-blue-300 transition-all duration-200">
       <div className="flex space-x-4">
         <div className="flex-shrink-0">
-          <ProfileImage
+          <Avatar
             userId={user}
             userName={name}
             avatar={userProfile?.avatar}
             profile={userProfile}
-            size="w-12 h-12"
-            textSize="text-sm"
+            size={48}
           />
         </div>
         <div className="flex-1 min-w-0">

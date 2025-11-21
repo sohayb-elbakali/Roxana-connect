@@ -17,8 +17,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Roxana - Developer Network",
-  description: "Connect with developers and find internships",
+  title: "Roxana Connect - Developer Network & Internship Platform",
+  description: "Connect with developers, find internships, and track your career journey with Roxana Connect",
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico' },
+    ],
+    apple: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -45,14 +54,14 @@ export default function RootLayout({
           <ClientInit />
           <ToastContainer
             position="top-right"
-            autoClose={500}
+            autoClose={1000}
             hideProgressBar={false}
             newestOnTop={false}
             closeOnClick
             rtl={false}
-            pauseOnFocusLoss
+            pauseOnFocusLoss={false}
             draggable
-            pauseOnHover
+            pauseOnHover={false}
             theme="light"
           />
           {children}

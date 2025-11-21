@@ -16,7 +16,7 @@ function Post({getPost, posts: {post, loading}}){
         getPost(id)
     }, [getPost, id])
 
-    if (loading) {
+    if (loading || !post) {
       return (
         <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -28,26 +28,35 @@ function Post({getPost, posts: {post, loading}}){
       );
     }
 
-    if (post === null) {
+    if (!loading && post === null) {
       return (
         <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
             <div className="text-center">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i className="fas fa-exclamation-circle text-3xl text-red-600"></i>
+              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i className="fas fa-exclamation-triangle text-3xl text-yellow-600"></i>
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Post Not Found
+                Unable to Load Post
               </h2>
               <p className="text-gray-600 mb-6">
-                The post you're looking for doesn't exist or has been removed.
+                This post may not exist, or there might be a connection issue. Please try again.
               </p>
-              <Link href="/posts"
-                className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm"
-              >
-                <i className="fas fa-arrow-left mr-2"></i>
-                Back to Posts
-              </Link>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <button
+                  onClick={() => getPost(id)}
+                  className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm"
+                >
+                  <i className="fas fa-redo mr-2"></i>
+                  Try Again
+                </button>
+                <Link href="/feed"
+                  className="inline-flex items-center px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-all duration-200"
+                >
+                  <i className="fas fa-arrow-left mr-2"></i>
+                  Back to Feed
+                </Link>
+              </div>
             </div>
           </div>
         </div>

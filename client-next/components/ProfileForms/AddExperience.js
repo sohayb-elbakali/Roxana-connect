@@ -40,85 +40,101 @@ const AddExperience = ({ addExperience }) => {
           </h2>
           <p className="text-gray-600 text-sm">* = required field</p>
         </div>
-        <form className="space-y-5" onSubmit={onSubmit}>
-          <input
-            type="text"
-            placeholder="* Job Title"
-            name="title"
-            value={title}
-            onChange={onChange}
-            required
-            className="text-gray-900 bg-white w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-          />
-          <input
-            type="text"
-            placeholder="* Company"
-            name="company"
-            value={company}
-            onChange={onChange}
-            required
-            className="text-gray-900 bg-white w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-          />
-          <input
-            type="text"
-            placeholder="Location"
-            name="location"
-            value={location}
-            onChange={onChange}
-            className="text-gray-900 bg-white w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-          />
+        <form className="space-y-4" onSubmit={onSubmit}>
           <div>
-            <label className="block text-left text-gray-700 font-medium mb-1">
-              From Date
-            </label>
             <input
-              type="date"
-              name="from"
-              value={from}
+              type="text"
+              placeholder="* Job Title (e.g., Software Engineer)"
+              name="title"
+              value={title}
               onChange={onChange}
-              className="text-gray-900 bg-white w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+              required
+              className="text-gray-900 bg-white w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             />
           </div>
-          <div className="flex items-center mb-2">
+          
+          <div>
+            <input
+              type="text"
+              placeholder="* Company Name"
+              name="company"
+              value={company}
+              onChange={onChange}
+              required
+              className="text-gray-900 bg-white w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            />
+          </div>
+          
+          <div>
+            <input
+              type="text"
+              placeholder="Location (e.g., New York, NY)"
+              name="location"
+              value={location}
+              onChange={onChange}
+              className="text-gray-900 bg-white w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            />
+          </div>
+          
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                Start Date
+              </label>
+              <input
+                type="date"
+                name="from"
+                value={from}
+                onChange={onChange}
+                className="text-gray-900 bg-white w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                End Date
+              </label>
+              <input
+                type="date"
+                name="to"
+                value={to}
+                onChange={onChange}
+                disabled={current}
+                className="text-gray-900 bg-white w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+              />
+            </div>
+          </div>
+          
+          <div className="flex items-center py-2">
             <input
               type="checkbox"
               name="current"
+              id="current"
               checked={current}
               value={current}
               onChange={() => setFormData({ ...formData, current: !current })}
-              className="mr-2 text-blue-600 focus:ring-blue-600"
+              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
             />
-            <span className="text-gray-700">Current Job</span>
-          </div>
-          <div>
-            <label className="block text-left text-gray-700 font-medium mb-1">
-              To Date
+            <label htmlFor="current" className="ml-2 text-sm text-gray-700">
+              I currently work here
             </label>
-            <input
-              type="date"
-              name="to"
-              value={to}
-              onChange={onChange}
-              disabled={current}
-              className="text-gray-900 bg-white w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:bg-gray-100"
-            />
           </div>
-          <div className="flex flex-col sm:flex-row gap-3 mt-6">
+          
+          <div className="flex gap-3 pt-4">
             <button
               type="submit"
-              className="flex-1 sm:flex-none inline-flex items-center justify-center px-6 py-2.5 bg-blue-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200 hover:shadow-md"
+              className="flex-1 inline-flex items-center justify-center px-6 py-2.5 bg-blue-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200"
             >
               <i className="fas fa-check mr-2"></i>
               Add Experience
             </button>
-            <Link
-              className="flex-1 sm:flex-none inline-flex items-center justify-center px-6 py-2.5 bg-gray-100 text-gray-700 font-semibold text-sm rounded-lg hover:bg-gray-200 transition-all duration-200 text-center"
-              href="/home"
-              onClick={(e) => { e.preventDefault(); window.history.back(); }}
+            <button
+              type="button"
+              onClick={() => window.history.back()}
+              className="px-6 py-2.5 bg-gray-100 text-gray-700 font-semibold text-sm rounded-lg hover:bg-gray-200 transition-all duration-200"
             >
-              <i className="fas fa-arrow-left mr-2"></i>
               Cancel
-            </Link>
+            </button>
           </div>
         </form>
       </div>

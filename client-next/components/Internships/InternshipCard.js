@@ -9,7 +9,7 @@ import { api, formatRelativeTime } from "../../lib/utils";
 import DeadlineBadge from "./DeadlineBadge";
 import ApplyNowButton from "./ApplyNowButton";
 import ReactionButton from "./ReactionButton";
-import ProfileImage from "../ProfileImage";
+import Avatar from "../Avatar";
 
 const InternshipCard = ({
   internship,
@@ -164,13 +164,12 @@ const InternshipCard = ({
         {/* Posted By and Metadata Footer */}
         <div className="flex items-center justify-between py-4 mb-4 border-t border-b border-gray-200">
           <div className="flex items-center space-x-2.5">
-            <ProfileImage
-              userId={typeof user === 'string' ? user : user?._id}
-              userName={name}
-              avatar={internship.userProfile?.avatar}
-              profile={internship.userProfile}
-              size="w-9 h-9"
-              textSize="text-xs"
+            <Avatar
+              userId={internship.postedBy?._id || (typeof user === 'string' ? user : user?._id)}
+              userName={internship.postedBy?.name || name}
+              avatar={internship.postedBy?.avatar || internship.userProfile?.avatar}
+              profile={internship.postedBy || internship.userProfile}
+              size={36}
             />
             <div>
               <p className="text-xs text-gray-500">Posted by</p>

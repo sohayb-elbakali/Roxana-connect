@@ -8,6 +8,7 @@ const USER_ERROR = "users/USER_ERROR";
 const LOGIN_SUCCESS = "users/LOGIN_SUCCESS";
 const LOGIN_FAIL = "users/LOGIN_FAIL";
 const LOGOUT = "users/LOGOUT";
+const CLEAR_ERROR = "users/CLEAR_ERROR";
 
 export const loadUser = () => async (dispatch) => {
     try {
@@ -63,16 +64,24 @@ export function login(email, password) {
       const { getCurrentProfile } = require('./profiles');
       dispatch(getCurrentProfile());
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.errors) {
+      let errorMsg = "Invalid email or password. Please try again.";
+      
+      // Check for rate limiting (HTTP 429)
+      if (error.response && error.response.status === 429) {
+        errorMsg = "You've entered the wrong password too many times. Please try again after 10 minutes.";
+      } else if (error.response && error.response.data && error.response.data.errors) {
         const errors = error.response.data.errors;
-        errors.forEach((error) => {
-          dispatch(showAlertMessage(error.msg, "error"));
-        });
-      } else {
-        dispatch(showAlertMessage("Network error. Please try again.", "error"));
+        errorMsg = errors[0]?.msg || errorMsg;
+      } else if (error.response && error.response.data && error.response.data.msg) {
+        errorMsg = error.response.data.msg;
+      } else if (!error.response) {
+        // Network error (no response from server)
+        errorMsg = "Network error. Please check your connection and try again.";
       }
+      
       dispatch({
         type: LOGIN_FAIL,
+        payload: { msg: errorMsg },
       });
     }
   };
@@ -103,11 +112,16 @@ export const resendVerification = () => async (dispatch) => {
   }
 };
 
+export const clearError = () => ({
+  type: CLEAR_ERROR,
+});
+
 const initialState = {
   token: typeof window !== 'undefined' ? localStorage.getItem("token") : null,
   isAuthenticated: null,
   loading: true,
   user: null,
+  error: null,
 };
 
 export default function reducer(state = initialState, action) {
@@ -128,6 +142,7 @@ export default function reducer(state = initialState, action) {
         token: payload.token,
         isAuthenticated: true,
         loading: false,
+        error: null,
       };
     case REGISTER_FAIL:
     case LOGIN_FAIL:
@@ -137,6 +152,7 @@ export default function reducer(state = initialState, action) {
         token: null,
         isAuthenticated: false,
         loading: false,
+        error: payload || { msg: "Authentication failed" },
       };
     case USER_ERROR:
     case LOGOUT:
@@ -147,6 +163,11 @@ export default function reducer(state = initialState, action) {
         isAuthenticated: false,
         loading: false,
         user: null,
+      };
+    case CLEAR_ERROR:
+      return {
+        ...state,
+        error: null,
       };
 
     default:

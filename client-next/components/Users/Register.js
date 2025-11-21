@@ -43,16 +43,16 @@ const Register = ({ isAuthenticated, register, showAlertMessage }) => {
       <div className="w-full max-w-md">
         {/* Card */}
         <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
-          {/* Header */}
-          <div className="text-center mb-6">
-            <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
-              <i className="fas fa-user-plus text-white text-xl"></i>
+          {/* Logo/Brand */}
+          <Link href="/" className="block text-center mb-6 group">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:scale-105 transition-transform">
+              <i className="fas fa-briefcase text-white text-2xl"></i>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-1">
-              Create Account
-            </h2>
-            <p className="text-gray-500 text-sm">Join Roxana and start tracking</p>
-          </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-1">
+              Roxana <span className="text-blue-600">Connect</span>
+            </h1>
+            <p className="text-gray-600 text-sm">Create your account</p>
+          </Link>
 
           {/* Form */}
           <form className="space-y-3.5" onSubmit={onSubmit}>
@@ -131,24 +131,32 @@ const Register = ({ isAuthenticated, register, showAlertMessage }) => {
             </div>
 
             <button
-              className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold shadow-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 text-sm mt-5 transform hover:scale-[1.02]"
+              className="w-full py-3 rounded-lg bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 transition-all duration-200 text-sm mt-5"
               type="submit"
             >
+              <i className="fas fa-user-plus mr-2"></i>
               Create Account
             </button>
           </form>
 
           {/* Footer */}
-          <div className="mt-5 text-center">
+          <div className="mt-6 text-center space-y-3">
             <p className="text-gray-600 text-sm">
               Already have an account?{" "}
               <Link
                 href="/login"
-                className="text-blue-600 hover:text-blue-700 font-bold"
+                className="text-blue-600 hover:text-blue-700 font-semibold"
               >
                 Sign in
               </Link>
             </p>
+            <Link
+              href="/"
+              className="inline-flex items-center text-sm text-gray-500 hover:text-blue-600 transition-colors"
+            >
+              <i className="fas fa-arrow-left mr-2"></i>
+              Back to Home
+            </Link>
           </div>
         </div>
 

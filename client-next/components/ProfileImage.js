@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { getProfileImageSync } from "../lib/utils";
 
 const serverUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || "http://localhost:5000";
 
@@ -18,18 +19,22 @@ const ProfileImage = ({
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  // Get the image URL - prioritize avatar prop, then profile.avatar, then fall back to default
-  const imageUrl = avatar || profile?.avatar || "/assets/default.png";
+  // Try to get cached image first, then use provided avatar
+  const cachedImage = userId ? getProfileImageSync(userId) : null;
+  const imageUrl = cachedImage !== "/assets/default.png" ? cachedImage : (avatar || profile?.avatar || "/assets/default.png");
+  
+  // Ensure imageUrl is never null
+  const safeImageUrl = imageUrl || "/assets/default.png";
   
   // Check if it's an external URL or local
-  const isExternal = imageUrl.startsWith('http');
-  const displayUrl = imageError ? "/assets/default.png" : imageUrl;
+  const isExternal = safeImageUrl.startsWith('http');
+  const displayUrl = imageError ? "/assets/default.png" : safeImageUrl;
 
   // Reset error state when imageUrl changes
   useEffect(() => {
     setImageError(false);
     setImageLoaded(false);
-  }, [imageUrl]);
+  }, [safeImageUrl]);
 
   const handleImageError = () => {
     setImageError(true);

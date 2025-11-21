@@ -4,7 +4,8 @@ import { useState } from "react";
 import { connect } from "react-redux";
 const defaultAvatar = "/assets/default.png";
 import { deleteInternshipComment, reactToComment, likeComment, unlikeComment } from "../../lib/redux/modules/internships";
-import { formatRelativeTime, getProfileImage } from "../../lib/utils";
+import { formatRelativeTime } from "../../lib/utils";
+import Avatar from "../Avatar";
 
 const CommentSection = ({ 
   comments = [], 
@@ -94,15 +95,11 @@ const CommentSection = ({
           >
             <div className="flex space-x-4">
               <div className="flex-shrink-0">
-                <img
-                  className="w-12 h-12 rounded-full object-cover border-2 border-purple-200 shadow-sm"
-                  alt={comment.name}
-                  src={
-                    hasImageError 
-                      ? defaultAvatar 
-                      : getProfileImage(comment.user)
-                  }
-                  onError={() => handleImageError(comment.user)}
+                <Avatar
+                  userId={comment.user}
+                  userName={comment.name}
+                  size={48}
+                  className="border-2 border-purple-200 shadow-sm"
                 />
               </div>
               <div className="flex-1 min-w-0">

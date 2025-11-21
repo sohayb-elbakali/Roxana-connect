@@ -138,9 +138,16 @@ export const deletePost = (id) => async (dispatch) => {
 };
 
 // Add post
-export const addPost = (formData) => async (dispatch) => {
+export const addPost = (formData) => async (dispatch, getState) => {
   try {
     const res = await api.post("/posts", formData);
+
+    // Immediately cache the user's profile image for the new post
+    const state = getState();
+    const currentProfile = state.profiles?.profile;
+    if (res.data.user?._id && currentProfile?.avatar) {
+      cacheManager.set('profileImages', res.data.user._id, currentProfile.avatar, 10 * 60 * 1000);
+    }
 
     dispatch({
       type: ADD_POST,
@@ -203,9 +210,17 @@ export const getPost = (id) => async (dispatch) => {
 };
 
 // Add comment
-export const addComment = (postId, formData) => async (dispatch) => {
+export const addComment = (postId, formData) => async (dispatch, getState) => {
   try {
     const res = await api.post(`/posts/comment/${postId}`, formData);
+
+    // Immediately cache the user's profile image for the new comment
+    const state = getState();
+    const currentProfile = state.profiles?.profile;
+    const user = state.users?.user;
+    if (user?._id && currentProfile?.avatar) {
+      cacheManager.set('profileImages', user._id, currentProfile.avatar, 10 * 60 * 1000);
+    }
 
     dispatch({
       type: ADD_COMMENT,

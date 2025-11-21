@@ -3,10 +3,12 @@ const { auth } = require("../utils/index.js");
 const router = express.Router();
 const { check, validationResult } = require("express-validator");
 const User = require("../models/User.js");
+const LoginAttempt = require("../models/LoginAttempt.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { sendVerificationEmail, sendPasswordResetEmail } = require("../utils/email.js");
+const limitLogin = require("../middleware/limitLogin.js");
 
 // Get JWT secret from environment
 const getJwtSecret = () => {
@@ -63,7 +65,7 @@ router.post(
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
       
-      // Generate verification token
+      // Generate verification token (but don't send email automatically)
       const verificationToken = jwt.sign(
         { userId: user.id },
         getJwtSecret(),
@@ -73,10 +75,11 @@ router.post(
       
       await user.save();
 
-      // Send verification email (don't wait for it)
-      sendVerificationEmail(email, name, verificationToken).catch(err => {
-        console.error("Failed to send verification email:", err);
-      });
+      // NOTE: Verification email is NOT sent automatically on signup
+      // User can request it from Settings page using "Resend Verification" button
+      // sendVerificationEmail(email, name, verificationToken).catch(err => {
+      //   console.error("Failed to send verification email:", err);
+      // });
 
       const payload = {
         user: {
@@ -105,7 +108,7 @@ router.post(
       res.json({
         token: accessToken,
         refreshToken: refreshToken,
-        message: "Registration successful! Please check your email to verify your account."
+        message: "Registration successful! Welcome to Roxana Connect."
       });
     } catch (err) {
       res.status(500).send("Server error during registration");
@@ -120,6 +123,7 @@ Public
 */
 router.post(
   "/login",
+  // limitLogin, // Rate limiting middleware - DISABLED FOR NOW (uncomment to re-enable)
   check("email", "Please include a valid email").isEmail(),
   check(
     "password",
@@ -133,8 +137,24 @@ router.post(
     const { email, password } = req.body;
 
     try {
+      // RATE LIMITING DISABLED - Uncomment below to re-enable
+      // Get client IP from middleware
+      // const clientIp = req.clientIp;
+      // console.log('Processing login for IP:', clientIp);
+      
       let user = await User.findOne({ email });
       if (!user) {
+        // RATE LIMITING DISABLED - Uncomment below to re-enable
+        // Increment failed attempts
+        // if (req.loginAttempt) {
+        //   req.loginAttempt.attempts += 1;
+        //   await req.loginAttempt.save();
+        //   console.log(`Failed attempt ${req.loginAttempt.attempts} for IP ${clientIp}`);
+        // } else {
+        //   await LoginAttempt.create({ ip: clientIp, attempts: 1 });
+        //   console.log(`First failed attempt for IP ${clientIp}`);
+        // }
+        
         return res
           .status(400)
           .json({ errors: [{ msg: "Invalid Credentials" }] });
@@ -142,10 +162,26 @@ router.post(
 
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
+        // RATE LIMITING DISABLED - Uncomment below to re-enable
+        // Increment failed attempts
+        // if (req.loginAttempt) {
+        //   req.loginAttempt.attempts += 1;
+        //   await req.loginAttempt.save();
+        //   console.log(`Failed attempt ${req.loginAttempt.attempts} for IP ${clientIp}`);
+        // } else {
+        //   await LoginAttempt.create({ ip: clientIp, attempts: 1 });
+        //   console.log(`First failed attempt for IP ${clientIp}`);
+        // }
+        
         return res
           .status(400)
           .json({ errors: [{ msg: "Invalid Credentials" }] });
       }
+      
+      // RATE LIMITING DISABLED - Uncomment below to re-enable
+      // Successful login - clear login attempts for this IP
+      // await LoginAttempt.deleteOne({ ip: clientIp });
+      // console.log(`Successful login for IP ${clientIp}, cleared attempts`);
 
       const payload = {
         user: {
@@ -337,7 +373,11 @@ router.post(
 
       // Find user and check token validity
       const user = await User.findById(decoded.userId);
-      if (!user || user.resetPasswordToken !== token) {
+      if (!user) {
+        return res.status(400).json({ msg: "Invalid or expired reset token" });
+      }
+
+      if (user.resetPasswordToken !== token) {
         return res.status(400).json({ msg: "Invalid or expired reset token" });
       }
 
@@ -355,6 +395,7 @@ router.post(
 
       res.json({ msg: "Password reset successful! You can now login with your new password." });
     } catch (err) {
+      console.error('Password reset error');
       res.status(400).json({ msg: "Invalid or expired reset token" });
     }
   }

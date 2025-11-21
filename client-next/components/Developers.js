@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { connect } from "react-redux";
 import Link from "next/link";
 import { getProfiles } from "../lib/redux/modules/profiles";
-import ProfileImage from "./ProfileImage";
+import Avatar from "./Avatar";
 
 function Developers({ user, getProfiles, profiles: { profiles, loading } }) {
   useEffect(() => {
@@ -59,16 +59,14 @@ function Developer({ profile }) {
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:border-blue-300 hover:shadow-md transition-all duration-200">
       <div className="p-6 flex flex-col items-center">
-        <div className="mb-4">
-          <ProfileImage
-            userId={profile?.user?._id}
-            userName={profile?.user?.name || "Developer"}
-            avatar={profile?.avatar}
-            profile={profile}
-            size="w-24 h-24"
-            textSize="text-2xl"
-          />
-        </div>
+        <Avatar
+          userId={profile?.user?._id}
+          userName={profile?.user?.name || "Developer"}
+          avatar={profile?.avatar}
+          profile={profile}
+          size={96}
+          className="mb-4"
+        />
         <h3 className="text-base font-semibold text-gray-900 mb-1 text-center">
           {profile && profile.user ? profile.user.name : "Unknown User"}
         </h3>

@@ -363,28 +363,34 @@ export const deleteEducation = (id) => async (dispatch) => {
 export const deleteAccount = () => async (dispatch) => {
   try {
     console.log("Deleting account...");
-    await api.delete("/profiles");
+    const response = await api.delete("/profiles");
+    console.log("Delete response:", response);
 
     dispatch({ type: CLEAR_PROFILE });
 
-    dispatch(showAlertMessage("Your account has been permanently deleted"));
+    dispatch(showAlertMessage("Your account has been permanently deleted", "success"));
 
-    // Clear the auth token and redirect to login
+    // Clear the auth token and redirect to login after a short delay
     if (typeof window !== 'undefined') {
-      localStorage.removeItem("token");
-      window.location.href = "/";
+      setTimeout(() => {
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.href = "/";
+      }, 1500);
     }
   } catch (err) {
-    console.log("Delete account error:", err);
+    console.error("Delete account error:", err);
+    console.error("Error response:", err.response);
+    console.error("Error message:", err.message);
+    
     if (err.response) {
-      dispatch(
-        showAlertMessage(
-          err.response.data?.msg ||
-            err.response.statusText ||
-            "An error occurred while deleting account",
-          "error"
-        )
-      );
+      const errorMsg = err.response.data?.msg ||
+                      err.response.data?.message ||
+                      err.response.statusText ||
+                      "An error occurred while deleting account";
+      dispatch(showAlertMessage(errorMsg, "error"));
+    } else if (err.request) {
+      dispatch(showAlertMessage("No response from server. Please check your connection.", "error"));
     } else {
       dispatch(showAlertMessage("Network error. Please try again.", "error"));
     }
@@ -392,7 +398,7 @@ export const deleteAccount = () => async (dispatch) => {
     dispatch({
       type: PROFILE_ERROR,
       payload: {
-        msg: err.response?.statusText || "An error occurred",
+        msg: err.response?.statusText || err.message || "An error occurred",
         status: err.response?.status || 500,
       },
     });

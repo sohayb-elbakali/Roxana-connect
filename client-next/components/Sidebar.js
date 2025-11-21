@@ -3,7 +3,7 @@
 import { connect } from "react-redux";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import ProfileImage from "./ProfileImage";
+import Avatar from "./Avatar";
 
 function Sidebar({ users: { user, isAuthenticated }, profiles: { profile }, trackingCount }) {
   const pathname = usePathname();
@@ -25,16 +25,14 @@ function Sidebar({ users: { user, isAuthenticated }, profiles: { profile }, trac
             className="flex items-center justify-center mb-4 group"
             title="Profile"
           >
-            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-200 group-hover:border-blue-500 transition-all duration-200">
-              <ProfileImage
-                userId={user?._id}
-                userName={user?.name || "User"}
-                avatar={profile?.avatar}
-                profile={profile}
-                size="w-full h-full"
-                textSize="text-xs"
-              />
-            </div>
+            <Avatar
+              userId={user?._id}
+              userName={user?.name || "User"}
+              avatar={profile?.avatar}
+              profile={profile}
+              size={40}
+              className="border-2 border-gray-200 group-hover:border-blue-500 transition-all duration-200"
+            />
           </Link>
 
           <div className="w-10 h-px bg-gray-200 mx-auto mb-4"></div>

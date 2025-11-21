@@ -57,14 +57,14 @@ const ProfileRequired = ({ component: Component, profiles: { profile, loading },
           <div className="bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden">
             {/* Header with gradient */}
             <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-12 text-center">
-              <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i className="fas fa-user-plus text-white text-3xl"></i>
+              <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <i className="fas fa-briefcase text-blue-600 text-3xl"></i>
               </div>
               <h1 className="text-3xl font-bold text-white mb-3">
                 Welcome to Roxana Connect!
               </h1>
               <p className="text-blue-100 text-lg">
-                Let's set up your profile to get started
+                Your journey to professional success starts here
               </p>
             </div>
 

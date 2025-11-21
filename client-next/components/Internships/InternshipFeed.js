@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo } from "react";
 import { connect } from "react-redux";
+import Link from "next/link";
 import { fetchInternships } from "../../lib/redux/modules/internships";
 import { fetchTrackedInternships } from "../../lib/redux/modules/tracking";
 import InternshipCard from "./InternshipCard";
@@ -187,13 +188,14 @@ const InternshipFeed = ({
                 {internships.length === 1 ? "opportunity" : "opportunities"} • Find your perfect internship
               </p>
             </div>
-            <a
+            <Link
               href="/internship/create"
-              className="inline-flex items-center px-6 py-3 bg-white text-blue-600 font-semibold text-sm rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all duration-200"
+              prefetch={true}
+              className="inline-flex items-center px-6 py-3 bg-white text-blue-600 font-semibold text-sm rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all duration-150"
             >
               <i className="fas fa-plus mr-2"></i>
               Post Internship
-            </a>
+            </Link>
           </div>
         </div>
       </div>

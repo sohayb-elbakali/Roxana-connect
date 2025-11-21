@@ -122,6 +122,8 @@ export const preloadProfileImage = async (userId) => {
     const avatar = response.data?.avatar || "/assets/default.png";
     cacheManager.set('profileImages', userId, avatar, IMAGE_CACHE_TTL);
   } catch (err) {
+    // Silently handle errors - user might not have a profile yet
+    // This is normal for new users, so don't log errors
     cacheManager.set('profileImages', userId, "/assets/default.png", IMAGE_CACHE_TTL);
   }
 };

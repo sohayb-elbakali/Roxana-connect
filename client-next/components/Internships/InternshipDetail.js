@@ -12,6 +12,7 @@ import {
 } from "../../lib/redux/modules/internships";
 import { trackInternship, untrackInternship } from "../../lib/redux/modules/tracking";
 import { formatRelativeTime, getProfileImage } from "../../lib/utils";
+import Avatar from "../Avatar";
 import CommentSection from "./CommentSection";
 import CommentForm from "./CommentForm";
 import DeadlineBadge from "./DeadlineBadge";
@@ -258,20 +259,17 @@ const InternshipDetail = ({
 
               {/* Posted By */}
               <div className="flex items-center space-x-3 mb-6 pb-6 border-b border-gray-200">
-                <img
-                  className="w-12 h-12 rounded-full object-cover border-2 border-blue-200"
-                  alt=""
-                  src={
-                    imageError
-                      ? defaultAvatar
-                      : getProfileImage(typeof internship.user === 'string' ? internship.user : internship.user?._id)
-                  }
-                  onError={handleImageError}
+                <Avatar
+                  userId={internship.postedBy?._id || (typeof internship.user === 'string' ? internship.user : internship.user?._id)}
+                  userName={internship.postedBy?.name || internship.name}
+                  avatar={internship.postedBy?.avatar}
+                  profile={internship.postedBy}
+                  size={48}
                 />
                 <div>
                   <p className="text-sm text-gray-600">Posted by</p>
                   <p className="text-base font-semibold text-gray-900">
-                    {internship.name}
+                    {internship.postedBy?.name || internship.name}
                   </p>
                 </div>
                 <div className="ml-auto text-sm text-gray-500">

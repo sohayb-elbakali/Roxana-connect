@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logout } from "../lib/redux/modules/users";
 import { getCurrentProfile } from "../lib/redux/modules/profiles";
-import ProfileImage from "./ProfileImage";
+import Avatar from "./Avatar";
 
 const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, trackingCount, logout, getCurrentProfile }) => {
   const pathname = usePathname();
@@ -34,7 +34,7 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
           <Link
             key={link.to}
             href={link.to}
-            className={`relative px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 ${
+            className={`relative px-4 py-2 rounded-lg font-medium text-sm transition-colors duration-150 ${
               isActive(link.to)
                 ? "bg-white text-blue-600"
                 : "text-white hover:bg-white/10"
@@ -54,8 +54,10 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
       <div className="hidden lg:flex items-center space-x-3">
         {/* Only show Post Internship button for admins and Level 2-3 users */}
         {(user?.role === 'admin' || (user?.level && user.level >= 2)) && (
-          <Link href="/internship/create"
-            className="px-4 py-2 bg-white text-blue-600 rounded-lg font-semibold text-sm hover:bg-gray-50 transition-all duration-200"
+          <Link 
+            href="/internship/create"
+            prefetch={true}
+            className="px-4 py-2 bg-white text-blue-600 rounded-lg font-semibold text-sm hover:bg-gray-50 transition-all duration-150 shadow-sm hover:shadow"
           >
             <i className="fas fa-plus mr-2"></i>
             Post Internship
@@ -65,19 +67,17 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
         <div className="relative">
           <button
             onClick={() => setShowProfileMenu(!showProfileMenu)}
-            className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-all duration-200"
+            className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors duration-150"
           >
-            <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white/30">
-              <ProfileImage
-                userId={user?._id}
-                userName={user?.name || "User"}
-                avatar={profile?.avatar}
-                profile={profile}
-                size="w-full h-full"
-                textSize="text-xs"
-              />
-            </div>
-            <i className={`fas fa-chevron-down text-white text-xs transition-transform duration-200 ${showProfileMenu ? 'rotate-180' : ''}`}></i>
+            <Avatar
+              userId={user?._id}
+              userName={user?.name || "User"}
+              avatar={profile?.avatar}
+              profile={profile}
+              size={32}
+              className="border-2 border-white/30"
+            />
+            <i className={`fas fa-chevron-down text-white text-xs transition-transform duration-150 ${showProfileMenu ? 'rotate-180' : ''}`}></i>
           </button>
           
           {showProfileMenu && (
@@ -209,9 +209,9 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#3B82F6] shadow-sm border-b border-blue-300">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#3B82F6] shadow-sm border-b border-blue-300 will-change-transform">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-16 min-h-[4rem]">
             <Link
               className="group flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-white/10 transition-all duration-300"
               href={isAuthenticated ? "/home" : "/"}

@@ -21,10 +21,15 @@ const Landing = ({ isAuthenticated }) => {
       <div className="w-full max-w-4xl mx-auto text-center px-6 py-12">
         {/* Title */}
         <div className="flex flex-col items-center mb-8">
-          <h1 className="text-6xl md:text-7xl font-extrabold text-gray-900 mb-4 tracking-tight">
-            Roxana
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-xl">
+              <i className="fas fa-briefcase text-white text-4xl"></i>
+            </div>
+          </div>
+          <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 tracking-tight mb-4">
+            Roxana <span className="text-blue-600">Connect</span>
           </h1>
-          <p className="text-2xl md:text-3xl text-blue-600 font-bold tracking-wide">
+          <p className="text-xl md:text-2xl text-gray-600 font-semibold">
             Track. Collaborate. Succeed.
           </p>
         </div>

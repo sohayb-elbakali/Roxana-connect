@@ -173,13 +173,13 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
           )}
 
           {/* Password & Security Card */}
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 hover:border-purple-300 hover:shadow-md transition-all duration-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-key text-purple-600 text-lg"></i>
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 hover:border-blue-300 hover:shadow-md transition-all duration-200">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center space-x-4 flex-1 min-w-0">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <i className="fas fa-key text-blue-600 text-lg"></i>
                 </div>
-                <div>
+                <div className="min-w-0">
                   <h3 className="text-lg font-semibold text-gray-900">
                     Password & Security
                   </h3>
@@ -190,7 +190,7 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
               </div>
               <button
                 onClick={() => setShowPasswordModal(true)}
-                className="inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold rounded-lg text-white bg-purple-600 hover:bg-purple-700 transition-all duration-200 shadow-sm min-w-[140px]"
+                className="inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 shadow-sm w-[180px] flex-shrink-0"
               >
                 <i className="fas fa-edit mr-2"></i>
                 Change Password
@@ -220,7 +220,7 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
                   </div>
                 </div>
                 <button
-                  className={`inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold rounded-lg text-white transition-all duration-200 shadow-sm min-w-[140px] ${
+                  className={`inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold rounded-lg text-white transition-all duration-200 shadow-sm w-[180px] ${
                     isResending
                       ? "bg-gray-400 cursor-not-allowed"
                       : "bg-yellow-600 hover:bg-yellow-700"
@@ -261,7 +261,7 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
                 </div>
               </div>
               <Link
-                className="inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 shadow-sm min-w-[140px]"
+                className="inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 shadow-sm w-[180px]"
                 href="/add-education"
               >
                 <i className="fas fa-plus mr-2"></i>
@@ -287,7 +287,7 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
                 </div>
               </div>
               <Link
-                className="inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 shadow-sm min-w-[140px]"
+                className="inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 shadow-sm w-[180px]"
                 href="/add-experience"
               >
                 <i className="fas fa-plus mr-2"></i>
@@ -313,7 +313,7 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
                 </div>
               </div>
               <button
-                className="inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold rounded-lg text-white bg-red-600 hover:bg-red-700 transition-all duration-200 shadow-sm min-w-[140px]"
+                className="inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold rounded-lg text-white bg-red-600 hover:bg-red-700 transition-all duration-200 shadow-sm w-[180px]"
                 onClick={() => setShowDeleteAlert(true)}
               >
                 <i className="fas fa-trash mr-2"></i>
@@ -327,25 +327,23 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
         {showPasswordModal && (
           <div className="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             {/* Background overlay */}
-            <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-              <div 
-                className="fixed inset-0 transition-opacity" 
-                style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
-                aria-hidden="true"
-                onClick={() => {
-                  setShowPasswordModal(false);
-                  setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
-                  setPasswordMessage({ type: "", text: "" });
-                }}
-              ></div>
+            <div 
+              className="fixed inset-0 transition-opacity z-40" 
+              style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)' }}
+              aria-hidden="true"
+              onClick={() => {
+                setShowPasswordModal(false);
+                setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+                setPasswordMessage({ type: "", text: "" });
+              }}
+            ></div>
 
-              {/* Center modal */}
-              <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
+            {/* Modal container */}
+            <div className="flex items-center justify-center min-h-screen px-4 py-6">
               {/* Modal panel */}
-              <div className="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+              <div className="relative bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all max-w-lg w-full z-50">
                 {/* Modal Header */}
-                <div className="bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-5">
+                <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-5">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
@@ -408,7 +406,7 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
                         onChange={handlePasswordChange}
                         required
                         placeholder="Enter your current password"
-                        className="text-gray-900 bg-white w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent transition-all"
+                        className="text-gray-900 bg-white w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                       />
                     </div>
 
@@ -426,7 +424,7 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
                         required
                         minLength={6}
                         placeholder="Enter new password (min 6 characters)"
-                        className="text-gray-900 bg-white w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent transition-all"
+                        className="text-gray-900 bg-white w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                       />
                       <p className="mt-1 text-xs text-gray-500">
                         <i className="fas fa-info-circle mr-1"></i>
@@ -447,7 +445,7 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
                         onChange={handlePasswordChange}
                         required
                         placeholder="Confirm your new password"
-                        className="text-gray-900 bg-white w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent transition-all"
+                        className="text-gray-900 bg-white w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                       />
                     </div>
                   </div>
@@ -461,7 +459,7 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
                         setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
                         setPasswordMessage({ type: "", text: "" });
                       }}
-                      className="flex-1 px-4 py-3 rounded-lg border-2 border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition-all duration-200"
+                      className="flex-1 px-4 py-2.5 rounded-lg border-2 border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition-all duration-200"
                     >
                       <i className="fas fa-times mr-2"></i>
                       Cancel
@@ -469,10 +467,10 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
                     <button
                       type="submit"
                       disabled={passwordLoading}
-                      className={`flex-1 inline-flex items-center justify-center px-4 py-3 rounded-lg text-white font-semibold transition-all duration-200 shadow-sm ${
+                      className={`flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-white font-semibold transition-all duration-200 shadow-sm ${
                         passwordLoading
                           ? "bg-gray-400 cursor-not-allowed"
-                          : "bg-purple-600 hover:bg-purple-700 shadow-lg hover:shadow-xl"
+                          : "bg-blue-600 hover:bg-blue-700"
                       }`}
                     >
                       {passwordLoading ? (
@@ -501,9 +499,17 @@ function Settings({ deleteAccount, resendVerification, loadUser, user }) {
         onClose={() => setShowDeleteAlert(false)}
         onConfirm={deleteAccount}
         type="delete"
-        title="Delete Account"
-        message="Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed."
-        confirmText="Delete"
+        title="Delete Account Permanently"
+        message="Are you sure you want to delete your account? This will permanently remove:
+        
+• All your posts and comments
+• All internships you posted
+• All your likes and interactions
+• Your application tracking data
+• Your profile and account
+
+This action cannot be undone and all your data will be lost forever."
+        confirmText="Delete Everything"
         cancelText="Cancel"
       />
     </div>

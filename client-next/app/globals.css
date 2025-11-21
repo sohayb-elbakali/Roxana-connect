@@ -7,9 +7,21 @@
     @apply font-sans bg-gray-50 text-gray-900 antialiased;
   }
 
-  /* Smooth scrolling */
+  /* Smooth scrolling and prevent layout shift */
   html {
     scroll-behavior: smooth;
+  }
+  
+  /* Prevent content jump on navigation */
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Stable layout - prevent shifts */
+  body {
+    overflow-x: hidden;
+    overflow-y: scroll;
   }
 
   /* Typography scale */
@@ -159,4 +171,39 @@
 .animate-float-up-3 {
   animation: float-up-3 0.8s ease-out forwards;
   animation-delay: 0.2s;
+}
+
+/* Prevent layout shift on page transitions */
+@layer utilities {
+  .page-transition {
+    @apply transition-opacity duration-150 ease-in-out;
+  }
+  
+  /* Stable container to prevent content jump */
+  .stable-container {
+    min-height: calc(100vh - 4rem);
+    will-change: contents;
+  }
+  
+  /* Prevent flash of unstyled content */
+  .no-fouc {
+    opacity: 1;
+    transition: opacity 0.15s ease-in-out;
+  }
+}
+
+/* Smooth page transitions */
+@media (prefers-reduced-motion: no-preference) {
+  .page-content {
+    animation: fadeIn 0.15s ease-in-out;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0.95;
+  }
+  to {
+    opacity: 1;
+  }
 }

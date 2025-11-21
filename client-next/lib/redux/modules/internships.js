@@ -129,9 +129,16 @@ export const fetchInternship = (id) => async (dispatch) => {
 };
 
 // Create new internship
-export const createInternship = (formData) => async (dispatch) => {
+export const createInternship = (formData) => async (dispatch, getState) => {
   try {
     const res = await api.post("/internships", formData);
+
+    // Immediately cache the user's profile image for the new internship
+    const state = getState();
+    const currentProfile = state.profiles?.profile;
+    if (res.data.postedBy?._id && currentProfile?.avatar) {
+      cacheManager.set('profileImages', res.data.postedBy._id, currentProfile.avatar, 10 * 60 * 1000);
+    }
 
     dispatch({
       type: CREATE_INTERNSHIP,
@@ -235,9 +242,17 @@ export const clearFilters = () => (dispatch) => {
 };
 
 // Add comment to internship
-export const addInternshipComment = (internshipId, formData) => async (dispatch) => {
+export const addInternshipComment = (internshipId, formData) => async (dispatch, getState) => {
   try {
     const res = await api.post(`/internships/${internshipId}/comment`, formData);
+
+    // Immediately cache the user's profile image for the new comment
+    const state = getState();
+    const currentProfile = state.profiles?.profile;
+    const user = state.users?.user;
+    if (user?._id && currentProfile?.avatar) {
+      cacheManager.set('profileImages', user._id, currentProfile.avatar, 10 * 60 * 1000);
+    }
 
     dispatch({
       type: ADD_COMMENT,

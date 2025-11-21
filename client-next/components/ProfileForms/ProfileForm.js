@@ -10,7 +10,7 @@ import {
   getCurrentProfile,
   uploadProfileImage,
 } from "../../lib/redux/modules/profiles";
-import ProfileImage from "../ProfileImage";
+import Avatar from "../Avatar";
 import CustomAlert from "../CustomAlert";
 
 const initialState = {
@@ -103,7 +103,7 @@ const ProfileForm = ({
 
   const onSubmit = (e) => {
     e.preventDefault();
-    createProfile(formData, navigate, profile ? true : false);
+    createProfile(formData, router.push, profile ? true : false);
   };
 
   const onFileChange = async (e) => {
@@ -173,14 +173,16 @@ const ProfileForm = ({
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-8">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <i className="fas fa-user-edit text-blue-600 text-2xl"></i>
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <i className="fas fa-briefcase text-white text-2xl"></i>
             </div>
             <h2 className="text-3xl font-bold text-gray-900 mb-2">
-              {profile ? "Edit Profile" : "Create Profile"}
+              {profile ? "Edit Profile" : "Create Your Profile"}
             </h2>
             <p className="text-gray-600">
-              Complete your profile to showcase your professional journey
+              {profile 
+                ? "Update your profile to showcase your professional journey" 
+                : "Welcome to Roxana Connect! Let's set up your profile"}
             </p>
           </div>
 
@@ -239,16 +241,14 @@ const ProfileForm = ({
                         onError={() => setImagePreview("")}
                       />
                     ) : (
-                      <div className="w-32 h-32 mx-auto rounded-full border-4 border-blue-200 shadow-lg overflow-hidden group-hover:border-blue-400 transition-all duration-200">
-                        <ProfileImage
-                          userId={profile?.user?._id}
-                          userName={profile?.user?.name || "User"}
-                          avatar={profile?.avatar}
-                          profile={profile}
-                          size="w-full h-full"
-                          textSize="text-2xl"
-                        />
-                      </div>
+                      <Avatar
+                        userId={profile?.user?._id}
+                        userName={profile?.user?.name || "User"}
+                        avatar={profile?.avatar}
+                        profile={profile}
+                        size={128}
+                        className="border-4 border-blue-200 shadow-lg group-hover:border-blue-400 transition-all duration-200"
+                      />
                     )}
                     
                     {/* Upload Overlay */}

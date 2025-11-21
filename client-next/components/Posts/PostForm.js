@@ -6,11 +6,17 @@ import { addPost } from "../../lib/redux/modules/posts";
 
 const PostForm = ({addPost}) => {
     const [text, setText] = useState("")
+    const [isPosting, setIsPosting] = useState(false)
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault()
-        addPost({text})
-        setText("")
+        setIsPosting(true)
+        try {
+            await addPost({text})
+            setText("")
+        } finally {
+            setIsPosting(false)
+        }
     }
 
     return (
@@ -39,10 +45,19 @@ const PostForm = ({addPost}) => {
             <button
               type="submit"
               className="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={!text.trim()}
+              disabled={!text.trim() || isPosting}
             >
-              <i className="fas fa-paper-plane mr-2"></i>
-              Post
+              {isPosting ? (
+                <>
+                  <i className="fas fa-spinner fa-spin mr-2"></i>
+                  Posting...
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-paper-plane mr-2"></i>
+                  Post
+                </>
+              )}
             </button>
           </div>
         </form>

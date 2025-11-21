@@ -152,31 +152,92 @@ router.get("/user/:user_id", auth, async (req, res) => {
 });
 
 router.delete("/", auth, async (req, res) => {
-  // Remove posts, profile, user
+  // Remove all user data: posts, comments, likes, internships, tracking, profile, and user account
 
   try {
-    // Delete posts first
-    await Post.deleteMany({ user: req.user.id });
-
-    // Delete profile
-    await Profile.findOneAndDelete({
-      user: req.user.id,
+    const userId = req.user.id;
+    const mongoose = require('mongoose');
+    
+    // 1. Delete all posts created by user
+    await Post.deleteMany({ user: userId });
+    
+    // 2. Remove user's comments from all posts (using string comparison)
+    const allPosts = await Post.find({});
+    for (const post of allPosts) {
+      const originalLength = post.comments.length;
+      post.comments = post.comments.filter(comment => comment.user.toString() !== userId);
+      if (post.comments.length !== originalLength) {
+        await post.save();
+      }
+    }
+    
+    // 3. Remove user's likes from all posts
+    const postsWithLikes = await Post.find({});
+    for (const post of postsWithLikes) {
+      const originalLength = post.likes.length;
+      post.likes = post.likes.filter(likeUserId => likeUserId.toString() !== userId);
+      if (post.likes.length !== originalLength) {
+        await post.save();
+      }
+    }
+    
+    // 4. Remove user's unlikes from all posts
+    const postsWithUnlikes = await Post.find({});
+    for (const post of postsWithUnlikes) {
+      const originalLength = post.unlikes.length;
+      post.unlikes = post.unlikes.filter(unlikeUserId => unlikeUserId.toString() !== userId);
+      if (post.unlikes.length !== originalLength) {
+        await post.save();
+      }
+    }
+    
+    // 5. Delete all internships posted by user
+    await Internship.deleteMany({ user: userId });
+    
+    // 6. Remove user's comments from all internships
+    const allInternships = await Internship.find({});
+    for (const internship of allInternships) {
+      const originalLength = internship.comments.length;
+      internship.comments = internship.comments.filter(comment => comment.user.toString() !== userId);
+      if (internship.comments.length !== originalLength) {
+        await internship.save();
+      }
+    }
+    
+    // 7. Remove user's likes from all internships
+    const allInternshipsForLikes = await Internship.find({});
+    for (const internship of allInternshipsForLikes) {
+      const originalLength = internship.likes.length;
+      internship.likes = internship.likes.filter(like => like.user.toString() !== userId);
+      if (internship.likes.length !== originalLength) {
+        await internship.save();
+      }
+    }
+    
+    // 8. Delete all application tracking records
+    await ApplicationTracking.deleteMany({ user: userId });
+    
+    // 9. Delete profile
+    await Profile.findOneAndDelete({ user: userId });
+    
+    // 10. Delete user account
+    await User.findOneAndDelete({ _id: userId });
+    res.json({ 
+      msg: "Account deleted successfully. All your data has been permanently removed." 
     });
-
-    // Delete user
-    await User.findOneAndDelete({ _id: req.user.id });
-
-    res.json({ msg: "User information is deleted successfully" });
   } catch (err) {
-    return res.status(500).send(err.message);
+    console.error("Error deleting account:", err);
+    console.error("Error stack:", err.stack);
+    console.error("Error message:", err.message);
+    return res.status(500).json({ 
+      msg: "Error deleting account. Please try again later.",
+      error: err.message 
+    });
   }
 });
 
 router.post("/upload", auth, uploadMiddleware.single("image"), async (req, res) => {
   try {
-    console.log("Upload request received");
-    console.log("User ID:", req.user.id);
-    console.log("File:", req.file);
 
     if (!req.file) {
       return res.status(400).json({ msg: "No file uploaded" });

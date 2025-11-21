@@ -79,7 +79,7 @@ const InternshipForm = ({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEditMode, id, internships.current, fetchInternship, auth.user, navigate]);
+  }, [isEditMode, id, internships.current, fetchInternship, auth.user, router]);
 
   const {
     company,

@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 import { getProfileById, clearViewingProfile, clearProfileError } from "../lib/redux/modules/profiles";
-import ProfileImage from "./ProfileImage";
+import Avatar from "./Avatar";
 import BasicInfo from "./ProfileInfo/BasicInfo";
 import Education from "./ProfileInfo/Education";
 import Experience from "./ProfileInfo/Experience";
@@ -13,6 +14,16 @@ import InternshipPreferences from "./ProfileInfo/InternshipPreferences";
 
 const Profile = ({ getProfileById, profiles: { profile: currentProfile, viewingProfile, loading, error }, auth, clearViewingProfile, clearProfileError }) => {
   let { id } = useParams();
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [currentId, setCurrentId] = useState(id);
+
+  // Reset initial load state when navigating to a different profile
+  useEffect(() => {
+    if (currentId !== id) {
+      setIsInitialLoad(true);
+      setCurrentId(id);
+    }
+  }, [id, currentId]);
 
   useEffect(() => {
     // Clear any previous errors before fetching new profile
@@ -31,51 +42,175 @@ const Profile = ({ getProfileById, profiles: { profile: currentProfile, viewingP
   // Use currentProfile if viewing own profile, otherwise use viewingProfile
   const profile = isOwnProfile ? currentProfile : viewingProfile;
 
+  // Once we have profile data or confirmed error, mark as loaded
+  useEffect(() => {
+    if (!loading && (profile !== undefined || error)) {
+      setIsInitialLoad(false);
+    }
+  }, [loading, profile, error]);
+
+  // Show loading spinner during initial load or while fetching
+  if (isInitialLoad || loading) {
+    return (
+      <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 text-lg">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Only show ProfileRequired for OWN profile when it doesn't exist
+  const shouldShowProfileRequired = isOwnProfile && !isInitialLoad && !loading && (profile === null || (error && error.msg));
+
   return (
     <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {loading || !profile ? (
-          <div className="text-center py-16">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-3 border-blue-600 mx-auto"></div>
-            <p className="text-gray-600 mt-4">Loading profile...</p>
+        {shouldShowProfileRequired ? (
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden">
+              {/* Header with gradient */}
+              <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-12 text-center">
+                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                  <i className="fas fa-briefcase text-blue-600 text-3xl"></i>
+                </div>
+                <h1 className="text-3xl font-bold text-white mb-3">
+                  {isOwnProfile ? "Welcome to Roxana Connect!" : "Profile Not Available"}
+                </h1>
+                <p className="text-blue-100 text-lg">
+                  {isOwnProfile 
+                    ? "Let's set up your profile to get started"
+                    : "This user hasn't created their profile yet"}
+                </p>
+              </div>
+
+              {/* Content */}
+              <div className="px-8 py-10">
+                <div className="text-center mb-8">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">
+                    {isOwnProfile ? "Create Your Professional Profile" : "Explore Other Profiles"}
+                  </h2>
+                  <p className="text-gray-600 text-lg">
+                    {isOwnProfile 
+                      ? "Set up your profile to showcase your skills and connect with opportunities"
+                      : "Check out other developers who have created their profiles"}
+                  </p>
+                </div>
+
+                {isOwnProfile && (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i className="fas fa-user-circle text-blue-600 text-2xl"></i>
+                      </div>
+                      <h3 className="font-semibold text-gray-900 mb-2">Build Your Profile</h3>
+                      <p className="text-sm text-gray-600">Showcase your skills and experience</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i className="fas fa-briefcase text-green-600 text-2xl"></i>
+                      </div>
+                      <h3 className="font-semibold text-gray-900 mb-2">Find Internships</h3>
+                      <p className="text-sm text-gray-600">Discover opportunities that match you</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i className="fas fa-network-wired text-purple-600 text-2xl"></i>
+                      </div>
+                      <h3 className="font-semibold text-gray-900 mb-2">Connect & Grow</h3>
+                      <p className="text-sm text-gray-600">Network with professionals</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  {isOwnProfile ? (
+                    <>
+                      <Link href="/create-profile"
+                        className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                      >
+                        <i className="fas fa-user-plus mr-3"></i>
+                        Create Your Profile Now
+                      </Link>
+                      <Link href="/home"
+                        className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-lg text-gray-700 bg-gray-100 hover:bg-gray-200 transition-all duration-200"
+                      >
+                        <i className="fas fa-arrow-left mr-3"></i>
+                        Go Back to Home
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <Link href="/developers"
+                        className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                      >
+                        <i className="fas fa-users mr-3"></i>
+                        View All Developers
+                      </Link>
+                      <Link href="/home"
+                        className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold rounded-lg text-gray-700 bg-gray-100 hover:bg-gray-200 transition-all duration-200"
+                      >
+                        <i className="fas fa-arrow-left mr-3"></i>
+                        Go Back to Home
+                      </Link>
+                    </>
+                  )}
+                </div>
+                {isOwnProfile && (
+                  <p className="text-sm text-gray-500 mt-4 text-center">
+                    <i className="fas fa-clock mr-1"></i>
+                    Takes only 3-5 minutes
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
-        ) : error && error.msg ? (
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-12 text-center">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <i className="fas fa-user-slash text-3xl text-red-600"></i>
+        ) : !isOwnProfile && !profile && (error && error.msg) ? (
+          // For other users' profiles that don't exist - just show a simple message
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-12 text-center max-w-2xl mx-auto">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <i className="fas fa-user-slash text-3xl text-gray-400"></i>
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-3">
-              Profile Not Found
+              Profile Not Available
             </h2>
             <p className="text-gray-600 mb-6">
-              {error.msg === "There is no profile for the given user"
-                ? "This user hasn't created a profile yet."
-                : error.msg}
+              This user hasn't created their profile yet.
             </p>
-            <a
+            <Link
               href="/developers"
               className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-sm"
             >
               <i className="fas fa-users mr-2"></i>
               View All Developers
-            </a>
+            </Link>
           </div>
         ) : profile ? (
           <div className="space-y-6">
             {/* Profile Header */}
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-              <div className="bg-[#BFDBFE] px-6 py-8">
+              <div className="bg-[#BFDBFE] px-6 py-8 relative">
+                {/* Edit Profile Button - Only show for own profile */}
+                {isOwnProfile && (
+                  <Link
+                    href="/edit-profile"
+                    className="absolute top-4 right-4 inline-flex items-center px-4 py-2 bg-white text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-200 shadow-sm border border-blue-200"
+                  >
+                    <i className="fas fa-edit mr-2"></i>
+                    Edit Profile
+                  </Link>
+                )}
+                
                 <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
-                  <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white shadow-lg overflow-hidden">
-                    <ProfileImage
-                      userId={id}
-                      userName={profile?.user?.name || "User"}
-                      avatar={profile?.avatar}
-                      profile={profile}
-                      size="w-full h-full"
-                      textSize="text-xl md:text-2xl"
-                    />
-                  </div>
+                  <Avatar
+                    userId={id}
+                    userName={profile?.user?.name || "User"}
+                    avatar={profile?.avatar}
+                    profile={profile}
+                    size={128}
+                    className="border-4 border-white shadow-lg"
+                  />
                   <div className="text-center md:text-left">
                     <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
                       {profile.user.name}
@@ -214,19 +349,7 @@ const Profile = ({ getProfileById, profiles: { profile: currentProfile, viewingP
               </div>
             )}
           </div>
-        ) : (
-          <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-12 text-center">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <i className="fas fa-exclamation-circle text-3xl text-red-600"></i>
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-3">
-              Something Went Wrong
-            </h2>
-            <p className="text-gray-600 mb-6">
-              Unable to load the profile. Please try again later.
-            </p>
-          </div>
-        )}
+        ) : null}
       </div>
     </div>
   );

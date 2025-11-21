@@ -11,7 +11,7 @@ const Home = ({
   return (
     <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {loading ? (
+        {loading || profile === undefined ? (
           <div className="flex justify-center items-center py-20">
             <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600"></div>
           </div>
@@ -20,8 +20,8 @@ const Home = ({
             <div className="bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden">
               {/* Header with gradient */}
               <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-12 text-center">
-                <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <i className="fas fa-rocket text-white text-3xl"></i>
+                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                  <i className="fas fa-briefcase text-blue-600 text-3xl"></i>
                 </div>
                 <h1 className="text-3xl font-bold text-white mb-3">
                   Welcome to Roxana Connect!
