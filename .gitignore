@@ -104,15 +104,12 @@ temp/
 ehthumbs.db
 Thumbs.db
 
-# User uploads and media files
-server/public/images/
-server/public/uploads/
-uploads/
-images/
+
+
 
 # Database files
 *.sqlite
-*.db
+
 
 # SSL certificates
 *.pem
