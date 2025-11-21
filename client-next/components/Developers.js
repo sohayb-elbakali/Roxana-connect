@@ -8,11 +8,23 @@ import Avatar from "./Avatar";
 
 function Developers({ user, getProfiles, profiles: { profiles, loading } }) {
   useEffect(() => {
-    // Only fetch profiles if we don't have them or the list is empty
-    if (!profiles || profiles.length === 0) {
+    // Initial fetch
+    getProfiles();
+
+    // Set up interval to refresh every 3 minutes (180000ms)
+    const intervalId = setInterval(() => {
       getProfiles();
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    }, 180000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [getProfiles]);
+
+  // Calculate new users count (joined within last 7 days)
+  const newUsersCount = profiles?.filter(profile => 
+    profile?.user?.date && 
+    (new Date() - new Date(profile.user.date)) < 7 * 24 * 60 * 60 * 1000
+  ).length || 0;
 
   return (
     <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">
@@ -21,7 +33,14 @@ function Developers({ user, getProfiles, profiles: { profiles, loading } }) {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Developers
           </h1>
-          <p className="text-gray-600">Connect with other developers in the community</p>
+          <p className="text-gray-600">
+            Connect with other developers in the community
+            {newUsersCount > 0 && (
+              <span className="ml-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                {newUsersCount} new {newUsersCount === 1 ? 'member' : 'members'} this week
+              </span>
+            )}
+          </p>
         </div>
         {loading ? (
           <div className="text-center py-16">
@@ -57,8 +76,17 @@ function Developers({ user, getProfiles, profiles: { profiles, loading } }) {
 }
 
 function Developer({ profile }) {
+  // Check if user joined within the last 7 days
+  const isNewUser = profile?.user?.date && 
+    (new Date() - new Date(profile.user.date)) < 7 * 24 * 60 * 60 * 1000;
+
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:border-blue-300 hover:shadow-md transition-all duration-200">
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:border-blue-300 hover:shadow-md transition-all duration-200 relative">
+      {isNewUser && (
+        <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+          NEW
+        </div>
+      )}
       <div className="p-6 flex flex-col items-center">
         <Avatar
           userId={profile?.user?._id}

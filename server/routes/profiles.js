@@ -126,10 +126,17 @@ router.get("/", auth, async (req, res) => {
   try {
     const profiles = await Profile.find()
       .select("-__v")
-      .populate("user", "name");
+      .populate("user", "name date");
     
     // Filter out profiles where user no longer exists (deleted accounts)
     const validProfiles = profiles.filter(profile => profile.user !== null);
+    
+    // Sort by user creation date (newest first)
+    validProfiles.sort((a, b) => {
+      const dateA = a.user?.date ? new Date(a.user.date) : new Date(0);
+      const dateB = b.user?.date ? new Date(b.user.date) : new Date(0);
+      return dateB - dateA; // Descending order (newest first)
+    });
     
     res.json(validProfiles);
   } catch (err) {
