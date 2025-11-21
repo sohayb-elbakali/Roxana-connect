@@ -15,18 +15,45 @@ const app = express();
 
 app.set('trust proxy', 1);
 
+// Allowed origins for CORS
 const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:5000',
-  process.env.CLIENT_URL
+  process.env.CLIENT_URL,           // Main frontend URL from environment
+  'http://localhost:3000',          // Local development
+  'http://localhost:5000',          // Local development
+  'https://*.netlify.app',          // Netlify deployments
+  'https://*.vercel.app'            // Vercel deployments
 ].filter(Boolean);
 
+// CORS configuration with wildcard support
 const corsOptions = {
   origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    // Allow requests with no origin (mobile apps, Postman, etc.)
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    // Check if origin matches any allowed pattern
+    const isAllowed = allowedOrigins.some(allowedOrigin => {
+      // Exact match
+      if (origin === allowedOrigin) {
+        return true;
+      }
+      
+      // Wildcard match (e.g., https://*.netlify.app)
+      if (allowedOrigin.includes('*')) {
+        const pattern = allowedOrigin.replace('*', '.*');
+        const regex = new RegExp(`^${pattern}$`);
+        return regex.test(origin);
+      }
+      
+      return false;
+    });
+
+    if (isAllowed) {
       callback(null, true);
     } else {
+      console.log('❌ Blocked by CORS:', origin);
+      console.log('Allowed origins:', allowedOrigins);
       callback(new Error('Not allowed by CORS'));
     }
   },
