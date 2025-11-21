@@ -16,11 +16,13 @@ const Register = ({ isAuthenticated, register, showAlertMessage }) => {
     password: "",
     password2: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const { name, email, password, password2 } = formData;
 
   React.useEffect(() => {
     if (isAuthenticated) {
+      setIsLoading(false);
       router.push('/home');
     }
   }, [isAuthenticated, router]);
@@ -33,8 +35,14 @@ const Register = ({ isAuthenticated, register, showAlertMessage }) => {
     e.preventDefault();
     if (password !== password2) {
       showAlertMessage("Passwords do not match", "error");
-    } else {
-      register({ name, email, password });
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      await register({ name, email, password });
+    } catch (err) {
+      setIsLoading(false);
     }
   };
 
@@ -111,11 +119,25 @@ const Register = ({ isAuthenticated, register, showAlertMessage }) => {
             </div>
 
             <button
-              className="w-full py-4 rounded-xl bg-blue-600 text-white font-bold shadow-lg hover:bg-blue-700 hover:shadow-xl transition-all duration-200 text-base mt-8 transform hover:-translate-y-0.5"
+              className={`w-full py-4 rounded-xl text-white font-bold shadow-lg transition-all duration-200 text-base mt-8 ${
+                isLoading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700 hover:shadow-xl transform hover:-translate-y-0.5"
+              }`}
               type="submit"
+              disabled={isLoading}
             >
-              <i className="fas fa-user-plus mr-2"></i>
-              Create Account
+              {isLoading ? (
+                <>
+                  <i className="fas fa-spinner fa-spin mr-2"></i>
+                  Creating Account...
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-user-plus mr-2"></i>
+                  Create Account
+                </>
+              )}
             </button>
           </form>
 

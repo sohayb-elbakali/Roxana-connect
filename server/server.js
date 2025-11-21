@@ -20,11 +20,10 @@ const allowedOrigins = [
   process.env.CLIENT_URL,           // Main frontend URL from environment
   'http://localhost:3000',          // Local development
   'http://localhost:5000',          // Local development
-  'https://*.netlify.app',          // Netlify deployments
-  'https://*.vercel.app'            // Vercel deployments
+  'https://roxana-connect.netlify.app', // Production frontend
 ].filter(Boolean);
 
-// CORS configuration with wildcard support
+// CORS configuration
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (mobile apps, Postman, etc.)
@@ -32,22 +31,10 @@ const corsOptions = {
       return callback(null, true);
     }
 
-    // Check if origin matches any allowed pattern
-    const isAllowed = allowedOrigins.some(allowedOrigin => {
-      // Exact match
-      if (origin === allowedOrigin) {
-        return true;
-      }
-      
-      // Wildcard match (e.g., https://*.netlify.app)
-      if (allowedOrigin.includes('*')) {
-        const pattern = allowedOrigin.replace('*', '.*');
-        const regex = new RegExp(`^${pattern}$`);
-        return regex.test(origin);
-      }
-      
-      return false;
-    });
+    // Check if origin is in allowed list or matches Netlify/Vercel patterns
+    const isAllowed = allowedOrigins.includes(origin) || 
+                      origin.endsWith('.netlify.app') || 
+                      origin.endsWith('.vercel.app');
 
     if (isAllowed) {
       callback(null, true);
@@ -113,8 +100,6 @@ app.use(express.static(path.join(__dirname, 'public'), {
   lastModified: true
 }));
 
-
-
 app.get("/images/:userId", (req, res) => {
   const userId = req.params.userId;
   const imagePath = path.join(__dirname, "public", "images", userId);
@@ -162,4 +147,5 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server has started on port ${PORT}`);
+  console.log('Allowed CORS origins:', allowedOrigins);
 });
