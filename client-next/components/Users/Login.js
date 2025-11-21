@@ -34,16 +34,11 @@ const Login = ({ isAuthenticated, login, clearError, getCurrentProfile, error, p
       
       // Fetch user profile to check if they have one
       getCurrentProfile();
-    }
-  }, [isAuthenticated, getCurrentProfile]);
-
-  // Check if user has a profile and redirect accordingly
-  React.useEffect(() => {
-    if (isAuthenticated && profile !== undefined) {
-      // Always redirect to home - ProfileRequired component will handle showing the message
+      
+      // Redirect to home after successful login
       router.push("/home");
     }
-  }, [isAuthenticated, profile, router]);
+  }, [isAuthenticated, getCurrentProfile, router]);
 
   // Show error from Redux and auto-hide after 3 seconds
   React.useEffect(() => {
@@ -78,17 +73,17 @@ const Login = ({ isAuthenticated, login, clearError, getCurrentProfile, error, p
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 pt-16">
-      <div className="w-full max-w-md bg-white rounded-xl border border-gray-200 shadow-sm p-8 mt-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-lg bg-white rounded-2xl border border-gray-200 shadow-xl p-10">
         {/* Logo/Brand */}
-        <Link href="/" className="block text-center mb-8 group">
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:scale-105 transition-transform">
-            <i className="fas fa-briefcase text-white text-2xl"></i>
+        <Link href="/" className="block text-center mb-10 group">
+          <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-105 transition-transform">
+            <i className="fas fa-briefcase text-white text-3xl"></i>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Roxana <span className="text-blue-600">Connect</span>
           </h1>
-          <p className="text-gray-600 text-sm">Welcome back!</p>
+          <p className="text-gray-600 text-base">Welcome back!</p>
         </Link>
         {/* Error Alert */}
         {loginError && (
@@ -109,11 +104,11 @@ const Login = ({ isAuthenticated, login, clearError, getCurrentProfile, error, p
           </div>
         )}
 
-        <form className="space-y-4" onSubmit={onSubmit}>
+        <form className="space-y-5" onSubmit={onSubmit}>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
             <input
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all text-gray-900 bg-white"
+              className="w-full px-5 py-3.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base text-gray-900 bg-white placeholder-gray-400"
               type="email"
               name="email"
               placeholder="you@example.com"
@@ -123,16 +118,16 @@ const Login = ({ isAuthenticated, login, clearError, getCurrentProfile, error, p
             />
           </div>
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="block text-sm font-medium text-gray-700">Password</label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-sm font-semibold text-gray-700">Password</label>
               <Link href="/forgot-password"
-                className="text-xs text-blue-600 hover:text-blue-700 font-medium"
+                className="text-sm text-blue-600 hover:text-blue-700 font-medium"
               >
                 Forgot password?
               </Link>
             </div>
             <input
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all text-gray-900 bg-white"
+              className="w-full px-5 py-3.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base text-gray-900 bg-white placeholder-gray-400"
               type="password"
               name="password"
               placeholder="Enter your password"
@@ -142,10 +137,10 @@ const Login = ({ isAuthenticated, login, clearError, getCurrentProfile, error, p
             />
           </div>
           <button
-            className={`w-full py-3 rounded-lg text-white font-semibold shadow-sm transition-all text-base mt-6 ${
+            className={`w-full py-4 rounded-xl text-white font-bold shadow-lg transition-all text-base mt-8 ${
               isLoading
                 ? "bg-gray-400 cursor-not-allowed" 
-                : "bg-blue-600 hover:bg-blue-700"
+                : "bg-blue-600 hover:bg-blue-700 hover:shadow-xl transform hover:-translate-y-0.5"
             }`}
             type="submit"
             disabled={isLoading}
@@ -160,18 +155,18 @@ const Login = ({ isAuthenticated, login, clearError, getCurrentProfile, error, p
             )}
           </button>
         </form>
-        <div className="mt-6 text-center space-y-3">
-          <p className="text-gray-600 text-sm">
+        <div className="mt-8 text-center space-y-4">
+          <p className="text-gray-600 text-base">
             New to Roxana Connect?{" "}
             <Link href="/register"
-              className="text-blue-600 hover:text-blue-700 font-semibold"
+              className="text-blue-600 hover:text-blue-700 font-bold"
             >
               Create an account
             </Link>
           </p>
           <Link
             href="/"
-            className="inline-flex items-center text-sm text-gray-500 hover:text-blue-600 transition-colors"
+            className="inline-flex items-center text-sm text-gray-500 hover:text-blue-600 transition-colors font-medium"
           >
             <i className="fas fa-arrow-left mr-2"></i>
             Back to Home

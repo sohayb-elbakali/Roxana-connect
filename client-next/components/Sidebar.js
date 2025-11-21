@@ -71,7 +71,7 @@ function Sidebar({ users: { user, isAuthenticated }, profiles: { profile }, trac
             >
               <i className="fas fa-tasks text-lg"></i>
               {trackingCount > 0 && (
-                <span className="absolute top-1 right-1 bg-red-500 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">
+                <span className="absolute top-1 right-1 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center shadow-sm" style={{ backgroundColor: '#22C55E' }}>
                   {trackingCount > 9 ? '9+' : trackingCount}
                 </span>
               )}

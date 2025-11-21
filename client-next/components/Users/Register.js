@@ -39,99 +39,79 @@ const Register = ({ isAuthenticated, register, showAlertMessage }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 py-12 px-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-lg">
         {/* Card */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-10">
           {/* Logo/Brand */}
-          <Link href="/" className="block text-center mb-6 group">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:scale-105 transition-transform">
-              <i className="fas fa-briefcase text-white text-2xl"></i>
+          <Link href="/" className="block text-center mb-10 group">
+            <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-105 transition-transform">
+              <i className="fas fa-briefcase text-white text-3xl"></i>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-1">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
               Roxana <span className="text-blue-600">Connect</span>
             </h1>
-            <p className="text-gray-600 text-sm">Create your account</p>
+            <p className="text-gray-600 text-base">Create your account</p>
           </Link>
 
           {/* Form */}
-          <form className="space-y-3.5" onSubmit={onSubmit}>
+          <form className="space-y-5" onSubmit={onSubmit}>
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wide">Full Name</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i className="fas fa-user text-gray-400 text-sm"></i>
-                </div>
-                <input
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm text-gray-900 bg-white"
-                  type="text"
-                  name="name"
-                  placeholder="John Doe"
-                  value={name}
-                  onChange={onChange}
-                  required
-                />
-              </div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+              <input
+                className="w-full px-5 py-3.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base text-gray-900 bg-white placeholder-gray-400"
+                type="text"
+                name="name"
+                placeholder="John Doe"
+                value={name}
+                onChange={onChange}
+                required
+              />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wide">Email</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i className="fas fa-envelope text-gray-400 text-sm"></i>
-                </div>
-                <input
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm text-gray-900 bg-white"
-                  type="email"
-                  name="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={onChange}
-                  required
-                />
-              </div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+              <input
+                className="w-full px-5 py-3.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base text-gray-900 bg-white placeholder-gray-400"
+                type="email"
+                name="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={onChange}
+                required
+              />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wide">Password</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i className="fas fa-lock text-gray-400 text-sm"></i>
-                </div>
-                <input
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm text-gray-900 bg-white"
-                  type="password"
-                  name="password"
-                  placeholder="Min. 6 characters"
-                  value={password}
-                  onChange={onChange}
-                  required
-                  minLength={6}
-                />
-              </div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+              <input
+                className="w-full px-5 py-3.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base text-gray-900 bg-white placeholder-gray-400"
+                type="password"
+                name="password"
+                placeholder="Min. 6 characters"
+                value={password}
+                onChange={onChange}
+                required
+                minLength={6}
+              />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1.5 uppercase tracking-wide">Confirm Password</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i className="fas fa-lock text-gray-400 text-sm"></i>
-                </div>
-                <input
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm text-gray-900 bg-white"
-                  type="password"
-                  name="password2"
-                  placeholder="Re-enter password"
-                  value={password2}
-                  onChange={onChange}
-                  required
-                  minLength={6}
-                />
-              </div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Confirm Password</label>
+              <input
+                className="w-full px-5 py-3.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base text-gray-900 bg-white placeholder-gray-400"
+                type="password"
+                name="password2"
+                placeholder="Re-enter password"
+                value={password2}
+                onChange={onChange}
+                required
+                minLength={6}
+              />
             </div>
 
             <button
-              className="w-full py-3 rounded-lg bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 transition-all duration-200 text-sm mt-5"
+              className="w-full py-4 rounded-xl bg-blue-600 text-white font-bold shadow-lg hover:bg-blue-700 hover:shadow-xl transition-all duration-200 text-base mt-8 transform hover:-translate-y-0.5"
               type="submit"
             >
               <i className="fas fa-user-plus mr-2"></i>
@@ -140,19 +120,19 @@ const Register = ({ isAuthenticated, register, showAlertMessage }) => {
           </form>
 
           {/* Footer */}
-          <div className="mt-6 text-center space-y-3">
-            <p className="text-gray-600 text-sm">
+          <div className="mt-8 text-center space-y-4">
+            <p className="text-gray-600 text-base">
               Already have an account?{" "}
               <Link
                 href="/login"
-                className="text-blue-600 hover:text-blue-700 font-semibold"
+                className="text-blue-600 hover:text-blue-700 font-bold"
               >
                 Sign in
               </Link>
             </p>
             <Link
               href="/"
-              className="inline-flex items-center text-sm text-gray-500 hover:text-blue-600 transition-colors"
+              className="inline-flex items-center text-sm text-gray-500 hover:text-blue-600 transition-colors font-medium"
             >
               <i className="fas fa-arrow-left mr-2"></i>
               Back to Home
@@ -161,7 +141,7 @@ const Register = ({ isAuthenticated, register, showAlertMessage }) => {
         </div>
 
         {/* Additional Info */}
-        <p className="text-center text-gray-500 text-xs mt-4">
+        <p className="text-center text-gray-500 text-sm mt-6">
           By signing up, you agree to our Terms of Service and Privacy Policy
         </p>
       </div>

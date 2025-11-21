@@ -13,7 +13,11 @@ const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
  * Send verification email
  */
 const sendVerificationEmail = async (email, name, verificationToken) => {
-  const verificationUrl = `${process.env.CLIENT_URL || 'http://localhost:3000'}/verify-email/${verificationToken}`;
+  // Ensure CLIENT_URL is properly formatted (no trailing slash)
+  let clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
+  clientUrl = clientUrl.replace(/\/$/, ''); // Remove trailing slash if present
+  
+  const verificationUrl = `${clientUrl}/verify-email/${verificationToken}`;
   
   const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
   sendSmtpEmail.sender = { 
@@ -72,7 +76,11 @@ const sendVerificationEmail = async (email, name, verificationToken) => {
  * Send password reset email
  */
 const sendPasswordResetEmail = async (email, name, resetToken) => {
-  const resetUrl = `${process.env.CLIENT_URL || 'http://localhost:3000'}/reset-password/${resetToken}`;
+  // Ensure CLIENT_URL is properly formatted (no trailing slash)
+  let clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
+  clientUrl = clientUrl.replace(/\/$/, ''); // Remove trailing slash if present
+  
+  const resetUrl = `${clientUrl}/reset-password/${resetToken}`;
   
   const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
   sendSmtpEmail.sender = { 

@@ -18,7 +18,7 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
   const navLinks = [
     { to: "/home", label: "Home", icon: "fa-home" },
     { to: "/feed", label: "Internships", icon: "fa-briefcase" },
-    { to: "/tracker", label: "Tracker", icon: "fa-tasks" },
+    { to: "/tracker", label: "Tracker", icon: "fa-tasks", badge: trackingCount },
     { to: "/posts", label: "Posts", icon: "fa-comments" },
     { to: "/developers", label: "Developers", icon: "fa-users" },
     ...(user?.role === "admin" ? [{ to: "/admin", label: "Admin", icon: "fa-user-shield" }] : []),
@@ -42,7 +42,7 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
           >
             {link.label}
             {link.badge > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-sm" style={{ backgroundColor: '#22C55E' }}>
                 {link.badge > 99 ? '99+' : link.badge}
               </span>
             )}
@@ -150,7 +150,7 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
                   <i className={`fas ${link.icon} w-5 text-gray-400`}></i>
                   <span className="ml-3">{link.label}</span>
                   {link.badge > 0 && (
-                    <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    <span className="ml-auto text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-sm" style={{ backgroundColor: '#22C55E' }}>
                       {link.badge > 99 ? '99+' : link.badge}
                     </span>
                   )}
