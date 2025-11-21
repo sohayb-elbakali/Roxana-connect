@@ -289,6 +289,46 @@ export const addEducation = (formData, navigate) => async (dispatch, getState) =
   }
 };
 
+export const updateExperience = (id, formData, navigate) => async (dispatch, getState) => {
+  try {
+    const res = await api.put(`/profiles/experience/${id}`, formData);
+
+    dispatch({
+      type: UPDATE_PROFILE,
+      payload: res.data,
+    });
+
+    dispatch(showAlertMessage("Experience updated", "success"));
+
+    const userId = getState().users.user._id;
+    navigate(`/profile/${userId}`);
+  } catch (err) {
+    if (err.response && err.response.data && err.response.data.errors) {
+      const errors = err.response.data.errors;
+      errors.forEach((error) => dispatch(showAlertMessage(error.msg, "error")));
+    } else if (err.response) {
+      dispatch(
+        showAlertMessage(
+          err.response.data?.msg ||
+            err.response.statusText ||
+            "An error occurred",
+          "error"
+        )
+      );
+    } else {
+      dispatch(showAlertMessage("Network error. Please try again.", "error"));
+    }
+
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: {
+        msg: err.response?.statusText || "An error occurred",
+        status: err.response?.status || 500,
+      },
+    });
+  }
+};
+
 export const deleteExperience = (id) => async (dispatch) => {
   try {
     const res = await api.delete(`/profiles/experience/${id}`);
@@ -301,6 +341,46 @@ export const deleteExperience = (id) => async (dispatch) => {
     dispatch(showAlertMessage("Experience removed", "success"));
   } catch (err) {
     if (err.response) {
+      dispatch(
+        showAlertMessage(
+          err.response.data?.msg ||
+            err.response.statusText ||
+            "An error occurred",
+          "error"
+        )
+      );
+    } else {
+      dispatch(showAlertMessage("Network error. Please try again.", "error"));
+    }
+
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: {
+        msg: err.response?.statusText || "An error occurred",
+        status: err.response?.status || 500,
+      },
+    });
+  }
+};
+
+export const updateEducation = (id, formData, navigate) => async (dispatch, getState) => {
+  try {
+    const res = await api.put(`/profiles/education/${id}`, formData);
+
+    dispatch({
+      type: UPDATE_PROFILE,
+      payload: res.data,
+    });
+
+    dispatch(showAlertMessage("Education updated", "success"));
+
+    const userId = getState().users.user._id;
+    navigate(`/profile/${userId}`);
+  } catch (err) {
+    if (err.response && err.response.data && err.response.data.errors) {
+      const errors = err.response.data.errors;
+      errors.forEach((error) => dispatch(showAlertMessage(error.msg, "error")));
+    } else if (err.response) {
       dispatch(
         showAlertMessage(
           err.response.data?.msg ||

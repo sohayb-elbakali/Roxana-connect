@@ -51,7 +51,8 @@ const ApplyNowButton = ({
       updateTrackingStatus(trackingRecord._id, status, applicationDate);
     } else {
       // Create new tracking record with status
-      trackInternship(_id, status);
+      const applicationDate = status === "applied" ? new Date().toISOString() : null;
+      trackInternship(_id, status, applicationDate);
     }
     setShowStatusPrompt(false);
   };

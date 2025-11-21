@@ -33,12 +33,19 @@ export const fetchTrackedInternships = () => async (dispatch) => {
 };
 
 // Track a new internship
-export const trackInternship = (internshipId, status = "not_applied") => async (dispatch) => {
+export const trackInternship = (internshipId, status = "not_applied", applicationDate = null) => async (dispatch) => {
   try {
-    const res = await api.post("/tracking", { 
+    const data = { 
       internship: internshipId,
       status 
-    });
+    };
+    
+    // Add applicationDate if provided (required for "applied" status)
+    if (applicationDate) {
+      data.applicationDate = applicationDate;
+    }
+
+    const res = await api.post("/tracking", data);
 
     dispatch({
       type: TRACK_INTERNSHIP,
@@ -62,10 +69,18 @@ export const trackInternship = (internshipId, status = "not_applied") => async (
       console.error('Error fetching insights:', err);
     }
 
-    dispatch(showAlertMessage("Internship added to tracker", "success"));
+    const statusMessage = status === "applied" 
+      ? "Application tracked successfully" 
+      : "Internship added to tracker";
+    dispatch(showAlertMessage(statusMessage, "success"));
   } catch (err) {
     if (err.response && err.response.data && err.response.data.msg) {
       dispatch(showAlertMessage(err.response.data.msg, "error"));
+    } else if (err.response && err.response.data && err.response.data.errors) {
+      const errors = err.response.data.errors;
+      errors.forEach((error) => {
+        dispatch(showAlertMessage(error.msg, "error"));
+      });
     } else {
       dispatch(showAlertMessage("Error tracking internship", "error"));
     }

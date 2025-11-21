@@ -1,13 +1,14 @@
 'use client';
 
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { useRouter } from "next/navigation";
-import { addEducation } from "../../lib/redux/modules/profiles";
+import { useRouter, useParams } from "next/navigation";
+import { updateEducation } from "../../lib/redux/modules/profiles";
 
-const AddEducation = ({ addEducation }) => {
+const EditEducation = ({ updateEducation, profile }) => {
   const router = useRouter();
+  const { id } = useParams();
   const [formData, setFormData] = useState({
     school: "",
     degree: "",
@@ -20,12 +21,29 @@ const AddEducation = ({ addEducation }) => {
 
   const { school, degree, fieldofstudy, from, to, current, description } = formData;
 
+  useEffect(() => {
+    if (profile && profile.education) {
+      const education = profile.education.find(edu => edu._id === id);
+      if (education) {
+        setFormData({
+          school: education.school || "",
+          degree: education.degree || "",
+          fieldofstudy: education.fieldofstudy || "",
+          from: education.from ? new Date(education.from).toISOString().split('T')[0] : "",
+          to: education.to ? new Date(education.to).toISOString().split('T')[0] : "",
+          current: education.current || false,
+          description: education.description || "",
+        });
+      }
+    }
+  }, [profile, id]);
+
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const onSubmit = (e) => {
     e.preventDefault();
-    addEducation(formData, navigate);
+    updateEducation(id, formData, router.push);
   };
 
   return (
@@ -36,7 +54,7 @@ const AddEducation = ({ addEducation }) => {
             <i className="fas fa-graduation-cap text-blue-600 text-xl"></i>
           </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            Add Education
+            Edit Education
           </h2>
           <p className="text-gray-600 text-sm">* = required field</p>
         </div>
@@ -68,10 +86,11 @@ const AddEducation = ({ addEducation }) => {
           <div>
             <input
               type="text"
-              placeholder="Field of Study (e.g., Computer Science)"
+              placeholder="* Field of Study (e.g., Computer Science)"
               name="fieldofstudy"
               value={fieldofstudy}
               onChange={onChange}
+              required
               className="text-gray-900 bg-white w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             />
           </div>
@@ -136,8 +155,8 @@ const AddEducation = ({ addEducation }) => {
               type="submit"
               className="flex-1 inline-flex items-center justify-center px-6 py-2.5 bg-blue-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200"
             >
-              <i className="fas fa-check mr-2"></i>
-              Add Education
+              <i className="fas fa-save mr-2"></i>
+              Save Changes
             </button>
             <button
               type="button"
@@ -153,8 +172,13 @@ const AddEducation = ({ addEducation }) => {
   );
 };
 
-AddEducation.propTypes = {
-  addEducation: PropTypes.func.isRequired,
+EditEducation.propTypes = {
+  updateEducation: PropTypes.func.isRequired,
+  profile: PropTypes.object,
 };
 
-export default connect(null, { addEducation })(AddEducation);
+const mapStateToProps = (state) => ({
+  profile: state.profiles.profile,
+});
+
+export default connect(mapStateToProps, { updateEducation })(EditEducation);

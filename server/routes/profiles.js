@@ -19,11 +19,13 @@ const ApplicationTracking = require("../models/ApplicationTracking.js");
 5.  DELETE /profiles
 6.  POST /profiles/upload
 7.  PUT /profiles/experience
-8.  DELETE /profiles/experience/:exp_id
-9.  PUT /profiles/education
-10. DELETE /profiles/education/:edu_id
-11. GET /profiles/user/:user_id/internship-stats
-12. PUT /profiles/internship-preferences
+8.  PUT /profiles/experience/:exp_id
+9.  DELETE /profiles/experience/:exp_id
+10. PUT /profiles/education
+11. PUT /profiles/education/:edu_id
+12. DELETE /profiles/education/:edu_id
+13. GET /profiles/user/:user_id/internship-stats
+14. PUT /profiles/internship-preferences
 */
 
 router.post(
@@ -308,6 +310,36 @@ router.put(
   }
 );
 
+router.put("/experience/:exp_id", auth, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ user: req.user.id });
+
+    if (!profile) {
+      return res.status(404).json({ msg: "Profile not found" });
+    }
+
+    const expIndex = profile.experience.findIndex(
+      (exp) => exp._id.toString() === req.params.exp_id
+    );
+
+    if (expIndex === -1) {
+      return res.status(404).json({ msg: "Experience not found" });
+    }
+
+    // Update the experience entry
+    profile.experience[expIndex] = {
+      ...profile.experience[expIndex].toObject(),
+      ...req.body,
+      _id: profile.experience[expIndex]._id, // Preserve the ID
+    };
+
+    await profile.save();
+    return res.json(profile);
+  } catch (err) {
+    return res.status(500).send("Server error updating experience");
+  }
+});
+
 router.delete("/experience/:exp_id", auth, async (req, res) => {
   try {
     const profile = await Profile.findOne({ user: req.user.id });
@@ -355,6 +387,36 @@ router.put(
     }
   }
 );
+
+router.put("/education/:edu_id", auth, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ user: req.user.id });
+
+    if (!profile) {
+      return res.status(404).json({ msg: "Profile not found" });
+    }
+
+    const eduIndex = profile.education.findIndex(
+      (edu) => edu._id.toString() === req.params.edu_id
+    );
+
+    if (eduIndex === -1) {
+      return res.status(404).json({ msg: "Education not found" });
+    }
+
+    // Update the education entry
+    profile.education[eduIndex] = {
+      ...profile.education[eduIndex].toObject(),
+      ...req.body,
+      _id: profile.education[eduIndex]._id, // Preserve the ID
+    };
+
+    await profile.save();
+    return res.json(profile);
+  } catch (err) {
+    return res.status(500).send("Server error updating education");
+  }
+});
 
 router.delete("/education/:edu_id", auth, async (req, res) => {
   try {

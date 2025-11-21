@@ -54,17 +54,26 @@ const Education = ({ profile, deleteEducation, isOwnProfile }) => {
           onMouseEnter={() => setHoveredId(education._id)}
           onMouseLeave={() => setHoveredId(null)}
         >
-          {/* Delete Button */}
+          {/* Action Buttons */}
           {deleteEducation && (
-            <button
-              onClick={() => deleteEducation(education._id)}
-              className={`absolute top-3 right-3 p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200 ${
-                hoveredId === education._id ? "opacity-100" : "opacity-0"
-              }`}
-              title="Delete education"
-            >
-              <i className="fas fa-trash text-sm"></i>
-            </button>
+            <div className={`absolute top-3 right-3 flex gap-2 transition-all duration-200 ${
+              hoveredId === education._id ? "opacity-100" : "opacity-0"
+            }`}>
+              <a
+                href={`/edit-education/${education._id}`}
+                className="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                title="Edit education"
+              >
+                <i className="fas fa-edit text-sm"></i>
+              </a>
+              <button
+                onClick={() => deleteEducation(education._id)}
+                className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200"
+                title="Delete education"
+              >
+                <i className="fas fa-trash text-sm"></i>
+              </button>
+            </div>
           )}
 
           {/* Education Icon */}

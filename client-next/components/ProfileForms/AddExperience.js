@@ -16,9 +16,10 @@ const AddExperience = ({ addExperience }) => {
     from: "",
     to: "",
     current: false,
+    description: "",
   });
 
-  const { company, title, location, from, to, current } = formData;
+  const { company, title, location, from, to, current, description } = formData;
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -118,6 +119,17 @@ const AddExperience = ({ addExperience }) => {
             <label htmlFor="current" className="ml-2 text-sm text-gray-700">
               I currently work here
             </label>
+          </div>
+
+          <div>
+            <textarea
+              placeholder="Description (optional)"
+              name="description"
+              value={description}
+              onChange={onChange}
+              rows="4"
+              className="text-gray-900 bg-white w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+            />
           </div>
           
           <div className="flex gap-3 pt-4">

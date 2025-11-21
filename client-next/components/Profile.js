@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { getProfileById, clearViewingProfile, clearProfileError } from "../lib/redux/modules/profiles";
+import { getProfileById, clearViewingProfile, clearProfileError, deleteEducation, deleteExperience } from "../lib/redux/modules/profiles";
 import Avatar from "./Avatar";
 import BasicInfo from "./ProfileInfo/BasicInfo";
 import Education from "./ProfileInfo/Education";
@@ -12,7 +12,7 @@ import Experience from "./ProfileInfo/Experience";
 import InternshipStats from "./ProfileInfo/InternshipStats";
 import InternshipPreferences from "./ProfileInfo/InternshipPreferences";
 
-const Profile = ({ getProfileById, profiles: { profile: currentProfile, viewingProfile, loading, error }, auth, clearViewingProfile, clearProfileError }) => {
+const Profile = ({ getProfileById, profiles: { profile: currentProfile, viewingProfile, loading, error }, auth, clearViewingProfile, clearProfileError, deleteEducation, deleteExperience }) => {
   let { id } = useParams();
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [currentId, setCurrentId] = useState(id);
@@ -302,7 +302,11 @@ const Profile = ({ getProfileById, profiles: { profile: currentProfile, viewingP
                   </div>
                   <h3 className="text-xl font-bold text-gray-900">Education</h3>
                 </div>
-                <Education profile={profile} isOwnProfile={isOwnProfile} />
+                <Education 
+                  profile={profile} 
+                  isOwnProfile={isOwnProfile}
+                  deleteEducation={isOwnProfile ? deleteEducation : null}
+                />
               </div>
 
               {/* Experience */}
@@ -315,7 +319,11 @@ const Profile = ({ getProfileById, profiles: { profile: currentProfile, viewingP
                     Experience
                   </h3>
                 </div>
-                <Experience profile={profile} isOwnProfile={isOwnProfile} />
+                <Experience 
+                  profile={profile} 
+                  isOwnProfile={isOwnProfile}
+                  deleteExperience={isOwnProfile ? deleteExperience : null}
+                />
               </div>
             </div>
 
@@ -360,4 +368,4 @@ const mapStateToProps = (state) => ({
   auth: state.users || { user: null, isAuthenticated: false },
 });
 
-export default connect(mapStateToProps, { getProfileById, clearViewingProfile, clearProfileError })(Profile);
+export default connect(mapStateToProps, { getProfileById, clearViewingProfile, clearProfileError, deleteEducation, deleteExperience })(Profile);
