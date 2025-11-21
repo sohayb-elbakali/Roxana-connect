@@ -8,6 +8,7 @@ import { addEducation } from "../../lib/redux/modules/profiles";
 
 const AddEducation = ({ addEducation }) => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     school: "",
     degree: "",
@@ -23,9 +24,16 @@ const AddEducation = ({ addEducation }) => {
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    addEducation(formData, navigate);
+    setLoading(true);
+    try {
+      await addEducation(formData, router.push);
+    } catch (error) {
+      console.error("Error adding education:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -68,10 +76,11 @@ const AddEducation = ({ addEducation }) => {
           <div>
             <input
               type="text"
-              placeholder="Field of Study (e.g., Computer Science)"
+              placeholder="* Field of Study (e.g., Computer Science)"
               name="fieldofstudy"
               value={fieldofstudy}
               onChange={onChange}
+              required
               className="text-gray-900 bg-white w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             />
           </div>
@@ -134,15 +143,26 @@ const AddEducation = ({ addEducation }) => {
           <div className="flex gap-3 pt-4">
             <button
               type="submit"
-              className="flex-1 inline-flex items-center justify-center px-6 py-2.5 bg-blue-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200"
+              disabled={loading}
+              className="flex-1 inline-flex items-center justify-center px-6 py-2.5 bg-blue-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200 disabled:bg-blue-400 disabled:cursor-not-allowed"
             >
-              <i className="fas fa-check mr-2"></i>
-              Add Education
+              {loading ? (
+                <>
+                  <i className="fas fa-spinner fa-spin mr-2"></i>
+                  Adding...
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-check mr-2"></i>
+                  Add Education
+                </>
+              )}
             </button>
             <button
               type="button"
-              onClick={() => window.history.back()}
-              className="px-6 py-2.5 bg-gray-100 text-gray-700 font-semibold text-sm rounded-lg hover:bg-gray-200 transition-all duration-200"
+              onClick={() => router.back()}
+              disabled={loading}
+              className="px-6 py-2.5 bg-gray-100 text-gray-700 font-semibold text-sm rounded-lg hover:bg-gray-200 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>

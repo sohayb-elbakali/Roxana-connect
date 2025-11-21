@@ -3,12 +3,12 @@
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { addExperience } from "../../lib/redux/modules/profiles";
 
 const AddExperience = ({ addExperience }) => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     company: "",
     title: "",
@@ -24,9 +24,16 @@ const AddExperience = ({ addExperience }) => {
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    addExperience(formData, navigate);
+    setLoading(true);
+    try {
+      await addExperience(formData, router.push);
+    } catch (error) {
+      console.error("Error adding experience:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -135,15 +142,26 @@ const AddExperience = ({ addExperience }) => {
           <div className="flex gap-3 pt-4">
             <button
               type="submit"
-              className="flex-1 inline-flex items-center justify-center px-6 py-2.5 bg-blue-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200"
+              disabled={loading}
+              className="flex-1 inline-flex items-center justify-center px-6 py-2.5 bg-blue-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200 disabled:bg-blue-400 disabled:cursor-not-allowed"
             >
-              <i className="fas fa-check mr-2"></i>
-              Add Experience
+              {loading ? (
+                <>
+                  <i className="fas fa-spinner fa-spin mr-2"></i>
+                  Adding...
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-check mr-2"></i>
+                  Add Experience
+                </>
+              )}
             </button>
             <button
               type="button"
-              onClick={() => window.history.back()}
-              className="px-6 py-2.5 bg-gray-100 text-gray-700 font-semibold text-sm rounded-lg hover:bg-gray-200 transition-all duration-200"
+              onClick={() => router.back()}
+              disabled={loading}
+              className="px-6 py-2.5 bg-gray-100 text-gray-700 font-semibold text-sm rounded-lg hover:bg-gray-200 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>

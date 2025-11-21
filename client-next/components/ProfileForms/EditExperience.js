@@ -9,6 +9,7 @@ import { updateExperience } from "../../lib/redux/modules/profiles";
 const EditExperience = ({ updateExperience, profile }) => {
   const router = useRouter();
   const { id } = useParams();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     company: "",
     title: "",
@@ -41,9 +42,16 @@ const EditExperience = ({ updateExperience, profile }) => {
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    updateExperience(id, formData, router.push);
+    setLoading(true);
+    try {
+      await updateExperience(id, formData, router.push);
+    } catch (error) {
+      console.error("Error updating experience:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -152,15 +160,26 @@ const EditExperience = ({ updateExperience, profile }) => {
           <div className="flex gap-3 pt-4">
             <button
               type="submit"
-              className="flex-1 inline-flex items-center justify-center px-6 py-2.5 bg-blue-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200"
+              disabled={loading}
+              className="flex-1 inline-flex items-center justify-center px-6 py-2.5 bg-blue-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200 disabled:bg-blue-400 disabled:cursor-not-allowed"
             >
-              <i className="fas fa-save mr-2"></i>
-              Save Changes
+              {loading ? (
+                <>
+                  <i className="fas fa-spinner fa-spin mr-2"></i>
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-save mr-2"></i>
+                  Save Changes
+                </>
+              )}
             </button>
             <button
               type="button"
-              onClick={() => window.history.back()}
-              className="px-6 py-2.5 bg-gray-100 text-gray-700 font-semibold text-sm rounded-lg hover:bg-gray-200 transition-all duration-200"
+              onClick={() => router.back()}
+              disabled={loading}
+              className="px-6 py-2.5 bg-gray-100 text-gray-700 font-semibold text-sm rounded-lg hover:bg-gray-200 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>

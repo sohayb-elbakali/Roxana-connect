@@ -245,6 +245,9 @@ export const addExperience = (formData, navigate) => async (dispatch, getState) 
         status: err.response?.status || 500,
       },
     });
+    
+    // Re-throw error so form can handle loading state
+    throw err;
   }
 };
 
@@ -286,6 +289,9 @@ export const addEducation = (formData, navigate) => async (dispatch, getState) =
         status: err.response?.status || 500,
       },
     });
+    
+    // Re-throw error so form can handle loading state
+    throw err;
   }
 };
 
@@ -326,6 +332,9 @@ export const updateExperience = (id, formData, navigate) => async (dispatch, get
         status: err.response?.status || 500,
       },
     });
+    
+    // Re-throw error so form can handle loading state
+    throw err;
   }
 };
 
@@ -400,6 +409,9 @@ export const updateEducation = (id, formData, navigate) => async (dispatch, getS
         status: err.response?.status || 500,
       },
     });
+    
+    // Re-throw error so form can handle loading state
+    throw err;
   }
 };
 
