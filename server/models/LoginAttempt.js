@@ -3,8 +3,7 @@ const mongoose = require('mongoose');
 const LoginAttemptSchema = new mongoose.Schema({
   ip: {
     type: String,
-    required: true,
-    index: true
+    required: true
   },
   attempts: {
     type: Number,

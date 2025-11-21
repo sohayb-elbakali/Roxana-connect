@@ -1,4 +1,8 @@
 require('dotenv').config();
+
+// Suppress config warning since we use environment variables
+process.env.SUPPRESS_NO_CONFIG_WARNING = 'true';
+
 const cors = require("cors");
 const express = require("express");
 const helmet = require("helmet");
