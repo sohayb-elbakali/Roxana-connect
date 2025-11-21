@@ -35,6 +35,7 @@ function Developers({ user, getProfiles, profiles: { profiles, loading } }) {
                 (profile) =>
                   profile &&
                   profile.user &&
+                  profile.user._id &&
                   user &&
                   profile.user._id !== user._id
               )

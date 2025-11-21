@@ -4,6 +4,9 @@ const { auth } = require("../utils/index.js");
 const adminAuth = require("../middleware/adminAuth");
 const User = require("../models/User.js");
 const Profile = require("../models/Profile.js");
+const Post = require("../models/Post.js");
+const Internship = require("../models/Internship.js");
+const ApplicationTracking = require("../models/ApplicationTracking.js");
 
 /*
 Path: GET /api/admin/users
@@ -203,7 +206,7 @@ router.put("/users/:id/level", [auth, adminAuth], async (req, res) => {
 
 /*
 Path: DELETE /api/admin/users/:id
-Desc: Delete a user (admin only)
+Desc: Delete a user and all their data (admin only)
 Private + Admin
 */
 router.delete("/users/:id", [auth, adminAuth], async (req, res) => {
@@ -213,21 +216,82 @@ router.delete("/users/:id", [auth, adminAuth], async (req, res) => {
       return res.status(400).json({ msg: "You cannot delete yourself" });
     }
 
-    const user = await User.findById(req.params.id);
+    const userId = req.params.id;
+    const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
 
-    // Delete user's profile if exists
-    await Profile.findOneAndDelete({ user: req.params.id });
+    // Comprehensive deletion - same as user self-delete
+    // 1. Delete all posts created by user
+    await Post.deleteMany({ user: userId });
+    
+    // 2. Remove user's comments from all posts
+    const allPosts = await Post.find({});
+    for (const post of allPosts) {
+      const originalLength = post.comments.length;
+      post.comments = post.comments.filter(comment => comment.user.toString() !== userId);
+      if (post.comments.length !== originalLength) {
+        await post.save();
+      }
+    }
+    
+    // 3. Remove user's likes from all posts
+    const postsWithLikes = await Post.find({});
+    for (const post of postsWithLikes) {
+      const originalLength = post.likes.length;
+      post.likes = post.likes.filter(likeUserId => likeUserId.toString() !== userId);
+      if (post.likes.length !== originalLength) {
+        await post.save();
+      }
+    }
+    
+    // 4. Remove user's unlikes from all posts
+    const postsWithUnlikes = await Post.find({});
+    for (const post of postsWithUnlikes) {
+      const originalLength = post.unlikes.length;
+      post.unlikes = post.unlikes.filter(unlikeUserId => unlikeUserId.toString() !== userId);
+      if (post.unlikes.length !== originalLength) {
+        await post.save();
+      }
+    }
+    
+    // 5. Delete all internships posted by user
+    await Internship.deleteMany({ user: userId });
+    
+    // 6. Remove user's comments from all internships
+    const allInternships = await Internship.find({});
+    for (const internship of allInternships) {
+      const originalLength = internship.comments.length;
+      internship.comments = internship.comments.filter(comment => comment.user.toString() !== userId);
+      if (internship.comments.length !== originalLength) {
+        await internship.save();
+      }
+    }
+    
+    // 7. Remove user's likes from all internships
+    const allInternshipsForLikes = await Internship.find({});
+    for (const internship of allInternshipsForLikes) {
+      const originalLength = internship.likes.length;
+      internship.likes = internship.likes.filter(like => like.user.toString() !== userId);
+      if (internship.likes.length !== originalLength) {
+        await internship.save();
+      }
+    }
+    
+    // 8. Delete all application tracking records
+    await ApplicationTracking.deleteMany({ user: userId });
+    
+    // 9. Delete profile
+    await Profile.findOneAndDelete({ user: userId });
+    
+    // 10. Delete user account
+    await User.findOneAndDelete({ _id: userId });
 
-    // Delete the user
-    await User.findByIdAndDelete(req.params.id);
-
-    res.json({ msg: "User deleted successfully" });
+    res.json({ msg: "User and all associated data deleted successfully" });
   } catch (err) {
-    console.error(err.message);
+    console.error('Admin delete user error');
     res.status(500).json({ msg: "Server error" });
   }
 });

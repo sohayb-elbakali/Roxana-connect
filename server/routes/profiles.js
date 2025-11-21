@@ -125,7 +125,11 @@ router.get("/", auth, async (req, res) => {
     const profiles = await Profile.find()
       .select("-__v")
       .populate("user", "name");
-    res.json(profiles);
+    
+    // Filter out profiles where user no longer exists (deleted accounts)
+    const validProfiles = profiles.filter(profile => profile.user !== null);
+    
+    res.json(validProfiles);
   } catch (err) {
     return res.status(500).send(err.message);
   }

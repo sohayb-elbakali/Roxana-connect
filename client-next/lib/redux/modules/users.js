@@ -33,7 +33,11 @@ export function register(formData) {
         type: REGISTER_SUCCESS,
         payload: res.data,
       });
-      dispatch(loadUser());
+      await dispatch(loadUser());
+      
+      // Also load profile immediately after registration
+      const { getCurrentProfile } = require('./profiles');
+      dispatch(getCurrentProfile());
     } catch (error) {
       if (error.response && error.response.data && error.response.data.errors) {
         const errors = error.response.data.errors;
