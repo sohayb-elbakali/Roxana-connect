@@ -38,8 +38,17 @@ const InternshipDetail = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
+    // Scroll to top when navigating to a new internship
+    window.scrollTo(0, 0);
+
+    // Clear current internship to prevent showing stale data
+    dispatch({
+      type: 'internships/CLEAR_CURRENT',
+    });
+
+    // Fetch the new internship
     fetchInternship(id);
-  }, [fetchInternship, id]);
+  }, [fetchInternship, id, dispatch]);
 
   const handleImageError = () => {
     setImageError(true);
@@ -143,53 +152,71 @@ const InternshipDetail = ({
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
             <div className="p-6 md:p-8">
               {/* Header */}
-              <div className="flex items-start justify-between mb-6">
-                <div className="flex-1">
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                    {internship.company}
-                  </h1>
-                  <h2 className="text-xl font-semibold text-gray-700 mb-4">
-                    {internship.positionTitle || "Position Not Specified"}
-                  </h2>
+              <div className="border-b border-gray-100 pb-8 mb-8">
+                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
+                  <div>
+                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 tracking-tight">
+                      {internship.company}
+                    </h1>
+                    <h2 className="text-xl md:text-2xl font-medium text-gray-600">
+                      {internship.positionTitle || "Position Not Specified"}
+                    </h2>
+                  </div>
+                  <DeadlineBadge deadline={internship.applicationDeadline} size="lg" />
                 </div>
-                <DeadlineBadge deadline={internship.applicationDeadline} size="lg" />
-              </div>
 
-              {/* Location and Details */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                {internship.location && (
-                  <div className="flex items-center text-gray-700">
-                    <i className="fas fa-map-marker-alt mr-3 text-blue-600 w-5"></i>
-                    <span>{internship.location}</span>
-                  </div>
-                )}
-                {internship.locationType && (
-                  <div className="flex items-center text-gray-700">
-                    <i className="fas fa-laptop-house mr-3 text-blue-600 w-5"></i>
-                    <span className="capitalize">{internship.locationType}</span>
-                  </div>
-                )}
-                <div className="flex items-center text-gray-700">
-                  <i className="fas fa-calendar-alt mr-3 text-blue-600 w-5"></i>
-                  <span>
-                    Deadline:{" "}
-                    {new Date(
-                      internship.applicationDeadline
-                    ).toLocaleDateString()}
-                  </span>
-                </div>
-                {internship.salaryRange &&
-                  internship.salaryRange.min &&
-                  internship.salaryRange.max && (
-                    <div className="flex items-center text-gray-700">
-                      <i className="fas fa-dollar-sign mr-3 text-blue-600 w-5"></i>
-                      <span>
-                        {internship.salaryRange.currency || "USD"}{" "}
-                        {internship.salaryRange.min.toLocaleString()} -{" "}
-                        {internship.salaryRange.max.toLocaleString()}
-                      </span>
+                {/* Key Details Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {internship.location && (
+                    <div className="flex items-center gap-3 text-gray-700">
+                      <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
+                        <i className="fas fa-map-marker-alt text-lg"></i>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Location</p>
+                        <p className="font-medium">{internship.location}</p>
+                      </div>
                     </div>
                   )}
+
+                  {internship.locationType && (
+                    <div className="flex items-center gap-3 text-gray-700">
+                      <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
+                        <i className="fas fa-laptop-house text-lg"></i>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Type</p>
+                        <p className="font-medium capitalize">{internship.locationType}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-3 text-gray-700">
+                    <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
+                      <i className="fas fa-calendar-alt text-lg"></i>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Deadline</p>
+                      <p className="font-medium">
+                        {new Date(internship.applicationDeadline).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+
+                  {internship.salaryRange && internship.salaryRange.min && internship.salaryRange.max && (
+                    <div className="flex items-center gap-3 text-gray-700">
+                      <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
+                        <i className="fas fa-dollar-sign text-lg"></i>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Salary</p>
+                        <p className="font-medium">
+                          {internship.salaryRange.currency || "USD"} {internship.salaryRange.min.toLocaleString()} - {internship.salaryRange.max.toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Tags */}
@@ -206,29 +233,83 @@ const InternshipDetail = ({
                 </div>
               )}
 
-              {/* Description */}
-              <div className="mb-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-3">
-                  Description
-                </h3>
-                <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                  {internship.description}
-                </p>
-              </div>
+              {/* Content Section */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-12">
+                {/* Left Column: Description */}
+                <div className="lg:col-span-2 space-y-8">
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                      <i className="fas fa-align-left text-blue-600"></i>
+                      Description
+                    </h3>
+                    <div className="prose prose-blue max-w-none text-gray-600 leading-relaxed whitespace-pre-wrap">
+                      {internship.description}
+                    </div>
+                  </div>
 
-              {/* Requirements */}
-              {internship.requirements && internship.requirements.length > 0 && (
-                <div className="mb-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-3">
-                    Requirements
-                  </h3>
-                  <ul className="list-disc list-inside space-y-2 text-gray-700">
-                    {internship.requirements.map((req, index) => (
-                      <li key={index}>{req}</li>
-                    ))}
-                  </ul>
+                  {internship.requirements && internship.requirements.length > 0 && (
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <i className="fas fa-list-check text-blue-600"></i>
+                        Requirements
+                      </h3>
+                      <ul className="space-y-3">
+                        {internship.requirements.map((req, index) => (
+                          <li key={index} className="flex items-start gap-3 text-gray-600">
+                            <i className="fas fa-check-circle text-green-500 mt-1 flex-shrink-0"></i>
+                            <span className="leading-relaxed">{req}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
-              )}
+
+                {/* Right Column: Tags & Meta */}
+                <div className="space-y-8">
+                  {internship.tags && internship.tags.length > 0 && (
+                    <div className="bg-gray-50 rounded-xl p-6 border border-gray-100">
+                      <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-4">
+                        Skills & Tags
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {internship.tags.map((tag, index) => (
+                          <span
+                            key={index}
+                            className="px-3 py-1.5 bg-white text-gray-700 border border-gray-200 rounded-lg text-sm font-medium shadow-sm"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Posted By Card */}
+                  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-4">
+                      Posted By
+                    </h3>
+                    <div className="flex items-center gap-4">
+                      <Avatar
+                        userId={internship.postedBy?._id || (typeof internship.user === 'string' ? internship.user : internship.user?._id)}
+                        userName={internship.postedBy?.name || internship.name}
+                        avatar={internship.postedBy?.avatar}
+                        profile={internship.postedBy}
+                        size={48}
+                      />
+                      <div>
+                        <p className="text-base font-bold text-gray-900">
+                          {internship.postedBy?.name || internship.name}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-0.5">
+                          Posted {formatRelativeTime(internship.date)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               {/* Anonymous Insights */}
               <div className="mb-6 pb-6 border-b border-gray-200">
@@ -257,25 +338,7 @@ const InternshipDetail = ({
                 </div>
               </div>
 
-              {/* Posted By */}
-              <div className="flex items-center space-x-3 mb-6 pb-6 border-b border-gray-200">
-                <Avatar
-                  userId={internship.postedBy?._id || (typeof internship.user === 'string' ? internship.user : internship.user?._id)}
-                  userName={internship.postedBy?.name || internship.name}
-                  avatar={internship.postedBy?.avatar}
-                  profile={internship.postedBy}
-                  size={48}
-                />
-                <div>
-                  <p className="text-sm text-gray-600">Posted by</p>
-                  <p className="text-base font-semibold text-gray-900">
-                    {internship.postedBy?.name || internship.name}
-                  </p>
-                </div>
-                <div className="ml-auto text-sm text-gray-500">
-                  {formatRelativeTime(internship.date)}
-                </div>
-              </div>
+
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-3">
@@ -303,18 +366,16 @@ const InternshipDetail = ({
 
                 <button
                   type="button"
-                  className={`flex-1 inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 ${
-                    isTracking
-                      ? "bg-gray-600 text-white hover:bg-gray-700"
-                      : "bg-blue-600 text-white hover:bg-blue-700"
-                  }`}
+                  className={`flex-1 inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 ${isTracking
+                    ? "bg-gray-600 text-white hover:bg-gray-700"
+                    : "bg-blue-600 text-white hover:bg-blue-700"
+                    }`}
                   onClick={handleTrack}
                   aria-label={isTracking ? "Stop tracking this internship" : "Track this internship"}
                 >
                   <i
-                    className={`fas ${
-                      isTracking ? "fa-bookmark-slash" : "fa-bookmark"
-                    } mr-2`}
+                    className={`fas ${isTracking ? "fa-bookmark-slash" : "fa-bookmark"
+                      } mr-2`}
                     aria-hidden="true"
                   ></i>
                   {isTracking ? "Untrack" : "Track This Opportunity"}
@@ -337,8 +398,8 @@ const InternshipDetail = ({
             <h3 className="text-xl font-bold text-gray-900 mb-4">
               Comments ({internship.comments?.length || 0})
             </h3>
-            <CommentSection 
-              comments={internship.comments} 
+            <CommentSection
+              comments={internship.comments}
               internshipId={id}
             />
           </div>

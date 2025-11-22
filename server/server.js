@@ -32,9 +32,9 @@ const corsOptions = {
     }
 
     // Check if origin is in allowed list or matches Netlify/Vercel patterns
-    const isAllowed = allowedOrigins.includes(origin) || 
-                      origin.endsWith('.netlify.app') || 
-                      origin.endsWith('.vercel.app');
+    const isAllowed = allowedOrigins.includes(origin) ||
+      origin.endsWith('.netlify.app') ||
+      origin.endsWith('.vercel.app');
 
     if (isAllowed) {
       callback(null, true);
@@ -117,7 +117,7 @@ app.get("/images/:userId", (req, res) => {
   });
 });
 
-app.use(generalLimiter);
+// app.use(generalLimiter); // Rate limiting disabled
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
@@ -130,8 +130,8 @@ app.use('/api', (req, res, next) => {
 
 connectDB();
 
-app.use("/api/users/login", authLimiter);
-app.use("/api/users/register", authLimiter);
+// app.use("/api/users/login", authLimiter); // Rate limiting disabled
+// app.use("/api/users/register", authLimiter); // Rate limiting disabled
 
 app.use("/api/users", require("./routes/users.js"));
 app.use("/api/profiles", require("./routes/profiles.js"));

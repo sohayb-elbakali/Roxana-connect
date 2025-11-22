@@ -34,11 +34,10 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
           <Link
             key={link.to}
             href={link.to}
-            className={`relative px-4 py-2 rounded-lg font-medium text-sm transition-colors duration-150 ${
-              isActive(link.to)
+            className={`relative px-4 py-2 rounded-lg font-medium text-sm transition-colors duration-150 ${isActive(link.to)
                 ? "bg-white text-blue-600"
                 : "text-white hover:bg-white/10"
-            }`}
+              }`}
           >
             {link.label}
             {link.badge > 0 && (
@@ -54,7 +53,7 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
       <div className="hidden lg:flex items-center space-x-3">
         {/* Only show Post Internship button for admins and Level 2-3 users */}
         {(user?.role === 'admin' || (user?.level && user.level >= 2)) && (
-          <Link 
+          <Link
             href="/internship/create"
             prefetch={true}
             className="px-4 py-2 bg-white text-blue-600 rounded-lg font-semibold text-sm hover:bg-gray-50 transition-all duration-150 shadow-sm hover:shadow"
@@ -63,7 +62,7 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
             Post Internship
           </Link>
         )}
-        
+
         <div className="relative">
           <button
             onClick={() => setShowProfileMenu(!showProfileMenu)}
@@ -79,11 +78,11 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
             />
             <i className={`fas fa-chevron-down text-white text-xs transition-transform duration-150 ${showProfileMenu ? 'rotate-180' : ''}`}></i>
           </button>
-          
+
           {showProfileMenu && (
             <>
-              <div 
-                className="fixed inset-0 z-40" 
+              <div
+                className="fixed inset-0 z-40"
                 onClick={() => setShowProfileMenu(false)}
               ></div>
               <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-200">
@@ -130,8 +129,8 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
       {/* Mobile Menu */}
       {showMobileMenu && (
         <>
-          <div 
-            className="fixed inset-0 bg-black/50 z-40 lg:hidden" 
+          <div
+            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
             onClick={() => setShowMobileMenu(false)}
           ></div>
           <div className="fixed top-16 left-0 right-0 bg-white shadow-lg z-50 lg:hidden border-t border-gray-200">
@@ -141,11 +140,10 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
                   key={link.to}
                   href={link.to}
                   onClick={() => setShowMobileMenu(false)}
-                  className={`relative flex items-center px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 ${
-                    isActive(link.to)
+                  className={`relative flex items-center px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 ${isActive(link.to)
                       ? "bg-blue-50 text-blue-600"
                       : "text-gray-700 hover:bg-gray-50"
-                  }`}
+                    }`}
                 >
                   <i className={`fas ${link.icon} w-5 text-gray-400`}></i>
                   <span className="ml-3">{link.label}</span>
@@ -167,6 +165,13 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
                   <span className="ml-3">Post Internship</span>
                 </Link>
               )}
+              <Link href={`/profile/${user?._id}`}
+                onClick={() => setShowMobileMenu(false)}
+                className="flex items-center px-4 py-3 rounded-lg font-medium text-sm text-gray-700 hover:bg-gray-50 transition-all duration-200"
+              >
+                <i className="fas fa-user w-5 text-gray-400"></i>
+                <span className="ml-3">Profile</span>
+              </Link>
               <Link href="/settings"
                 onClick={() => setShowMobileMenu(false)}
                 className="flex items-center px-4 py-3 rounded-lg font-medium text-sm text-gray-700 hover:bg-gray-50 transition-all duration-200"
@@ -224,7 +229,7 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
                 {/* Decorative Badge */}
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full border-2 border-blue-600 animate-pulse"></div>
               </div>
-              
+
               {/* Logo Text */}
               <div className="flex flex-col">
                 <span className="text-2xl font-extrabold text-white tracking-tight group-hover:tracking-wide transition-all duration-300">

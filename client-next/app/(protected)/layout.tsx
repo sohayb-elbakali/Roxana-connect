@@ -46,7 +46,7 @@ export default function ProtectedLayout({
       <Alert />
       <Navbar />
       <Sidebar />
-      <div className="page-content">
+      <div className="page-content pt-16 lg:ml-16 min-h-screen">
         {children}
       </div>
     </ProfileGuard>

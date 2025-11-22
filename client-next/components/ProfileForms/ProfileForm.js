@@ -145,7 +145,7 @@ const ProfileForm = ({
         const data = new FormData();
         data.append("image", file);
         const response = await uploadProfileImage(data);
-        
+
         // Update preview with Cloudinary URL immediately
         if (response && response.url) {
           setImagePreview(response.url);
@@ -180,8 +180,8 @@ const ProfileForm = ({
               {profile ? "Edit Profile" : "Create Your Profile"}
             </h2>
             <p className="text-gray-600">
-              {profile 
-                ? "Update your profile to showcase your professional journey" 
+              {profile
+                ? "Update your profile to showcase your professional journey"
                 : "Welcome to Roxana Connect! Let's set up your profile"}
             </p>
           </div>
@@ -228,8 +228,8 @@ const ProfileForm = ({
 
               {/* Clickable Image Preview */}
               <div className="text-center">
-                <label 
-                  htmlFor="profile-image-upload" 
+                <label
+                  htmlFor="profile-image-upload"
                   className="inline-block cursor-pointer group relative"
                 >
                   <div className="relative">
@@ -250,7 +250,7 @@ const ProfileForm = ({
                         className="border-4 border-blue-200 shadow-lg group-hover:border-blue-400 transition-all duration-200"
                       />
                     )}
-                    
+
                     {/* Upload Overlay */}
                     {!uploadingImage && (
                       <div className="absolute inset-0 rounded-full group-hover:bg-opacity-50 transition-all duration-200 flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0)' }}>
@@ -260,7 +260,7 @@ const ProfileForm = ({
                         </div>
                       </div>
                     )}
-                    
+
                     {/* Loading Spinner */}
                     {uploadingImage && (
                       <div className="absolute inset-0 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
@@ -351,15 +351,14 @@ const ProfileForm = ({
             {/* Skills */}
             <div>
               <label className="block text-left text-gray-700 font-medium mb-2">
-                Skills *
+                Skills
               </label>
               <input
                 type="text"
-                placeholder="* Skills (e.g. HTML, CSS, JavaScript, Python)"
+                placeholder="Skills (e.g. HTML, CSS, JavaScript, Python)"
                 name="skills"
                 value={skills}
                 onChange={onChange}
-                required
                 className="text-gray-900 bg-white w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
               <p className="text-sm text-gray-500 mt-1">

@@ -14,9 +14,9 @@ const TrackerCard = ({ tracking }) => {
 
   // Handle case where internship might be populated, just an ID, or null
   const internshipData =
-    typeof internship === "object" && internship !== null 
-      ? internship 
-      : internship 
+    typeof internship === "object" && internship !== null
+      ? internship
+      : internship
         ? { _id: internship }
         : { _id: null };
 
@@ -28,12 +28,15 @@ const TrackerCard = ({ tracking }) => {
 
   return (
     <>
-      <div className="bg-white rounded-xl hover:shadow-lg transition-all duration-300 p-4 group border-2 border-gray-100 hover:border-blue-400 cursor-pointer">
+      <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-4 group border border-gray-200 hover:border-blue-300 cursor-pointer relative overflow-hidden">
+        {/* Hover Accent */}
+        <div className="absolute top-0 left-0 w-1 h-full bg-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
         {/* Header with Quick Actions */}
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-bold text-gray-900 mb-1 line-clamp-1">{company}</h3>
-            <p className="text-xs font-medium text-gray-600 line-clamp-1">
+        <div className="flex items-start justify-between mb-3 pl-2">
+          <div className="flex-1 min-w-0 mr-2">
+            <h3 className="text-sm font-bold text-gray-900 mb-1 line-clamp-1 group-hover:text-blue-600 transition-colors">{company}</h3>
+            <p className="text-xs font-medium text-gray-500 line-clamp-1">
               {positionTitle}
             </p>
           </div>
@@ -42,39 +45,39 @@ const TrackerCard = ({ tracking }) => {
 
         {/* Deadline Badge */}
         {applicationDeadline && (
-          <div className="mb-3">
+          <div className="mb-3 pl-2">
             <DeadlineBadge deadline={applicationDeadline} size="sm" />
           </div>
         )}
 
         {/* Quick Info Pills */}
-        <div className="flex items-center gap-1.5 mb-3 flex-wrap">
+        <div className="flex items-center gap-1.5 mb-4 flex-wrap pl-2">
           {privateNotes && (
-            <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-600 rounded-lg text-xs font-semibold border border-blue-200">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-yellow-50 text-yellow-700 rounded-md text-[10px] font-bold border border-yellow-100">
               <i className="fas fa-sticky-note"></i>
-              <span>Notes</span>
+              <span>Has Notes</span>
             </span>
           )}
         </div>
 
         {/* Status Selector */}
-        <div className="mb-3">
+        <div className="mb-4 pl-2">
           <StatusSelector trackingId={_id} currentStatus={status} />
         </div>
 
         {/* Action Buttons */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2 pl-2">
           {internshipData._id ? (
             <Link href={`/internship/${internshipData._id}`}
-              className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-bold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md hover:scale-105"
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-gray-700 bg-gray-50 border border-gray-200 rounded-lg hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all duration-200"
             >
-              <i className="fas fa-arrow-right"></i>
+              <i className="fas fa-external-link-alt"></i>
               <span>View</span>
             </Link>
           ) : (
             <button
               disabled
-              className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-bold text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed"
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-gray-400 bg-gray-50 border border-gray-200 rounded-lg cursor-not-allowed"
             >
               <i className="fas fa-trash"></i>
               <span>Deleted</span>
@@ -82,12 +85,12 @@ const TrackerCard = ({ tracking }) => {
           )}
           <button
             onClick={() => setShowNotesEditor(true)}
-            className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-bold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all duration-200 relative"
+            className="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold text-gray-700 bg-gray-50 border border-gray-200 rounded-lg hover:bg-yellow-50 hover:text-yellow-700 hover:border-yellow-200 transition-all duration-200 relative"
           >
-            <i className="fas fa-edit"></i>
-            <span>Notes</span>
+            <i className="fas fa-pen"></i>
+            <span>Edit Notes</span>
             {privateNotes && (
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full"></span>
+              <span className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full border-2 border-white"></span>
             )}
           </button>
         </div>

@@ -10,23 +10,23 @@ export async function fetchUserProfile() {
   try {
     // Load user data first
     await store.dispatch(loadUser());
-    
+
     // Then load profile with avatar
     await store.dispatch(getCurrentProfile());
-    
+
     const state = store.getState();
     const profile = state.profiles.profile;
-    
+
     if (profile?.avatar) {
-      console.log('Profile loaded with avatar:', profile.avatar);
+
     } else if (profile === null) {
-      console.log('User does not have a profile yet - this is normal for new users');
+
     }
-    
+
     return profile;
   } catch (error) {
     // Silently handle errors - user might not have a profile yet
-    console.log('Profile fetch completed (user may not have profile yet)');
+
     return null;
   }
 }
@@ -38,7 +38,7 @@ export async function fetchUserProfile() {
 export function updateAvatarInRedux(newAvatarUrl) {
   const state = store.getState();
   const currentProfile = state.profiles.profile;
-  
+
   if (currentProfile) {
     store.dispatch({
       type: 'profile/UPDATE_PROFILE',

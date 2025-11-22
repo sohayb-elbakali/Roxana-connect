@@ -35,7 +35,7 @@ const TrackerDashboard = ({
       if (!tracking.internship) {
         return;
       }
-      
+
       const status = tracking.status;
       // Group accepted and offer_received together as "Offers"
       if (status === "accepted" || status === "offer_received") {
@@ -50,26 +50,26 @@ const TrackerDashboard = ({
       groups[status].sort((a, b) => {
         const internshipA = (typeof a.internship === "object" && a.internship !== null) ? a.internship : null;
         const internshipB = (typeof b.internship === "object" && b.internship !== null) ? b.internship : null;
-        
+
         // Handle missing internship data (put at the end)
         if (!internshipA && !internshipB) return 0;
         if (!internshipA) return 1;
         if (!internshipB) return -1;
-        
+
         const daysA = getDaysUntilDeadline(internshipA.applicationDeadline);
         const daysB = getDaysUntilDeadline(internshipB.applicationDeadline);
-        
+
         // Handle null deadlines (put them at the end)
         if (daysA === null && daysB === null) return 0;
         if (daysA === null) return 1;
         if (daysB === null) return -1;
-        
+
         // Sort by days remaining (ascending - urgent first)
         // Expired items go to the end
         if (daysA < 0 && daysB < 0) return 0;
         if (daysA < 0) return 1;
         if (daysB < 0) return -1;
-        
+
         return daysA - daysB;
       });
     });
@@ -79,7 +79,7 @@ const TrackerDashboard = ({
 
   if (loading) {
     return (
-      <div className="pt-20 lg:pl-16 min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header Skeleton */}
           <div className="mb-8">
@@ -125,66 +125,76 @@ const TrackerDashboard = ({
       key: "not_applied",
       title: "Saved",
       icon: "fa-bookmark",
-      color: "text-gray-600",
-      bgColor: "bg-gray-50",
-      borderColor: "border-gray-200",
+      color: "text-slate-600",
+      bgColor: "bg-slate-50",
+      headerColor: "bg-white",
+      borderColor: "border-slate-200",
+      accentColor: "border-slate-400",
     },
     {
       key: "applied",
       title: "Applied",
-      icon: "fa-check",
+      icon: "fa-paper-plane",
       color: "text-blue-600",
-      bgColor: "bg-blue-50",
+      bgColor: "bg-blue-50/30",
+      headerColor: "bg-blue-50",
       borderColor: "border-blue-200",
+      accentColor: "border-blue-400",
     },
     {
       key: "interviewing",
-      title: "Interview",
+      title: "Interviewing",
       icon: "fa-user-tie",
       color: "text-purple-600",
-      bgColor: "bg-purple-50",
+      bgColor: "bg-purple-50/30",
+      headerColor: "bg-purple-50",
       borderColor: "border-purple-200",
+      accentColor: "border-purple-400",
     },
     {
       key: "offer_received",
       title: "Offers",
-      icon: "fa-star",
-      color: "text-yellow-600",
-      bgColor: "bg-yellow-50",
-      borderColor: "border-yellow-200",
+      icon: "fa-trophy",
+      color: "text-amber-600",
+      bgColor: "bg-amber-50/30",
+      headerColor: "bg-amber-50",
+      borderColor: "border-amber-200",
+      accentColor: "border-amber-400",
     },
     {
       key: "rejected",
       title: "Rejected",
-      icon: "fa-times",
-      color: "text-red-500",
-      bgColor: "bg-red-50",
-      borderColor: "border-red-200",
+      icon: "fa-times-circle",
+      color: "text-rose-600",
+      bgColor: "bg-rose-50/30",
+      headerColor: "bg-rose-50",
+      borderColor: "border-rose-200",
+      accentColor: "border-rose-400",
     },
   ];
 
   return (
-    <div className="pt-20 lg:pl-16 min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="bg-[#BFDBFE] rounded-2xl p-8 mb-8 shadow-sm border border-blue-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                  <i className="fas fa-chart-line text-blue-600 text-2xl"></i>
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                  <i className="fas fa-columns text-blue-600"></i>
                 </div>
-                <h1 className="text-3xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold text-gray-900">
                   Application Tracker
                 </h1>
               </div>
-              <p className="text-gray-700 text-sm">
-                Track your journey from application to offer
+              <p className="text-sm text-gray-600">
+                Track your journey from application to offer • Manage {items.length} {items.length === 1 ? 'application' : 'applications'}
               </p>
             </div>
-            <div className="hidden lg:flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl border border-blue-300 shadow-sm">
+            <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 px-4 py-2 rounded-lg border border-gray-200">
               <i className="fas fa-info-circle text-blue-600"></i>
-              <span className="text-xs text-gray-700 font-medium">Click any status to update</span>
+              <span className="font-medium">Click status to update</span>
             </div>
           </div>
         </div>
@@ -220,32 +230,30 @@ const TrackerDashboard = ({
             {/* Status Columns */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
               {statusColumns.map((column) => (
-                <div key={column.key} className="flex flex-col">
+                <div key={column.key} className="flex flex-col h-full">
                   {/* Column Header */}
-                  <div className={`${column.bgColor} rounded-t-2xl px-4 py-4 border-b-3 ${column.borderColor}`}>
+                  <div className={`${column.headerColor} rounded-t-xl px-4 py-3 border-t-4 ${column.accentColor} shadow-sm z-10`}>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                          <i className={`fas ${column.icon} ${column.color} text-sm`}></i>
-                        </div>
-                        <h3 className="font-bold text-gray-900 text-sm">
+                      <div className="flex items-center gap-2">
+                        <i className={`fas ${column.icon} ${column.color} text-sm`}></i>
+                        <h3 className="font-bold text-gray-800 text-sm tracking-wide uppercase">
                           {column.title}
                         </h3>
                       </div>
-                      <span className="px-2.5 py-1 bg-white text-gray-700 rounded-lg text-xs font-bold shadow-sm">
+                      <span className={`px-2 py-0.5 rounded-md text-xs font-bold ${column.color} bg-white border border-gray-100 shadow-sm`}>
                         {groupedInternships[column.key].length}
                       </span>
                     </div>
                   </div>
 
                   {/* Column Content */}
-                  <div className="flex-1 bg-white rounded-b-2xl p-3 space-y-3 min-h-[400px]">
+                  <div className={`flex-1 ${column.bgColor} border-x border-b ${column.borderColor} rounded-b-xl p-3 space-y-3 min-h-[500px] transition-colors duration-200`}>
                     {groupedInternships[column.key].length === 0 ? (
-                      <div className="text-center py-16 px-2">
-                        <div className="inline-flex items-center justify-center w-14 h-14 bg-gray-100 rounded-2xl mb-3">
-                          <i className={`fas ${column.icon} text-gray-300 text-2xl`}></i>
+                      <div className="flex flex-col items-center justify-center h-48 opacity-50">
+                        <div className="w-12 h-12 rounded-full bg-white/50 flex items-center justify-center mb-2">
+                          <i className={`fas ${column.icon} text-gray-400 text-xl`}></i>
                         </div>
-                        <p className="text-xs text-gray-400 font-medium">Empty</p>
+                        <p className="text-xs text-gray-500 font-medium">No items</p>
                       </div>
                     ) : (
                       <div className="space-y-3">
