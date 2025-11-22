@@ -18,7 +18,7 @@ const initialState = {
   website: "",
   location: "",
   country: "",
-  status: "",
+  status: "Student", // default to satisfy server validation
   skills: "",
   bio: "",
   twitter: "",
@@ -107,6 +107,7 @@ const ProfileForm = ({
   };
 
   const onFileChange = async (e) => {
+    e.preventDefault();
     const file = e.target.files[0];
     if (file) {
       // Validate file type
