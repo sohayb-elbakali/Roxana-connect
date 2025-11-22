@@ -147,12 +147,25 @@ const ProfileForm = ({
         data.append("image", file);
         const response = await uploadProfileImage(data);
 
-        // Update preview with Cloudinary URL immediately
+        // Update preview with Cloudinary URL immediately (no page refresh)
         if (response && response.url) {
           setImagePreview(response.url);
+          // Show simple success message
+          setAlertConfig({
+            isOpen: true,
+            type: "success",
+            title: "Image Uploaded",
+            message: "Your profile image has been updated successfully."
+          });
         }
       } catch (error) {
         console.error("Error uploading image:", error);
+        // Revert to previous image on error
+        if (profile?.avatar) {
+          setImagePreview(profile.avatar);
+        } else {
+          setImagePreview("");
+        }
         setAlertConfig({
           isOpen: true,
           type: "error",

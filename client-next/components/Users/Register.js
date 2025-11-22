@@ -19,6 +19,7 @@ const Register = ({ isAuthenticated, register, showAlertMessage }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [registerError, setRegisterError] = useState("");
 
   const { name, email, password, password2 } = formData;
 
@@ -35,16 +36,28 @@ const Register = ({ isAuthenticated, register, showAlertMessage }) => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setRegisterError("");
+    
     if (password !== password2) {
-      showAlertMessage("Passwords do not match", "error");
+      setRegisterError("Passwords do not match");
       return;
     }
 
     setIsLoading(true);
     try {
-      await register({ name, email, password });
+      const result = await register({ name, email, password });
+      // If registration fails, error will be caught
     } catch (err) {
       setIsLoading(false);
+      // Check if it's an email already exists error
+      if (err?.response?.data?.errors) {
+        const emailError = err.response.data.errors.find(e => e.msg.includes("already exists"));
+        if (emailError) {
+          setRegisterError("This email is already registered. Please use a different email or try logging in.");
+        } else {
+          setRegisterError(err.response.data.errors[0]?.msg || "Registration failed");
+        }
+      }
     }
   };
 
@@ -63,6 +76,25 @@ const Register = ({ isAuthenticated, register, showAlertMessage }) => {
             </h1>
             <p className="text-gray-600 text-sm">Create your account</p>
           </Link>
+
+          {/* Error Alert */}
+          {registerError && (
+            <div className="mb-4 bg-red-50 border-2 border-red-300 rounded-lg p-4">
+              <div className="flex items-start">
+                <div className="flex-shrink-0">
+                  <i className="fas fa-exclamation-circle text-red-600 text-lg"></i>
+                </div>
+                <div className="ml-3 flex-1">
+                  <h3 className="text-sm font-semibold text-red-900">
+                    Registration Failed
+                  </h3>
+                  <p className="text-sm text-red-800 mt-1">
+                    {registerError}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Form */}
           <form className="space-y-4" onSubmit={onSubmit}>

@@ -13,9 +13,11 @@ export const CLEAR_VIEWING_PROFILE = "profile/CLEAR_VIEWING_PROFILE";
 export const UPDATE_INTERNSHIP_PREFERENCES = "profile/UPDATE_INTERNSHIP_PREFERENCES";
 export const PROFILE_LOADING = "profile/PROFILE_LOADING";
 
-export const getCurrentProfile = () => async (dispatch) => {
+export const getCurrentProfile = (silent = false) => async (dispatch) => {
   try {
-    dispatch({ type: PROFILE_LOADING });
+    if (!silent) {
+      dispatch({ type: PROFILE_LOADING });
+    }
     const res = await api.get("/profiles/me");
 
     dispatch({
@@ -26,11 +28,12 @@ export const getCurrentProfile = () => async (dispatch) => {
     // Don't show error if user doesn't have a profile yet (status 400)
     // This is a normal state for new users
     if (err.response && err.response.status === 400) {
-
+      // Silently clear profile - this is expected for new users
       dispatch({
         type: CLEAR_PROFILE,
       });
-    } else {
+    } else if (!silent) {
+      // Only log non-400 errors when not in silent mode
       console.error("Error fetching profile:", err);
       // Don't dispatch PROFILE_ERROR for network issues
       // Just log it and keep the current state
@@ -43,14 +46,13 @@ export const createProfile =
   (formData, navigate, edit = false) =>
     async (dispatch) => {
       try {
-
+        const res = await api.post("/profiles", formData);
 
         // Update the current user's profile
         dispatch({
           type: UPDATE_PROFILE,
           payload: res.data,
         });
-
 
         dispatch(
           showAlertMessage(
@@ -60,14 +62,11 @@ export const createProfile =
         );
 
         if (!edit) {
-
           setTimeout(() => {
             navigate("/home");
           }, 500);
         }
       } catch (err) {
-
-
         // Check if err.response exists before accessing its properties
         if (err.response && err.response.data && err.response.data.errors) {
           const errors = err.response.data.errors;
@@ -115,14 +114,9 @@ export const uploadProfileImage = (data) => async (dispatch) => {
       payload: res.data,
     });
 
-    // Show success message
-    dispatch(
-      showAlertMessage("Profile image uploaded successfully!", "success")
-    );
-
-    // Refresh the current profile to get updated data
-    await dispatch(getCurrentProfile());
-
+    // Don't show alert here - let component handle it
+    // Don't refresh profile - component will handle the preview
+    
     // Return the response data for immediate use
     return res.data;
   } catch (err) {

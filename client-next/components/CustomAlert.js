@@ -42,11 +42,11 @@ const CustomAlert = ({
         };
       case "success":
         return {
-          iconBg: "bg-green-100",
-          iconColor: "text-green-600",
+          iconBg: "bg-blue-100",
+          iconColor: "text-blue-600",
           icon: "fa-check-circle",
-          buttonBg: "bg-green-600 hover:bg-green-700",
-          headerBg: "bg-gradient-to-r from-green-600 to-green-700",
+          buttonBg: "bg-blue-600 hover:bg-blue-700",
+          headerBg: "bg-gradient-to-r from-blue-600 to-blue-700",
         };
       default:
         return {

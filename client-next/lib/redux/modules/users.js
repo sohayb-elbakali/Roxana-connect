@@ -62,6 +62,8 @@ export function register(formData) {
       dispatch({
         type: REGISTER_FAIL,
       });
+      // Re-throw error so component can handle it
+      throw error;
     }
   };
 }
