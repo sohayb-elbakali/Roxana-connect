@@ -19,8 +19,19 @@ export default function ProfileGuard({ children }) {
     return (
       <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <div className="relative inline-block">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <i className="fas fa-user text-blue-600 text-xl"></i>
+            </div>
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Loading Your Profile</h3>
+          <p className="text-gray-600 text-sm">Please wait while we prepare your workspace...</p>
+          <div className="mt-4 flex items-center justify-center gap-2">
+            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+          </div>
         </div>
       </div>
     );
@@ -59,7 +70,7 @@ export default function ProfileGuard({ children }) {
             {/* Decorative circles */}
             <div className="absolute top-0 right-0 w-48 h-48 bg-white opacity-5 rounded-full -mr-24 -mt-24"></div>
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-white opacity-5 rounded-full -ml-16 -mb-16"></div>
-            
+
             <div className="relative z-10">
               <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-2xl animate-pulse">
                 <i className="fas fa-briefcase text-blue-600 text-3xl"></i>

@@ -3,12 +3,11 @@ const { auth } = require("../utils/index.js");
 const router = express.Router();
 const { check, validationResult } = require("express-validator");
 const User = require("../models/User.js");
-const LoginAttempt = require("../models/LoginAttempt.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { sendVerificationEmail, sendPasswordResetEmail } = require("../utils/email.js");
-const limitLogin = require("../middleware/limitLogin.js");
+// Lockout system disabled - removed import of accountRateLimit and related functions
 
 // Get JWT secret from environment
 const getJwtSecret = () => {
@@ -64,7 +63,7 @@ router.post(
 
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
-      
+
       // Generate verification token (but don't send email automatically)
       const verificationToken = jwt.sign(
         { userId: user.id },
@@ -72,7 +71,7 @@ router.post(
         { expiresIn: "24h" }
       );
       user.verificationToken = verificationToken;
-      
+
       await user.save();
 
       // NOTE: Verification email is NOT sent automatically on signup
@@ -123,7 +122,7 @@ Public
 */
 router.post(
   "/login",
-  // limitLogin, // Rate limiting middleware - DISABLED FOR NOW (uncomment to re-enable)
+  // Account lockout disabled – no rate limiting middleware
   check("email", "Please include a valid email").isEmail(),
   check(
     "password",
@@ -135,85 +134,25 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
     const { email, password } = req.body;
-
     try {
-      // RATE LIMITING DISABLED - Uncomment below to re-enable
-      // Get client IP from middleware
-      // const clientIp = req.clientIp;
-      // console.log('Processing login for IP:', clientIp);
-      
-      let user = await User.findOne({ email });
+      const normalizedEmail = email.toLowerCase();
+      const user = await User.findOne({ email: normalizedEmail });
       if (!user) {
-        // RATE LIMITING DISABLED - Uncomment below to re-enable
-        // Increment failed attempts
-        // if (req.loginAttempt) {
-        //   req.loginAttempt.attempts += 1;
-        //   await req.loginAttempt.save();
-        //   console.log(`Failed attempt ${req.loginAttempt.attempts} for IP ${clientIp}`);
-        // } else {
-        //   await LoginAttempt.create({ ip: clientIp, attempts: 1 });
-        //   console.log(`First failed attempt for IP ${clientIp}`);
-        // }
-        
-        return res
-          .status(400)
-          .json({ errors: [{ msg: "Invalid Credentials" }] });
+        return res.status(400).json({ errors: [{ msg: "Invalid Credentials" }] });
       }
-
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        // RATE LIMITING DISABLED - Uncomment below to re-enable
-        // Increment failed attempts
-        // if (req.loginAttempt) {
-        //   req.loginAttempt.attempts += 1;
-        //   await req.loginAttempt.save();
-        //   console.log(`Failed attempt ${req.loginAttempt.attempts} for IP ${clientIp}`);
-        // } else {
-        //   await LoginAttempt.create({ ip: clientIp, attempts: 1 });
-        //   console.log(`First failed attempt for IP ${clientIp}`);
-        // }
-        
-        return res
-          .status(400)
-          .json({ errors: [{ msg: "Invalid Credentials" }] });
+        return res.status(400).json({ errors: [{ msg: "Invalid Credentials" }] });
       }
-      
-      // RATE LIMITING DISABLED - Uncomment below to re-enable
-      // Successful login - clear login attempts for this IP
-      // await LoginAttempt.deleteOne({ ip: clientIp });
-      // console.log(`Successful login for IP ${clientIp}, cleared attempts`);
-
-      const payload = {
-        user: {
-          id: user.id,
-        },
-      };
-
-      // Generate access token (short-lived)
-      const accessToken = jwt.sign(
-        payload,
-        getJwtSecret(),
-        { expiresIn: "15m" }
-      );
-
-      // Generate refresh token (long-lived)
-      const refreshToken = jwt.sign(
-        payload,
-        getJwtSecret(),
-        { expiresIn: "7d" }
-      );
-
-      // Update refresh token in database
+      const payload = { user: { id: user.id } };
+      const accessToken = jwt.sign(payload, getJwtSecret(), { expiresIn: "15m" });
+      const refreshToken = jwt.sign(payload, getJwtSecret(), { expiresIn: "7d" });
       user.refreshToken = refreshToken;
       await user.save();
-
-      res.json({
-        token: accessToken,
-        refreshToken: refreshToken,
-        verified: user.verified
-      });
+      res.json({ token: accessToken, refreshToken, verified: user.verified });
     } catch (err) {
-      res.status(500).send("Server error during login");
+      console.error(err);
+      res.status(500).json({ msg: "Server error" });
     }
   }
 );
@@ -223,13 +162,13 @@ Path: GET /api/users
 Desc: Takes a token and returns user information
 Private
 */
-router.get("/", auth ,async (req, res) => {
-    try {
-        const user = await User.findById(req.user.id).select("-password");
-        res.json(user);
-    } catch (err) {
-        res.status(500).send("Server error fetching user");
-    }
+router.get("/", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    res.json(user);
+  } catch (err) {
+    res.status(500).send("Server error fetching user");
+  }
 });
 
 /*
@@ -270,6 +209,24 @@ router.post("/refresh-token", async (req, res) => {
     res.json({ token: newAccessToken });
   } catch (err) {
     res.status(401).json({ msg: "Invalid or expired refresh token" });
+  }
+});
+
+/*
+Path: POST /api/users/logout
+Desc: Logout user and invalidate refresh token
+Private
+*/
+router.post("/logout", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (user) {
+      user.refreshToken = null;
+      await user.save();
+    }
+    res.json({ msg: "Logged out successfully" });
+  } catch (err) {
+    res.status(500).send("Server error during logout");
   }
 });
 
@@ -409,7 +366,7 @@ Private
 router.post("/resend-verification", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    
+
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
@@ -432,7 +389,7 @@ router.post("/resend-verification", auth, async (req, res) => {
     const emailResult = await sendVerificationEmail(user.email, user.name, verificationToken);
 
     if (emailResult.success) {
-      res.json({ 
+      res.json({
         message: "Verification email sent successfully! Check your inbox.",
         devMode: emailResult.messageId === 'dev-mode'
       });

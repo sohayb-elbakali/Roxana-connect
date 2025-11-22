@@ -2,15 +2,15 @@
 
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadUser } from '@/lib/redux/modules/users';
+import { loadUser, authCheckComplete } from '@/lib/redux/modules/users';
 import { getCurrentProfile } from '@/lib/redux/modules/profiles';
 import { fetchTrackedInternships } from '@/lib/redux/modules/tracking';
 import { setAuthToken } from '@/lib/utils';
+import LoadingFavicon from "./LoadingFavicon";
 
-export default function ClientInit() {
+const ClientInit = () => {
   const dispatch = useDispatch();
-  const token = useSelector((state: any) => state.users?.token);
-  const user = useSelector((state: any) => state.users?.user);
+  const token = useSelector((state: any) => state.users.token);
   const hasInitialized = useRef(false);
 
   useEffect(() => {
@@ -20,15 +20,21 @@ export default function ClientInit() {
 
     // Set token from Redux state or localStorage
     const authToken = token || (typeof window !== 'undefined' ? localStorage.getItem('token') : null);
-    
+
     if (authToken) {
       setAuthToken(authToken);
       // Load user, profile, and tracking data if we have a token
       dispatch(loadUser() as any);
       dispatch(getCurrentProfile() as any);
       dispatch(fetchTrackedInternships() as any);
+    } else {
+      // If no token, we still need to signal that auth check is complete
+      // This prevents infinite loading state
+      dispatch(authCheckComplete() as any);
     }
   }, [dispatch, token]);
 
-  return null;
-}
+  return <LoadingFavicon />;
+};
+
+export default ClientInit;

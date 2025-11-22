@@ -3,19 +3,18 @@
 import { connect } from "react-redux";
 import Link from "next/link";
 import HomeFeed from "./Home/HomeFeed";
+import HomeSkeleton from "./Home/HomeSkeleton";
 
 const Home = ({
   profiles: { profile, loading },
 }) => {
 
   return (
-    <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {loading || profile === undefined ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600"></div>
-          </div>
-        ) : profile === null ? (
+    <div className="min-h-screen bg-gray-50">
+      {loading || profile === undefined ? (
+        <HomeSkeleton />
+      ) : profile === null ? (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="max-w-4xl mx-auto py-12">
             <div className="bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden">
               {/* Header with gradient */}
@@ -81,10 +80,12 @@ const Home = ({
               </div>
             </div>
           </div>
-        ) : (
+        </div>
+      ) : (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <HomeFeed />
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

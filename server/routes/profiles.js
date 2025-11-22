@@ -32,7 +32,6 @@ router.post(
   "/",
   auth,
   check("status", "Status is required").notEmpty(),
-  check("skills", "Skills is required").notEmpty(),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -40,15 +39,15 @@ router.post(
     }
     /*
     {
-"company": “ARAMEX”,
-“status”: “Junior Developer”,
-“skills”: [”HTML, CSS, PHP, JAVASCRIPT”],
-“website”: ”https://www.mywebsite.com“,
-“location”:”Dubai”,
-“bio”:”I am a software engineer and studied in the Arabic university”,
-“github”:””,
-“twitter”:””,
-“youtube”:””
+"company": "ARAMEX",
+"status": "Junior Developer",
+"skills": ["HTML, CSS, PHP, JAVASCRIPT"],
+"website": "https://www.mywebsite.com",
+"location":"Dubai",
+"bio":"I am a software engineer and studied in the Arabic university",
+"github":"",
+"twitter":"",
+"youtube":""
 }
     */
 
@@ -70,9 +69,11 @@ router.post(
         website && website !== ""
           ? normalizeUrl(website, { forceHttps: true })
           : "",
-      skills: Array.isArray(skills)
-        ? skills
-        : skills.split(",").map((skill) => skill.trim()),
+      skills: skills && skills !== ""
+        ? (Array.isArray(skills)
+          ? skills
+          : skills.split(",").map((skill) => skill.trim()))
+        : [],
       ...rest,
     };
 
@@ -127,17 +128,17 @@ router.get("/", auth, async (req, res) => {
     const profiles = await Profile.find()
       .select("-__v")
       .populate("user", "name date");
-    
+
     // Filter out profiles where user no longer exists (deleted accounts)
     const validProfiles = profiles.filter(profile => profile.user !== null);
-    
+
     // Sort by user creation date (newest first)
     validProfiles.sort((a, b) => {
       const dateA = a.user?.date ? new Date(a.user.date) : new Date(0);
       const dateB = b.user?.date ? new Date(b.user.date) : new Date(0);
       return dateB - dateA; // Descending order (newest first)
     });
-    
+
     res.json(validProfiles);
   } catch (err) {
     return res.status(500).send(err.message);
@@ -149,8 +150,8 @@ router.get("/user/:user_id", auth, async (req, res) => {
     const profile = await Profile.findOne({
       user: req.params.user_id,
     })
-    .select("-__v")
-    .populate("user", "name");
+      .select("-__v")
+      .populate("user", "name");
 
     if (!profile) {
       return res
@@ -170,10 +171,10 @@ router.delete("/", auth, async (req, res) => {
   try {
     const userId = req.user.id;
     const mongoose = require('mongoose');
-    
+
     // 1. Delete all posts created by user
     await Post.deleteMany({ user: userId });
-    
+
     // 2. Remove user's comments from all posts (using string comparison)
     const allPosts = await Post.find({});
     for (const post of allPosts) {
@@ -183,7 +184,7 @@ router.delete("/", auth, async (req, res) => {
         await post.save();
       }
     }
-    
+
     // 3. Remove user's likes from all posts
     const postsWithLikes = await Post.find({});
     for (const post of postsWithLikes) {
@@ -193,7 +194,7 @@ router.delete("/", auth, async (req, res) => {
         await post.save();
       }
     }
-    
+
     // 4. Remove user's unlikes from all posts
     const postsWithUnlikes = await Post.find({});
     for (const post of postsWithUnlikes) {
@@ -203,10 +204,10 @@ router.delete("/", auth, async (req, res) => {
         await post.save();
       }
     }
-    
+
     // 5. Delete all internships posted by user
     await Internship.deleteMany({ user: userId });
-    
+
     // 6. Remove user's comments from all internships
     const allInternships = await Internship.find({});
     for (const internship of allInternships) {
@@ -216,7 +217,7 @@ router.delete("/", auth, async (req, res) => {
         await internship.save();
       }
     }
-    
+
     // 7. Remove user's likes from all internships
     const allInternshipsForLikes = await Internship.find({});
     for (const internship of allInternshipsForLikes) {
@@ -226,25 +227,25 @@ router.delete("/", auth, async (req, res) => {
         await internship.save();
       }
     }
-    
+
     // 8. Delete all application tracking records
     await ApplicationTracking.deleteMany({ user: userId });
-    
+
     // 9. Delete profile
     await Profile.findOneAndDelete({ user: userId });
-    
+
     // 10. Delete user account
     await User.findOneAndDelete({ _id: userId });
-    res.json({ 
-      msg: "Account deleted successfully. All your data has been permanently removed." 
+    res.json({
+      msg: "Account deleted successfully. All your data has been permanently removed."
     });
   } catch (err) {
     console.error("Error deleting account:", err);
     console.error("Error stack:", err.stack);
     console.error("Error message:", err.message);
-    return res.status(500).json({ 
+    return res.status(500).json({
       msg: "Error deleting account. Please try again later.",
-      error: err.message 
+      error: err.message
     });
   }
 });
@@ -258,8 +259,8 @@ router.post("/upload", auth, uploadMiddleware.single("image"), async (req, res) 
 
     // Update user's profile with the image URL
     const profile = await Profile.findOne({ user: req.user.id });
-    
-    console.log("Profile found:", profile ? "Yes" : "No");
+
+
 
     if (profile) {
       // If profile has an old image, delete it from Cloudinary
@@ -271,10 +272,10 @@ router.post("/upload", auth, uploadMiddleware.single("image"), async (req, res) 
           console.error("Error deleting old image:", err);
         }
       }
-      
+
       profile.avatar = req.file.path;
       await profile.save();
-      console.log("Profile updated with avatar:", req.file.path);
+
     }
 
     res.json({
@@ -481,7 +482,7 @@ router.get("/user/:user_id/internship-stats", auth, async (req, res) => {
 
     // Get offers and acceptances for display
     const offersAndAcceptances = trackingRecords
-      .filter((record) => 
+      .filter((record) =>
         record.status === "offer_received" || record.status === "accepted"
       )
       .map((record) => ({

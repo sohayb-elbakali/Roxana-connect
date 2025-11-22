@@ -21,26 +21,36 @@ function Developers({ user, getProfiles, profiles: { profiles, loading } }) {
   }, [getProfiles]);
 
   // Calculate new users count (joined within last 7 days)
-  const newUsersCount = profiles?.filter(profile => 
-    profile?.user?.date && 
+  const newUsersCount = profiles?.filter(profile =>
+    profile?.user?.date &&
     (new Date() - new Date(profile.user.date)) < 7 * 24 * 60 * 60 * 1000
   ).length || 0;
 
   return (
     <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Developers
-          </h1>
-          <p className="text-gray-600">
-            Connect with other developers in the community
-            {newUsersCount > 0 && (
-              <span className="ml-2 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                {newUsersCount} new {newUsersCount === 1 ? 'member' : 'members'} this week
-              </span>
-            )}
-          </p>
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                  <i className="fas fa-users text-blue-600"></i>
+                </div>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Developers
+                </h1>
+              </div>
+              <p className="text-sm text-gray-600">
+                Connect with {profiles?.length || 0} developers in the community
+                {newUsersCount > 0 && (
+                  <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                    <i className="fas fa-star mr-1"></i>
+                    {newUsersCount} new this week
+                  </span>
+                )}
+              </p>
+            </div>
+          </div>
         </div>
         {loading ? (
           <div className="text-center py-16">
@@ -77,7 +87,7 @@ function Developers({ user, getProfiles, profiles: { profiles, loading } }) {
 
 function Developer({ profile }) {
   // Check if user joined within the last 7 days
-  const isNewUser = profile?.user?.date && 
+  const isNewUser = profile?.user?.date &&
     (new Date() - new Date(profile.user.date)) < 7 * 24 * 60 * 60 * 1000;
 
   return (

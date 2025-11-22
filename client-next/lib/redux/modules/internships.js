@@ -19,6 +19,7 @@ export const LIKE_INTERNSHIP = "internships/LIKE_INTERNSHIP";
 export const FETCH_TRACKING_USERS = "internships/FETCH_TRACKING_USERS";
 export const UPDATE_INSIGHTS = "internships/UPDATE_INSIGHTS";
 export const SET_INSIGHTS = "internships/SET_INSIGHTS";
+export const CLEAR_CURRENT = "internships/CLEAR_CURRENT";
 export const INTERNSHIP_ERROR = "internships/INTERNSHIP_ERROR";
 
 // Action Creators
@@ -27,7 +28,7 @@ export const INTERNSHIP_ERROR = "internships/INTERNSHIP_ERROR";
 export const fetchInternships = (filters = {}) => async (dispatch) => {
   try {
     const params = new URLSearchParams();
-    
+
     if (filters.company) params.append("company", filters.company);
     if (filters.location) params.append("location", filters.location);
     if (filters.deadlineFrom) params.append("deadlineFrom", filters.deadlineFrom);
@@ -49,7 +50,7 @@ export const fetchInternships = (filters = {}) => async (dispatch) => {
             cacheManager.set('profileImages', internship.postedBy._id, internship.postedBy.avatar, 10 * 60 * 1000);
           }
         }
-        
+
         // Preload comment author images
         if (internship.comments && Array.isArray(internship.comments)) {
           internship.comments.forEach(comment => {
@@ -70,11 +71,11 @@ export const fetchInternships = (filters = {}) => async (dispatch) => {
     });
   } catch (err) {
     console.error("Fetch internships error:", err.response?.data || err.message);
-    const errorMsg = err.response?.data?.errors?.[0]?.msg || 
-                     err.response?.data?.msg || 
-                     err.response?.statusText || 
-                     "Network error";
-    
+    const errorMsg = err.response?.data?.errors?.[0]?.msg ||
+      err.response?.data?.msg ||
+      err.response?.statusText ||
+      "Network error";
+
     dispatch({
       type: INTERNSHIP_ERROR,
       payload: {
@@ -99,7 +100,7 @@ export const fetchInternship = (id) => async (dispatch) => {
           cacheManager.set('profileImages', res.data.postedBy._id, res.data.postedBy.avatar, 10 * 60 * 1000);
         }
       }
-      
+
       // Preload comment author images
       if (res.data.comments && Array.isArray(res.data.comments)) {
         res.data.comments.forEach(comment => {
@@ -567,23 +568,23 @@ export default function reducer(state = initialState, action) {
         items: state.items.map((item) =>
           item._id === payload.internshipId
             ? {
-                ...item,
-                trackingCount: Math.max(
-                  0,
-                  (item.trackingCount || 0) + payload.increment
-                ),
-              }
+              ...item,
+              trackingCount: Math.max(
+                0,
+                (item.trackingCount || 0) + payload.increment
+              ),
+            }
             : item
         ),
         current:
           state.current?._id === payload.internshipId
             ? {
-                ...state.current,
-                trackingCount: Math.max(
-                  0,
-                  (state.current.trackingCount || 0) + payload.increment
-                ),
-              }
+              ...state.current,
+              trackingCount: Math.max(
+                0,
+                (state.current.trackingCount || 0) + payload.increment
+              ),
+            }
             : state.current,
       };
     case UPDATE_INSIGHTS:
@@ -606,6 +607,12 @@ export default function reducer(state = initialState, action) {
           ...state.insights,
           [payload.internshipId]: payload.insights
         }
+      };
+    case CLEAR_CURRENT:
+      return {
+        ...state,
+        current: null,
+        loading: true,
       };
     case INTERNSHIP_ERROR:
       return {

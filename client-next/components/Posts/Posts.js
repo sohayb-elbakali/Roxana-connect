@@ -14,9 +14,20 @@ function Posts({ getPosts, posts }) {
   return (
     <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Community Posts</h1>
-          <p className="text-gray-600">Share and discuss with the community</p>
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                  <i className="fas fa-comments text-blue-600"></i>
+                </div>
+                <h1 className="text-2xl font-bold text-gray-900">Community Posts</h1>
+              </div>
+              <p className="text-sm text-gray-600">
+                Share and discuss with the community • {posts.length} {posts.length === 1 ? 'post' : 'posts'}
+              </p>
+            </div>
+          </div>
         </div>
         <div className="space-y-6">
           <PostForm />

@@ -17,6 +17,8 @@ const Register = ({ isAuthenticated, register, showAlertMessage }) => {
     password2: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const { name, email, password, password2 } = formData;
 
@@ -37,7 +39,7 @@ const Register = ({ isAuthenticated, register, showAlertMessage }) => {
       showAlertMessage("Passwords do not match", "error");
       return;
     }
-    
+
     setIsLoading(true);
     try {
       await register({ name, email, password });
@@ -48,26 +50,26 @@ const Register = ({ isAuthenticated, register, showAlertMessage }) => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-lg">
+      <div className="w-full max-w-md">
         {/* Card */}
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-10">
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-8">
           {/* Logo/Brand */}
-          <Link href="/" className="block text-center mb-10 group">
-            <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-105 transition-transform">
-              <i className="fas fa-briefcase text-white text-3xl"></i>
+          <Link href="/" className="block text-center mb-8 group">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-105 transition-transform">
+              <i className="fas fa-briefcase text-white text-2xl"></i>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl font-bold text-gray-900 mb-1">
               Roxana <span className="text-blue-600">Connect</span>
             </h1>
-            <p className="text-gray-600 text-base">Create your account</p>
+            <p className="text-gray-600 text-sm">Create your account</p>
           </Link>
 
           {/* Form */}
-          <form className="space-y-5" onSubmit={onSubmit}>
+          <form className="space-y-4" onSubmit={onSubmit}>
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1.5">Full Name</label>
               <input
-                className="w-full px-5 py-3.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base text-gray-900 bg-white placeholder-gray-400"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm text-gray-900 bg-white placeholder-gray-400"
                 type="text"
                 name="name"
                 placeholder="John Doe"
@@ -78,9 +80,9 @@ const Register = ({ isAuthenticated, register, showAlertMessage }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1.5">Email Address</label>
               <input
-                className="w-full px-5 py-3.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base text-gray-900 bg-white placeholder-gray-400"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm text-gray-900 bg-white placeholder-gray-400"
                 type="email"
                 name="email"
                 placeholder="you@example.com"
@@ -91,39 +93,56 @@ const Register = ({ isAuthenticated, register, showAlertMessage }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
-              <input
-                className="w-full px-5 py-3.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base text-gray-900 bg-white placeholder-gray-400"
-                type="password"
-                name="password"
-                placeholder="Min. 6 characters"
-                value={password}
-                onChange={onChange}
-                required
-                minLength={6}
-              />
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1.5">Password</label>
+              <div className="relative">
+                <input
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm text-gray-900 bg-white placeholder-gray-400 pr-10"
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Min. 6 characters"
+                  value={password}
+                  onChange={onChange}
+                  required
+                  minLength={6}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none"
+                >
+                  <i className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"} text-sm`}></i>
+                </button>
+              </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Confirm Password</label>
-              <input
-                className="w-full px-5 py-3.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base text-gray-900 bg-white placeholder-gray-400"
-                type="password"
-                name="password2"
-                placeholder="Re-enter password"
-                value={password2}
-                onChange={onChange}
-                required
-                minLength={6}
-              />
+              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1.5">Confirm Password</label>
+              <div className="relative">
+                <input
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm text-gray-900 bg-white placeholder-gray-400 pr-10"
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="password2"
+                  placeholder="Re-enter password"
+                  value={password2}
+                  onChange={onChange}
+                  required
+                  minLength={6}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none"
+                >
+                  <i className={`fas ${showConfirmPassword ? "fa-eye-slash" : "fa-eye"} text-sm`}></i>
+                </button>
+              </div>
             </div>
 
             <button
-              className={`w-full py-4 rounded-xl text-white font-bold shadow-lg transition-all duration-200 text-base mt-8 ${
-                isLoading
+              className={`w-full py-3 rounded-xl text-white font-bold shadow-lg transition-all duration-200 text-sm mt-6 ${isLoading
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-blue-600 hover:bg-blue-700 hover:shadow-xl transform hover:-translate-y-0.5"
-              }`}
+                }`}
               type="submit"
               disabled={isLoading}
             >
@@ -142,8 +161,8 @@ const Register = ({ isAuthenticated, register, showAlertMessage }) => {
           </form>
 
           {/* Footer */}
-          <div className="mt-8 text-center space-y-4">
-            <p className="text-gray-600 text-base">
+          <div className="mt-6 text-center space-y-3">
+            <p className="text-gray-600 text-sm">
               Already have an account?{" "}
               <Link
                 href="/login"

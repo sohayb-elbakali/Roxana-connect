@@ -26,35 +26,35 @@ const InternshipFeed = ({
   // Sort internships with additional client-side sorting for deadline urgency
   const sortedInternships = useMemo(() => {
     if (!internships || internships.length === 0) return [];
-    
+
     // If sorting by deadline, ensure urgent opportunities are prioritized
     if (filters.sort === "deadline") {
       return [...internships].sort((a, b) => {
         const daysA = getDaysUntilDeadline(a.applicationDeadline);
         const daysB = getDaysUntilDeadline(b.applicationDeadline);
-        
+
         // Handle null deadlines (put them at the end)
         if (daysA === null && daysB === null) return 0;
         if (daysA === null) return 1;
         if (daysB === null) return -1;
-        
+
         // Expired items go to the end
         if (daysA < 0 && daysB < 0) return 0;
         if (daysA < 0) return 1;
         if (daysB < 0) return -1;
-        
+
         // Sort by days remaining (ascending - urgent first)
         return daysA - daysB;
       });
     }
-    
+
     return internships;
   }, [internships, filters.sort]);
 
   // Loading state with skeletons
   if (loading) {
     return (
-      <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50">
         {/* Header Skeleton */}
         <div className="bg-white border-b border-gray-200 mb-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -103,7 +103,7 @@ const InternshipFeed = ({
   // Error state
   if (error && error.msg) {
     return (
-      <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="bg-white border border-red-200 rounded-xl p-12 text-center">
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -129,7 +129,7 @@ const InternshipFeed = ({
   // Empty state
   if (!internships || internships.length === 0) {
     return (
-      <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
             <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -140,9 +140,9 @@ const InternshipFeed = ({
             </h3>
             <p className="text-gray-600 mb-8 max-w-md mx-auto">
               {filters.search ||
-              filters.company ||
-              filters.location ||
-              filters.tags
+                filters.company ||
+                filters.location ||
+                filters.tags
                 ? "No internships match your current filters. Try adjusting your search criteria."
                 : "No internship opportunities have been posted yet. Be the first to share one!"}
             </p>
@@ -174,24 +174,28 @@ const InternshipFeed = ({
 
   // Main feed with internships
   return (
-    <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">
-      {/* Header Section - Attractive Card Design */}
+    <div className="min-h-screen bg-gray-50">
+      {/* Header Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-6">
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl shadow-lg p-8">
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex-1">
-              <h1 className="text-3xl font-bold text-white mb-2">
-                Internship Opportunities
-              </h1>
-              <p className="text-blue-100 text-sm">
-                Discover {internships.length}{" "}
-                {internships.length === 1 ? "opportunity" : "opportunities"} • Find your perfect internship
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                  <i className="fas fa-briefcase text-blue-600"></i>
+                </div>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Internship Opportunities
+                </h1>
+              </div>
+              <p className="text-sm text-gray-600">
+                Discover {internships.length} {internships.length === 1 ? "opportunity" : "opportunities"} • Find your perfect internship
               </p>
             </div>
             <Link
               href="/internship/create"
               prefetch={true}
-              className="inline-flex items-center px-6 py-3 bg-white text-blue-600 font-semibold text-sm rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all duration-150"
+              className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-blue-700 hover:shadow-md transition-all duration-150"
             >
               <i className="fas fa-plus mr-2"></i>
               Post Internship

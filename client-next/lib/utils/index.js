@@ -38,13 +38,38 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       if (typeof window !== 'undefined') {
-        // Clear invalid token
-        localStorage.removeItem("token");
-        delete api.defaults.headers.common["x-auth-token"];
-        
-        // Redirect to login if on a protected route
-        if (window.location.pathname !== "/login" && window.location.pathname !== "/register") {
-          window.location.href = "/login";
+        const refreshToken = localStorage.getItem("refreshToken");
+
+        if (refreshToken) {
+          try {
+            // Try to refresh the token
+            const res = await axios.post(`${serverUrl}/api/users/refresh-token`, {
+              refreshToken
+            });
+
+            const { token } = res.data;
+
+            // Save new token
+            localStorage.setItem("token", token);
+            api.defaults.headers.common["x-auth-token"] = token;
+            originalRequest.headers["x-auth-token"] = token;
+
+            // Retry original request
+            return api(originalRequest);
+          } catch (refreshError) {
+            // Refresh failed - clear everything and redirect
+            clearAuthData();
+            if (window.location.pathname !== "/login" && window.location.pathname !== "/register") {
+              window.location.href = "/login";
+            }
+            return Promise.reject(refreshError);
+          }
+        } else {
+          // No refresh token - clear and redirect
+          clearAuthData();
+          if (window.location.pathname !== "/login" && window.location.pathname !== "/register") {
+            window.location.href = "/login";
+          }
         }
       }
     }
@@ -67,6 +92,22 @@ export const setAuthToken = (token) => {
   }
 };
 
+export const setRefreshToken = (token) => {
+  if (typeof window !== 'undefined') {
+    if (token) {
+      localStorage.setItem("refreshToken", token);
+    } else {
+      localStorage.removeItem("refreshToken");
+    }
+  }
+};
+
+export const clearAuthData = () => {
+  setAuthToken(null);
+  setRefreshToken(null);
+  clearAllImageCache();
+};
+
 import cacheManager from './cacheManager';
 
 // Cache TTL for profile images (10 minutes)
@@ -77,18 +118,18 @@ export const getProfileImage = async (userId) => {
   if (!userId) {
     return "/assets/default.png";
   }
-  
+
   // Check cache first
   const cached = cacheManager.get('profileImages', userId);
   if (cached) {
     return cached;
   }
-  
+
   try {
     // Fetch profile to get avatar
     const response = await api.get(`/profiles/user/${userId}`);
     const avatar = response.data?.avatar || "/assets/default.png";
-    
+
     // Cache the result
     cacheManager.set('profileImages', userId, avatar, IMAGE_CACHE_TTL);
     return avatar;
@@ -105,7 +146,7 @@ export const getProfileImageSync = (userId) => {
   if (!userId) {
     return "/assets/default.png";
   }
-  
+
   // Return cached value or default
   return cacheManager.get('profileImages', userId) || "/assets/default.png";
 };
@@ -113,10 +154,10 @@ export const getProfileImageSync = (userId) => {
 // Preload profile image into cache
 export const preloadProfileImage = async (userId) => {
   if (!userId) return;
-  
+
   const cached = cacheManager.get('profileImages', userId);
   if (cached) return;
-  
+
   try {
     const response = await api.get(`/profiles/user/${userId}`);
     const avatar = response.data?.avatar || "/assets/default.png";
@@ -155,36 +196,36 @@ export const formatRelativeTime = (date) => {
   const now = new Date();
   const past = new Date(date);
   const diffInSeconds = Math.floor((now - past) / 1000);
-  
+
   const diffInMinutes = Math.floor(diffInSeconds / 60);
   if (diffInMinutes < 1) {
     return 'Just now';
   }
-  
+
   if (diffInMinutes < 60) {
     return `${diffInMinutes}m ago`;
   }
-  
+
   const diffInHours = Math.floor(diffInMinutes / 60);
   if (diffInHours < 24) {
     return `${diffInHours}h ago`;
   }
-  
+
   const diffInDays = Math.floor(diffInHours / 24);
   if (diffInDays < 7) {
     return `${diffInDays}d ago`;
   }
-  
+
   const diffInWeeks = Math.floor(diffInDays / 7);
   if (diffInWeeks < 4) {
     return `${diffInWeeks}w ago`;
   }
-  
+
   const diffInMonths = Math.floor(diffInDays / 30);
   if (diffInMonths < 12) {
     return `${diffInMonths}mo ago`;
   }
-  
+
   const diffInYears = Math.floor(diffInDays / 365);
   return `${diffInYears}y ago`;
 };
