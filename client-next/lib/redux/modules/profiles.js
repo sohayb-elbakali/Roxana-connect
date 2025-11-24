@@ -1,4 +1,4 @@
-import { api, serverUrl } from "../../utils";
+import { api } from "../../utils";
 import { showAlertMessage } from "./alerts";
 
 export const GET_PROFILE = "profile/GET_PROFILE";
@@ -101,7 +101,7 @@ export const createProfile =
 
 export const uploadProfileImage = (data) => async (dispatch) => {
   try {
-    const res = await api.post(`${serverUrl}/api/profiles/upload`, data, {
+    const res = await api.post("/profiles/upload", data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -116,7 +116,7 @@ export const uploadProfileImage = (data) => async (dispatch) => {
 
     // Don't show alert here - let component handle it
     // Don't refresh profile - component will handle the preview
-    
+
     // Return the response data for immediate use
     return res.data;
   } catch (err) {

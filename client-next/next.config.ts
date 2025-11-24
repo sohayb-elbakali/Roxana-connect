@@ -13,6 +13,14 @@ const nextConfig: NextConfig = {
     // Allow production builds even with TypeScript errors (for migration)
     ignoreBuildErrors: true,
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://localhost:5000/api/:path*', // Proxy to Backend
+      },
+    ];
+  },
 };
 
 export default nextConfig;

@@ -80,7 +80,7 @@ const ProfileForm = ({
       if (profile.avatar) {
         setImagePreview(profile.avatar);
       } else if (profile.user && profile.user._id) {
-        setImagePreview(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/default.png`);
+        setImagePreview('/assets/default.png');
       }
     }
   }, [loading, profile]);
