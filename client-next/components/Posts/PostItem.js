@@ -15,7 +15,7 @@ const PostItem = ({
   showActions = true,
 }) => {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:border-blue-300 hover:shadow-md transition-all duration-200">
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
       <div className="p-6">
         <div className="flex items-start space-x-4">
           <Avatar
@@ -39,7 +39,7 @@ const PostItem = ({
               <div className="flex items-center gap-2 flex-wrap">
                 <button
                   type="button"
-                  className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
+                  className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors cursor-pointer"
                   onClick={() => addLike(_id)}
                 >
                   <i className="fas fa-thumbs-up mr-1.5 text-blue-600" />
@@ -48,7 +48,7 @@ const PostItem = ({
 
                 <button
                   type="button"
-                  className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors duration-200"
+                  className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors cursor-pointer"
                   onClick={() => removeLike(_id)}
                 >
                   <i className="fas fa-thumbs-down mr-1.5 text-red-600" />

@@ -8,43 +8,37 @@ import Avatar from "./Avatar";
 
 function Developers({ user, getProfiles, profiles: { profiles, loading } }) {
   useEffect(() => {
-    // Initial fetch
     getProfiles();
 
-    // Set up interval to refresh every 3 minutes (180000ms)
     const intervalId = setInterval(() => {
       getProfiles();
     }, 180000);
 
-    // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
   }, [getProfiles]);
 
-  // Calculate new users count (joined within last 7 days)
   const newUsersCount = profiles?.filter(profile =>
     profile?.user?.date &&
     (new Date() - new Date(profile.user.date)) < 7 * 24 * 60 * 60 * 1000
   ).length || 0;
 
   return (
-    <div className="pt-20 lg:pl-16 min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-6">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Header */}
+        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
           <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
+            <div>
+              <div className="flex items-center gap-3 mb-1">
                 <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
                   <i className="fas fa-users text-blue-600"></i>
                 </div>
-                <h1 className="text-2xl font-bold text-gray-900">
-                  Developers
-                </h1>
+                <h1 className="text-2xl font-bold text-gray-900">Developers</h1>
               </div>
-              <p className="text-sm text-gray-600">
-                Connect with {profiles?.length || 0} developers in the community
+              <p className="text-sm text-gray-500 ml-13">
+                Connect with {profiles?.length || 0} developers
                 {newUsersCount > 0 && (
-                  <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                    <i className="fas fa-star mr-1"></i>
+                  <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
                     {newUsersCount} new this week
                   </span>
                 )}
@@ -52,13 +46,29 @@ function Developers({ user, getProfiles, profiles: { profiles, loading } }) {
             </div>
           </div>
         </div>
-        {loading ? (
-          <div className="text-center py-16">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-3 border-blue-600 mx-auto"></div>
-            <p className="text-gray-600 mt-4">Loading developers...</p>
+
+        {/* Loading */}
+        {loading && (
+          <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+            <div className="w-10 h-10 border-3 border-blue-100 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-500">Loading developers...</p>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 md:gap-6">
+        )}
+
+        {/* Empty State */}
+        {!loading && (!profiles || profiles.length === 0) && (
+          <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i className="fas fa-users text-gray-400 text-2xl"></i>
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">No developers yet</h3>
+            <p className="text-gray-500">Be the first to create a profile!</p>
+          </div>
+        )}
+
+        {/* Developers Grid */}
+        {!loading && profiles && profiles.length > 0 && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {profiles
               .filter(
                 (profile) =>
@@ -68,16 +78,11 @@ function Developers({ user, getProfiles, profiles: { profiles, loading } }) {
                   user &&
                   profile.user._id !== user._id
               )
-              .map((profile) => {
-                return (
-                  <Link href={`/profile/${profile.user._id}`}
-                    key={profile.user._id}
-                    className="block"
-                  >
-                    <Developer profile={profile} />
-                  </Link>
-                );
-              })}
+              .map((profile) => (
+                <Link href={`/profile/${profile.user._id}`} key={profile.user._id}>
+                  <DeveloperCard profile={profile} />
+                </Link>
+              ))}
           </div>
         )}
       </div>
@@ -85,34 +90,31 @@ function Developers({ user, getProfiles, profiles: { profiles, loading } }) {
   );
 }
 
-function Developer({ profile }) {
-  // Check if user joined within the last 7 days
+function DeveloperCard({ profile }) {
   const isNewUser = profile?.user?.date &&
     (new Date() - new Date(profile.user.date)) < 7 * 24 * 60 * 60 * 1000;
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:border-blue-300 hover:shadow-md transition-all duration-200 relative">
+    <div className="bg-white rounded-xl border border-gray-200 p-5 text-center hover:border-blue-200 transition-colors cursor-pointer relative">
       {isNewUser && (
-        <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+        <div className="absolute top-2 right-2 bg-green-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
           NEW
         </div>
       )}
-      <div className="p-6 flex flex-col items-center">
-        <Avatar
-          userId={profile?.user?._id}
-          userName={profile?.user?.name || "Developer"}
-          avatar={profile?.avatar}
-          profile={profile}
-          size={96}
-          className="mb-4"
-        />
-        <h3 className="text-base font-semibold text-gray-900 mb-1 text-center">
-          {profile && profile.user ? profile.user.name : "Unknown User"}
-        </h3>
-        <p className="text-blue-600 font-medium text-sm text-center">
-          {profile ? profile.status : "No Status"}
-        </p>
-      </div>
+      <Avatar
+        userId={profile?.user?._id}
+        userName={profile?.user?.name || "Developer"}
+        avatar={profile?.avatar}
+        profile={profile}
+        size={72}
+        className="mx-auto mb-3"
+      />
+      <h3 className="text-sm font-semibold text-gray-900 mb-0.5 truncate">
+        {profile?.user?.name || "Unknown User"}
+      </h3>
+      <p className="text-xs text-blue-600 font-medium truncate">
+        {profile?.status || "Developer"}
+      </p>
     </div>
   );
 }

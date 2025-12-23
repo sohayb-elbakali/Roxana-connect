@@ -409,7 +409,7 @@ export const updateEducation = (id, formData, navigate) => async (dispatch, getS
 
 export const deleteEducation = (id) => async (dispatch) => {
   try {
-
+    const res = await api.delete(`/profiles/education/${id}`);
 
     dispatch({
       type: UPDATE_PROFILE,
@@ -444,11 +444,12 @@ export const deleteEducation = (id) => async (dispatch) => {
 // Delete account & profile
 export const deleteAccount = () => async (dispatch) => {
   try {
-
+    // Call the server to delete the account and all associated data
+    const res = await api.delete("/profiles");
 
     dispatch({ type: CLEAR_PROFILE });
 
-    dispatch(showAlertMessage("Your account has been permanently deleted", "success"));
+    dispatch(showAlertMessage(res.data?.msg || "Your account has been permanently deleted", "success"));
 
     // Clear the auth token and redirect to login after a short delay
     if (typeof window !== 'undefined') {
@@ -460,8 +461,6 @@ export const deleteAccount = () => async (dispatch) => {
     }
   } catch (err) {
     console.error("Delete account error:", err);
-    console.error("Error response:", err.response);
-    console.error("Error message:", err.message);
 
     if (err.response) {
       const errorMsg = err.response.data?.msg ||

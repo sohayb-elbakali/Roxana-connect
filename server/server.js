@@ -9,6 +9,7 @@ const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const path = require("path");
 const fs = require("fs");
+const mongoose = require("mongoose");
 const connectDB = require("./config/db.js");
 
 const app = express();
@@ -128,24 +129,73 @@ app.use('/api', (req, res, next) => {
   next();
 });
 
-connectDB();
+// Middleware to check MongoDB connection for API routes
+const checkDBConnection = (req, res, next) => {
+  if (mongoose.connection.readyState !== 1) {
+    return res.status(503).json({
+      msg: 'Database is connecting, please try again in a moment',
+      status: 'connecting',
+      readyState: mongoose.connection.readyState
+    });
+  }
+  next();
+};
 
-// app.use("/api/users/login", authLimiter); // Rate limiting disabled
-// app.use("/api/users/register", authLimiter); // Rate limiting disabled
+// Health check endpoint (doesn't require DB)
+app.get("/health", (req, res) => {
+  const dbStatus = mongoose.connection.readyState;
+  const statusMap = {
+    0: 'disconnected',
+    1: 'connected',
+    2: 'connecting',
+    3: 'disconnecting'
+  };
 
-app.use("/api/users", require("./routes/users.js"));
-app.use("/api/profiles", require("./routes/profiles.js"));
-app.use("/api/posts", require("./routes/posts.js"));
-app.use("/api/internships", require("./routes/internships.js"));
-app.use("/api/tracking", require("./routes/tracking.js"));
-app.use("/api/admin", require("./routes/admin.js"));
-app.use("/api/upload", require("./routes/upload.js"));
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    mongodb: statusMap[dbStatus] || 'unknown',
+    uptime: process.uptime()
+  });
+});
+
+// Start MongoDB connection (non-blocking)
+connectDB().catch(err => {
+  console.error('Failed to connect to MongoDB:', err);
+});
+
+// Apply DB check middleware to API routes
+app.use("/api/users", checkDBConnection, require("./routes/users.js"));
+app.use("/api/profiles", checkDBConnection, require("./routes/profiles.js"));
+app.use("/api/posts", checkDBConnection, require("./routes/posts.js"));
+app.use("/api/internships", checkDBConnection, require("./routes/internships.js"));
+app.use("/api/tracking", checkDBConnection, require("./routes/tracking.js"));
+app.use("/api/admin", checkDBConnection, require("./routes/admin.js"));
+app.use("/api/upload", checkDBConnection, require("./routes/upload.js"));
 
 app.get("/", (req, res) => res.send("Server is working correctly"));
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('Server error:', err);
+
+  // Handle MongoDB timeout errors gracefully
+  if (err.name === 'MongooseError' || err.message.includes('buffering timed out')) {
+    return res.status(503).json({
+      msg: 'Database temporarily unavailable. Please try again.',
+      error: 'DATABASE_TIMEOUT'
+    });
+  }
+
+  res.status(500).json({
+    msg: 'Internal server error',
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+});
 
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server has started on port ${PORT}`);
-  console.log('Allowed CORS origins:', allowedOrigins);
+  console.log(` Server has started on port ${PORT}`);
+  console.log('📡 Allowed CORS origins:', allowedOrigins);
 });

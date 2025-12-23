@@ -86,7 +86,9 @@ export function login(email, password) {
 
       // Also load profile immediately after login
       const { getCurrentProfile } = require('./profiles');
-      dispatch(getCurrentProfile());
+      await dispatch(getCurrentProfile());
+
+      return { success: true };
     } catch (error) {
       let errorMsg = "Invalid email or password. Please try again.";
 
@@ -108,6 +110,9 @@ export function login(email, password) {
         type: LOGIN_FAIL,
         payload: { msg: errorMsg },
       });
+
+      // Re-throw error so component can handle it properly
+      throw new Error(errorMsg);
     }
   };
 }

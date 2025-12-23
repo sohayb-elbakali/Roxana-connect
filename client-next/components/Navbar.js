@@ -13,15 +13,13 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
-
-
   const navLinks = [
     { to: "/home", label: "Home", icon: "fa-home" },
     { to: "/feed", label: "Internships", icon: "fa-briefcase" },
-    { to: "/tracker", label: "Tracker", icon: "fa-tasks", badge: trackingCount },
+    { to: "/tracker", label: "Tracker", icon: "fa-clipboard-list", badge: trackingCount },
     { to: "/posts", label: "Posts", icon: "fa-comments" },
     { to: "/developers", label: "Developers", icon: "fa-users" },
-    ...(user?.role === "admin" ? [{ to: "/admin", label: "Admin", icon: "fa-user-shield" }] : []),
+    ...(user?.role === "admin" ? [{ to: "/admin", label: "Admin", icon: "fa-shield-alt" }] : []),
   ];
 
   const isActive = (path) => pathname.startsWith(path);
@@ -34,14 +32,14 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
           <Link
             key={link.to}
             href={link.to}
-            className={`relative px-4 py-2 rounded-lg font-medium text-sm transition-colors duration-150 ${isActive(link.to)
-                ? "bg-white text-blue-600"
-                : "text-white hover:bg-white/10"
+            className={`relative px-4 py-2 rounded-lg font-medium text-sm transition-colors ${isActive(link.to)
+              ? "bg-white text-blue-600"
+              : "text-white/90 hover:bg-white/10 hover:text-white"
               }`}
           >
             {link.label}
             {link.badge > 0 && (
-              <span className="absolute -top-1 -right-1 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-sm" style={{ backgroundColor: '#22C55E' }}>
+              <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                 {link.badge > 99 ? '99+' : link.badge}
               </span>
             )}
@@ -51,12 +49,10 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
 
       {/* Profile Section */}
       <div className="hidden lg:flex items-center space-x-3">
-        {/* Only show Post Internship button for admins and Level 2-3 users */}
         {(user?.role === 'admin' || (user?.level && user.level >= 2)) && (
           <Link
             href="/internship/create"
-            prefetch={true}
-            className="px-4 py-2 bg-white text-blue-600 rounded-lg font-semibold text-sm hover:bg-gray-50 transition-all duration-150 shadow-sm hover:shadow"
+            className="px-4 py-2 bg-white text-blue-600 rounded-lg font-semibold text-sm hover:bg-gray-50 transition-colors cursor-pointer"
           >
             <i className="fas fa-plus mr-2"></i>
             Post Internship
@@ -66,7 +62,7 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
         <div className="relative">
           <button
             onClick={() => setShowProfileMenu(!showProfileMenu)}
-            className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors duration-150"
+            className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
           >
             <Avatar
               userId={user?._id}
@@ -76,7 +72,7 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
               size={32}
               className="border-2 border-white/30"
             />
-            <i className={`fas fa-chevron-down text-white text-xs transition-transform duration-150 ${showProfileMenu ? 'rotate-180' : ''}`}></i>
+            <i className={`fas fa-chevron-down text-white text-xs transition-transform ${showProfileMenu ? 'rotate-180' : ''}`}></i>
           </button>
 
           {showProfileMenu && (
@@ -85,29 +81,29 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
                 className="fixed inset-0 z-40"
                 onClick={() => setShowProfileMenu(false)}
               ></div>
-              <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-200">
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 z-50 border border-gray-200">
                 <Link href={`/profile/${user?._id}`}
                   onClick={() => setShowProfileMenu(false)}
-                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
                 >
                   <i className="fas fa-user w-5 text-gray-400"></i>
                   <span className="ml-3">Profile</span>
                 </Link>
                 <Link href="/settings"
                   onClick={() => setShowProfileMenu(false)}
-                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                  className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
                 >
                   <i className="fas fa-cog w-5 text-gray-400"></i>
                   <span className="ml-3">Settings</span>
                 </Link>
-                <hr className="my-2 border-gray-200" />
+                <hr className="my-2 border-gray-100" />
                 <Link
                   onClick={() => {
                     logout();
                     setShowProfileMenu(false);
                   }}
                   href="/"
-                  className="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200"
+                  className="flex items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
                 >
                   <i className="fas fa-sign-out-alt w-5"></i>
                   <span className="ml-3">Logout</span>
@@ -121,7 +117,7 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
       {/* Mobile Menu Button */}
       <button
         onClick={() => setShowMobileMenu(!showMobileMenu)}
-        className="lg:hidden p-2 text-white hover:bg-white/10 rounded-lg transition-all duration-200"
+        className="lg:hidden p-2 text-white hover:bg-white/10 rounded-lg cursor-pointer"
       >
         <i className={`fas ${showMobileMenu ? 'fa-times' : 'fa-bars'} text-xl`}></i>
       </button>
@@ -133,33 +129,32 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
             className="fixed inset-0 bg-black/50 z-40 lg:hidden"
             onClick={() => setShowMobileMenu(false)}
           ></div>
-          <div className="fixed top-16 left-0 right-0 bg-white shadow-lg z-50 lg:hidden border-t border-gray-200">
-            <div className="py-4 px-4 space-y-1">
+          <div className="fixed top-16 left-0 right-0 bg-white shadow-lg z-50 lg:hidden border-t border-gray-100">
+            <div className="py-3 px-4 space-y-1">
               {navLinks.map((link) => (
                 <Link
                   key={link.to}
                   href={link.to}
                   onClick={() => setShowMobileMenu(false)}
-                  className={`relative flex items-center px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 ${isActive(link.to)
-                      ? "bg-blue-50 text-blue-600"
-                      : "text-gray-700 hover:bg-gray-50"
+                  className={`relative flex items-center px-4 py-3 rounded-lg font-medium text-sm ${isActive(link.to)
+                    ? "bg-blue-50 text-blue-600"
+                    : "text-gray-700 hover:bg-gray-50"
                     }`}
                 >
                   <i className={`fas ${link.icon} w-5 text-gray-400`}></i>
                   <span className="ml-3">{link.label}</span>
                   {link.badge > 0 && (
-                    <span className="ml-auto text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-sm" style={{ backgroundColor: '#22C55E' }}>
+                    <span className="ml-auto bg-green-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                       {link.badge > 99 ? '99+' : link.badge}
                     </span>
                   )}
                 </Link>
               ))}
-              <hr className="my-2 border-gray-200" />
-              {/* Only show Post Internship button for admins and Level 2-3 users */}
+              <hr className="my-2 border-gray-100" />
               {(user?.role === 'admin' || (user?.level && user.level >= 2)) && (
                 <Link href="/internship/create"
                   onClick={() => setShowMobileMenu(false)}
-                  className="flex items-center px-4 py-3 bg-blue-600 text-white rounded-lg font-medium text-sm hover:bg-blue-700 transition-all duration-200"
+                  className="flex items-center px-4 py-3 bg-blue-600 text-white rounded-lg font-medium text-sm hover:bg-blue-700"
                 >
                   <i className="fas fa-plus w-5"></i>
                   <span className="ml-3">Post Internship</span>
@@ -167,14 +162,14 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
               )}
               <Link href={`/profile/${user?._id}`}
                 onClick={() => setShowMobileMenu(false)}
-                className="flex items-center px-4 py-3 rounded-lg font-medium text-sm text-gray-700 hover:bg-gray-50 transition-all duration-200"
+                className="flex items-center px-4 py-3 rounded-lg font-medium text-sm text-gray-700 hover:bg-gray-50"
               >
                 <i className="fas fa-user w-5 text-gray-400"></i>
                 <span className="ml-3">Profile</span>
               </Link>
               <Link href="/settings"
                 onClick={() => setShowMobileMenu(false)}
-                className="flex items-center px-4 py-3 rounded-lg font-medium text-sm text-gray-700 hover:bg-gray-50 transition-all duration-200"
+                className="flex items-center px-4 py-3 rounded-lg font-medium text-sm text-gray-700 hover:bg-gray-50"
               >
                 <i className="fas fa-cog w-5 text-gray-400"></i>
                 <span className="ml-3">Settings</span>
@@ -185,7 +180,7 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
                   setShowMobileMenu(false);
                 }}
                 href="/"
-                className="flex items-center px-4 py-3 rounded-lg font-medium text-sm text-red-600 hover:bg-red-50 transition-all duration-200"
+                className="flex items-center px-4 py-3 rounded-lg font-medium text-sm text-red-600 hover:bg-red-50"
               >
                 <i className="fas fa-sign-out-alt w-5"></i>
                 <span className="ml-3">Logout</span>
@@ -200,12 +195,12 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
   const links = (
     <div className="flex items-center space-x-3">
       <Link href="/login"
-        className="px-4 py-2 text-white font-medium text-sm hover:bg-white/10 rounded-lg transition-all duration-200"
+        className="px-4 py-2 text-white font-medium text-sm hover:bg-white/10 rounded-lg cursor-pointer"
       >
         Login
       </Link>
       <Link href="/register"
-        className="px-4 py-2 bg-white text-blue-600 rounded-lg font-semibold text-sm hover:bg-gray-50 transition-all duration-200"
+        className="px-4 py-2 bg-white text-blue-600 rounded-lg font-semibold text-sm hover:bg-gray-50 cursor-pointer"
       >
         Get Started
       </Link>
@@ -213,38 +208,24 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
   );
 
   return (
-    <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#3B82F6] shadow-sm border-b border-blue-300 will-change-transform">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16 min-h-[4rem]">
-            <Link
-              className="group flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-white/10 transition-all duration-300"
-              href={isAuthenticated ? "/home" : "/"}
-            >
-              {/* Logo Icon with Gradient Background */}
-              <div className="relative">
-                <div className="w-10 h-10 bg-gradient-to-br from-white to-blue-100 rounded-xl flex items-center justify-center shadow-lg transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                  <i className="fas fa-briefcase text-blue-600 text-lg"></i>
-                </div>
-                {/* Decorative Badge */}
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full border-2 border-blue-600 animate-pulse"></div>
-              </div>
-
-              {/* Logo Text */}
-              <div className="flex flex-col">
-                <span className="text-2xl font-extrabold text-white tracking-tight group-hover:tracking-wide transition-all duration-300">
-                  Roxana
-                </span>
-                <span className="text-[10px] font-medium text-blue-100 -mt-1 tracking-widest uppercase opacity-90">
-                  Connect
-                </span>
-              </div>
-            </Link>
-            <Fragment>{isAuthenticated ? authLinks : links}</Fragment>
-          </div>
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-blue-600 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <Link
+            className="flex items-center gap-2 px-2 py-1"
+            href={isAuthenticated ? "/home" : "/"}
+          >
+            <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center">
+              <i className="fas fa-briefcase text-blue-600"></i>
+            </div>
+            <span className="text-xl font-bold text-white">
+              Roxana<span className="font-normal opacity-80">Connect</span>
+            </span>
+          </Link>
+          <Fragment>{isAuthenticated ? authLinks : links}</Fragment>
         </div>
-      </nav>
-    </>
+      </div>
+    </nav>
   );
 };
 

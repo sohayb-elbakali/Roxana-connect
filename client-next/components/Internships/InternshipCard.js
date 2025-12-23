@@ -95,7 +95,7 @@ const InternshipCard = ({
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200">
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
       <div className="p-6">
         {/* Header with Company, Position, and Deadline Badge */}
         <div className="flex items-start justify-between gap-4 mb-5">
@@ -196,19 +196,17 @@ const InternshipCard = ({
         <div className="flex items-center gap-3">
           <button
             type="button"
-            className={`flex-1 inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-              isTracking
+            className={`flex-1 inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${isTracking
                 ? "bg-gray-100 text-gray-500 cursor-not-allowed border border-gray-300"
                 : "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-600 shadow-sm"
-            }`}
+              }`}
             onClick={handleTrack}
             disabled={isTracking}
             aria-label={isTracking ? "Already tracking this internship" : "Track this internship"}
           >
             <i
-              className={`fas ${
-                isTracking ? "fa-check" : "fa-bookmark"
-              } mr-2 text-xs`}
+              className={`fas ${isTracking ? "fa-check" : "fa-bookmark"
+                } mr-2 text-xs`}
             ></i>
             {isTracking ? "Tracking" : "Track"}
           </button>

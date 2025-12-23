@@ -2,13 +2,20 @@ import axios from "axios";
 
 export const serverUrl = process.env.NEXT_PUBLIC_API_URL || process.env.REACT_APP_API_URL || "";
 
+// Retry configuration for database connecting errors
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 2000; // 2 seconds
+
+// Helper function to delay
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 export const api = axios.create({
   baseURL: `${serverUrl}/api`,
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 30000, // 30 second timeout for slower connections
-  withCredentials: false, // Change to true if using cookies
+  timeout: 60000, // 60 second timeout for slower connections
+  withCredentials: false,
 });
 
 // Request interceptor - attach token to every request
@@ -20,6 +27,8 @@ api.interceptors.request.use(
         config.headers["x-auth-token"] = token;
       }
     }
+    // Track retry count
+    config._retryCount = config._retryCount || 0;
     return config;
   },
   (error) => {
@@ -27,11 +36,27 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor - handle token expiry and errors
+// Response interceptor - handle token expiry, database connecting, and other errors
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+
+    // Handle 503 - Database connecting (auto-retry)
+    if (error.response?.status === 503 && originalRequest._retryCount < MAX_RETRIES) {
+      originalRequest._retryCount += 1;
+      console.log(`Database connecting, retrying... (${originalRequest._retryCount}/${MAX_RETRIES})`);
+      await delay(RETRY_DELAY);
+      return api(originalRequest);
+    }
+
+    // Handle network errors with retry
+    if (!error.response && originalRequest._retryCount < MAX_RETRIES) {
+      originalRequest._retryCount += 1;
+      console.log(`Network error, retrying... (${originalRequest._retryCount}/${MAX_RETRIES})`);
+      await delay(RETRY_DELAY);
+      return api(originalRequest);
+    }
 
     // If token expired and we haven't retried yet
     if (error.response?.status === 401 && !originalRequest._retry) {
