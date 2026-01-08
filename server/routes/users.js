@@ -61,7 +61,7 @@ router.post(
         password,
       });
 
-      const salt = await bcrypt.genSalt(10);
+      const salt = await bcrypt.genSalt(8);
       user.password = await bcrypt.hash(password, salt);
 
       // Generate verification token (but don't send email automatically)
@@ -146,9 +146,15 @@ router.post(
       }
       const payload = { user: { id: user.id } };
       const accessToken = jwt.sign(payload, getJwtSecret(), { expiresIn: "15m" });
-      const refreshToken = jwt.sign(payload, getJwtSecret(), { expiresIn: "7d" });
-      user.refreshToken = refreshToken;
-      await user.save();
+      
+      // Only generate new refreshToken if it doesn't exist
+      let refreshToken = user.refreshToken;
+      if (!refreshToken) {
+        refreshToken = jwt.sign(payload, getJwtSecret(), { expiresIn: "7d" });
+        user.refreshToken = refreshToken;
+        await user.save();
+      }
+      
       res.json({ token: accessToken, refreshToken, verified: user.verified });
     } catch (err) {
       console.error(err);
