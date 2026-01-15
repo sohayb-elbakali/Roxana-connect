@@ -82,11 +82,13 @@ export function login(email, password) {
         type: LOGIN_SUCCESS,
         payload: res.data,
       });
-      await dispatch(loadUser());
 
-      // Also load profile immediately after login
+      // Load user and profile in PARALLEL for faster login (especially on production)
       const { getCurrentProfile } = require('./profiles');
-      await dispatch(getCurrentProfile());
+      await Promise.all([
+        dispatch(loadUser()),
+        dispatch(getCurrentProfile())
+      ]);
 
       return { success: true };
     } catch (error) {
@@ -118,27 +120,23 @@ export function login(email, password) {
 }
 
 export const logout = () => async (dispatch) => {
-  try {
-    // Call server to invalidate refresh token
-    await api.post("/users/logout");
-  } catch (err) {
-    console.error("Logout error:", err);
-  }
+  // Dispatch logout 
+  dispatch({ type: LOGOUT });
 
-  // Clear all caches and tokens
+  // Clear all caches and tokens immediately
   clearAuthData();
 
   if (typeof window !== 'undefined') {
-    localStorage.clear(); // Clear all localStorage data
-    sessionStorage.clear(); // Clear all sessionStorage data
+    localStorage.clear();
+    sessionStorage.clear();
   }
 
-  dispatch({ type: LOGOUT });
+  // Non-blocking server call to invalidate refresh token
+  api.post("/users/logout").catch((err) => {
+    console.error("Logout error:", err);
+  });
 
-  // Force redirect to login
-  if (typeof window !== 'undefined') {
-    window.location.href = '/login';
-  }
+
 };
 
 export const resendVerification = () => async (dispatch) => {

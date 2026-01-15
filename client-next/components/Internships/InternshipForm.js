@@ -9,6 +9,8 @@ import {
   fetchInternship,
 } from "../../lib/redux/modules/internships";
 
+import Link from "next/link";
+
 const InternshipForm = ({
   createInternship,
   updateInternship,
@@ -55,7 +57,7 @@ const InternshipForm = ({
         fetchInternship(id);
       } else {
         const internship = internships.current;
-        
+
         // Check authorization - only owner can edit
         const userId = typeof internship.user === 'string' ? internship.user : internship.user?._id;
         if (userId !== auth.user?._id) {
@@ -122,7 +124,7 @@ const InternshipForm = ({
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       deadline.setHours(0, 0, 0, 0);
-      
+
       // For edit mode, only validate if the deadline is being changed to a past date
       if (!isEditMode && deadline < today) {
         newErrors.applicationDeadline = "Deadline must be in the future";
@@ -232,6 +234,17 @@ const InternshipForm = ({
     <div className="min-h-screen bg-gray-50 pt-20 lg:pl-16 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 md:p-8">
+          {/* Back Navigation */}
+          <div className="mb-6">
+            <Link
+              href={isEditMode ? `/internship/${id}` : '/feed'}
+              className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition-colors"
+            >
+              <i className="fas fa-arrow-left text-xs"></i>
+              <span>{isEditMode ? 'Back to Internship' : 'Back to Feed'}</span>
+            </Link>
+          </div>
+
           {/* Header */}
           <div className="flex items-center mb-8">
             <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -254,9 +267,8 @@ const InternshipForm = ({
                 value={company}
                 onChange={onChange}
                 placeholder="e.g., Google, Microsoft, Amazon"
-                className={`w-full px-4 py-3 border ${
-                  errors.company ? "border-red-500" : "border-gray-300"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
+                className={`w-full px-4 py-3 border ${errors.company ? "border-red-500" : "border-gray-300"
+                  } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
               />
               {errors.company && (
                 <p className="text-red-500 text-sm mt-1">{errors.company}</p>
@@ -274,9 +286,8 @@ const InternshipForm = ({
                 value={positionTitle}
                 onChange={onChange}
                 placeholder="e.g., Software Engineering Intern"
-                className={`w-full px-4 py-3 border ${
-                  errors.positionTitle ? "border-red-500" : "border-gray-300"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
+                className={`w-full px-4 py-3 border ${errors.positionTitle ? "border-red-500" : "border-gray-300"
+                  } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
               />
               {errors.positionTitle && (
                 <p className="text-red-500 text-sm mt-1">
@@ -297,9 +308,8 @@ const InternshipForm = ({
                   value={location}
                   onChange={onChange}
                   placeholder="e.g., San Francisco, CA"
-                  className={`w-full px-4 py-3 border ${
-                    errors.location ? "border-red-500" : "border-gray-300"
-                  } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
+                  className={`w-full px-4 py-3 border ${errors.location ? "border-red-500" : "border-gray-300"
+                    } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
                 />
                 {errors.location && (
                   <p className="text-red-500 text-sm mt-1">{errors.location}</p>
@@ -333,11 +343,10 @@ const InternshipForm = ({
                 name="applicationDeadline"
                 value={applicationDeadline}
                 onChange={onChange}
-                className={`w-full px-4 py-3 border ${
-                  errors.applicationDeadline
+                className={`w-full px-4 py-3 border ${errors.applicationDeadline
                     ? "border-red-500"
                     : "border-gray-300"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
+                  } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
               />
               {errors.applicationDeadline && (
                 <p className="text-red-500 text-sm mt-1">
@@ -357,9 +366,8 @@ const InternshipForm = ({
                 onChange={onChange}
                 placeholder="Describe the internship opportunity, responsibilities, and what the intern will learn..."
                 rows="5"
-                className={`w-full px-4 py-3 border ${
-                  errors.description ? "border-red-500" : "border-gray-300"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 resize-none`}
+                className={`w-full px-4 py-3 border ${errors.description ? "border-red-500" : "border-gray-300"
+                  } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 resize-none`}
               />
               {errors.description && (
                 <p className="text-red-500 text-sm mt-1">{errors.description}</p>
@@ -377,9 +385,8 @@ const InternshipForm = ({
                 value={applicationLink}
                 onChange={onChange}
                 placeholder="https://company.com/careers/apply"
-                className={`w-full px-4 py-3 border ${
-                  errors.applicationLink ? "border-red-500" : "border-gray-300"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
+                className={`w-full px-4 py-3 border ${errors.applicationLink ? "border-red-500" : "border-gray-300"
+                  } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
               />
               {errors.applicationLink && (
                 <p className="text-red-500 text-sm mt-1">
@@ -411,9 +418,8 @@ const InternshipForm = ({
               <button
                 type="submit"
                 disabled={loading}
-                className={`flex-1 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 ${
-                  loading ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className={`flex-1 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 ${loading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                 aria-label={isEditMode ? "Update internship" : "Post internship"}
               >
                 {loading ? (
@@ -431,9 +437,9 @@ const InternshipForm = ({
 
               <button
                 type="button"
-                onClick={() => router.push("/feed")}
+                onClick={() => router.push(isEditMode ? `/internship/${id}` : '/feed')}
                 className="px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                aria-label="Cancel and return to feed"
+                aria-label="Cancel and return"
               >
                 Cancel
               </button>

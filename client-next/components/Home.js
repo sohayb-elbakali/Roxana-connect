@@ -203,7 +203,7 @@ const Home = ({
                 <h3 className="font-bold text-gray-900 mb-4">Quick Actions</h3>
                 <div className="space-y-3">
                   <QuickActionButton
-                    href="/posts/create"
+                    href="/posts"
                     icon={<i className="fas fa-pen text-blue-600"></i>}
                     label="Create Post"
                     description="Share with community"

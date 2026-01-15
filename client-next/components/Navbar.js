@@ -3,15 +3,30 @@
 import { Fragment, useState } from "react";
 import { connect } from "react-redux";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { logout } from "../lib/redux/modules/users";
 import { getCurrentProfile } from "../lib/redux/modules/profiles";
 import Avatar from "./Avatar";
 
 const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, trackingCount, logout, getCurrentProfile }) => {
   const pathname = usePathname();
+  const router = useRouter();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  // Smooth logout handler
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    setShowProfileMenu(false);
+    setShowMobileMenu(false);
+
+    // Small delay for visual feedback
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    logout();
+    router.push('/');
+  };
 
   const navLinks = [
     { to: "/home", label: "Home", icon: "fa-home" },
@@ -97,17 +112,23 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
                   <span className="ml-3">Settings</span>
                 </Link>
                 <hr className="my-2 border-gray-100" />
-                <Link
-                  onClick={() => {
-                    logout();
-                    setShowProfileMenu(false);
-                  }}
-                  href="/"
-                  className="flex items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
+                <button
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
+                  className="w-full flex items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
                 >
-                  <i className="fas fa-sign-out-alt w-5"></i>
-                  <span className="ml-3">Logout</span>
-                </Link>
+                  {isLoggingOut ? (
+                    <>
+                      <i className="fas fa-spinner fa-spin w-5"></i>
+                      <span className="ml-3">Signing out...</span>
+                    </>
+                  ) : (
+                    <>
+                      <i className="fas fa-sign-out-alt w-5"></i>
+                      <span className="ml-3">Logout</span>
+                    </>
+                  )}
+                </button>
               </div>
             </>
           )}
@@ -174,17 +195,23 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
                 <i className="fas fa-cog w-5 text-gray-400"></i>
                 <span className="ml-3">Settings</span>
               </Link>
-              <Link
-                onClick={() => {
-                  logout();
-                  setShowMobileMenu(false);
-                }}
-                href="/"
-                className="flex items-center px-4 py-3 rounded-lg font-medium text-sm text-red-600 hover:bg-red-50"
+              <button
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+                className="w-full flex items-center px-4 py-3 rounded-lg font-medium text-sm text-red-600 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
               >
-                <i className="fas fa-sign-out-alt w-5"></i>
-                <span className="ml-3">Logout</span>
-              </Link>
+                {isLoggingOut ? (
+                  <>
+                    <i className="fas fa-spinner fa-spin w-5"></i>
+                    <span className="ml-3">Signing out...</span>
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-sign-out-alt w-5"></i>
+                    <span className="ml-3">Logout</span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </>

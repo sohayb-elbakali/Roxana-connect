@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
 import Alert from '@/components/Alert';
@@ -36,21 +36,37 @@ export default function ProtectedLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const isAuthenticated = useSelector((state: any) => state.users?.isAuthenticated);
   const loading = useSelector((state: any) => state.users?.loading);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [wasAuthenticated, setWasAuthenticated] = useState(false);
+
+  // Track if user was previously authenticated (for logout detection)
+  useEffect(() => {
+    if (isAuthenticated === true) {
+      setWasAuthenticated(true);
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     // Redirect to login if not authenticated (after loading completes)
     if (!loading && isAuthenticated === false && !isRedirecting) {
       setIsRedirecting(true);
-      router.replace('/login');
+      // If user was authenticated before, this is a logout - redirect to home
+      // Otherwise, redirect to login
+      router.replace(wasAuthenticated ? '/' : '/login');
     }
-  }, [isAuthenticated, loading, router, isRedirecting]);
+  }, [isAuthenticated, loading, router, isRedirecting, wasAuthenticated]);
 
-  // Show loading while checking authentication
+  // Show loading while checking authentication (but not during logout)
   if (loading || isAuthenticated === null) {
     return <LoadingScreen />;
+  }
+
+  // During logout (was authenticated, now not) - don't show loading, just let redirect happen
+  if (!isAuthenticated && wasAuthenticated) {
+    return null; // Don't show anything, the logout button already has its own spinner
   }
 
   // Don't render protected content if not authenticated or redirecting

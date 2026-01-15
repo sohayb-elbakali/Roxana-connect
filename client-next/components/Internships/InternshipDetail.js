@@ -36,25 +36,28 @@ const InternshipDetail = ({
   const router = useRouter();
   const [imageError, setImageError] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showFullDescription, setShowFullDescription] = useState(false);
+
+  // Check if description is long (more than 10 lines or 500 chars)
+  const isLongDescription = internship?.description &&
+    (internship.description.split('\n').length > 10 || internship.description.length > 500);
+
+  // Get truncated description
+  const getDisplayDescription = () => {
+    if (!internship?.description) return '';
+    if (showFullDescription || !isLongDescription) return internship.description;
+    const lines = internship.description.split('\n').slice(0, 10).join('\n');
+    return lines.length > 500 ? lines.substring(0, 500) + '...' : lines + '...';
+  };
 
   useEffect(() => {
-    // Scroll to top when navigating to a new internship
     window.scrollTo(0, 0);
-
-    // Clear current internship to prevent showing stale data
-    dispatch({
-      type: 'internships/CLEAR_CURRENT',
-    });
-
-    // Fetch the new internship
+    dispatch({ type: 'internships/CLEAR_CURRENT' });
     fetchInternship(id);
   }, [fetchInternship, id, dispatch]);
 
-  const handleImageError = () => {
-    setImageError(true);
-  };
+  const handleImageError = () => setImageError(true);
 
-  // Check if user is tracking
   const trackingRecord = tracking.items.find(
     (item) => item.internship?._id === id || item.internship === id
   );
@@ -68,14 +71,11 @@ const InternshipDetail = ({
     }
   };
 
-  // Check if user has liked this internship
   const hasLiked = internship?.likes?.some(
     (like) => like.user === users.user?._id
   );
 
-  const handleLike = () => {
-    likeInternship(id);
-  };
+  const handleLike = () => likeInternship(id);
 
   const handleDelete = async () => {
     try {
@@ -86,13 +86,11 @@ const InternshipDetail = ({
     }
   };
 
-  // Fetch anonymous insights
   useEffect(() => {
     const fetchInsights = async () => {
       try {
         const response = await fetch(`/api/tracking/insights/${id}`);
         const data = await response.json();
-        // Store the fetched insights in Redux
         dispatch({
           type: "internships/SET_INSIGHTS",
           payload: { internshipId: id, insights: data }
@@ -101,334 +99,334 @@ const InternshipDetail = ({
         console.error('Failed to fetch insights:', err);
       }
     };
-
-    if (id && !reduxInsights[id]) {
-      fetchInsights();
-    }
+    if (id && !reduxInsights[id]) fetchInsights();
   }, [id, dispatch, reduxInsights]);
 
-  // Loading state
+  // Loading state - Skeleton
   if (loading || !internship) {
     return (
       <div className="pt-16 min-h-screen bg-gray-50 lg:ml-64">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600"></div>
+        <div className="max-w-4xl px-4 sm:px-6 py-4">
+          {/* Back button skeleton */}
+          <div className="h-5 w-24 bg-gray-200 rounded animate-pulse mb-4"></div>
+
+          {/* Main card skeleton */}
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            {/* Header skeleton */}
+            <div className="p-6 border-b border-gray-100">
+              <div className="flex items-start gap-4">
+                {/* Logo skeleton */}
+                <div className="hidden sm:block w-16 h-16 bg-gray-200 rounded-xl animate-pulse"></div>
+                <div className="flex-1">
+                  {/* Company name */}
+                  <div className="h-4 w-32 bg-gray-200 rounded animate-pulse mb-2"></div>
+                  {/* Position title */}
+                  <div className="h-7 w-64 bg-gray-200 rounded animate-pulse mb-3"></div>
+                  {/* Quick info */}
+                  <div className="flex gap-4">
+                    <div className="h-4 w-24 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="h-4 w-20 bg-gray-200 rounded animate-pulse"></div>
+                  </div>
+                </div>
+                {/* Deadline badge */}
+                <div className="h-8 w-20 bg-gray-200 rounded-full animate-pulse"></div>
+              </div>
+            </div>
+
+            {/* Tags skeleton */}
+            <div className="px-6 py-3 bg-gray-50 border-b border-gray-100">
+              <div className="flex gap-2">
+                <div className="h-6 w-16 bg-gray-200 rounded-full animate-pulse"></div>
+                <div className="h-6 w-20 bg-gray-200 rounded-full animate-pulse"></div>
+                <div className="h-6 w-14 bg-gray-200 rounded-full animate-pulse"></div>
+              </div>
+            </div>
+
+            {/* Description skeleton */}
+            <div className="p-6">
+              <div className="h-4 w-28 bg-gray-200 rounded animate-pulse mb-4"></div>
+              <div className="space-y-2">
+                <div className="h-4 w-full bg-gray-200 rounded animate-pulse"></div>
+                <div className="h-4 w-full bg-gray-200 rounded animate-pulse"></div>
+                <div className="h-4 w-3/4 bg-gray-200 rounded animate-pulse"></div>
+                <div className="h-4 w-5/6 bg-gray-200 rounded animate-pulse"></div>
+              </div>
+            </div>
+
+            {/* Footer skeleton */}
+            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 bg-gray-200 rounded-full animate-pulse"></div>
+                  <div>
+                    <div className="h-4 w-24 bg-gray-200 rounded animate-pulse mb-1"></div>
+                    <div className="h-3 w-16 bg-gray-200 rounded animate-pulse"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Action buttons skeleton */}
+            <div className="px-6 py-4 border-t border-gray-100 flex gap-3">
+              <div className="flex-1 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
+              <div className="flex-1 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
+            </div>
           </div>
         </div>
       </div>
     );
   }
 
+  const isOwner = !users.loading && users.user &&
+    (typeof internship.user === 'string' ? internship.user : internship.user?._id) === users.user._id;
+
   return (
     <div className="pt-16 min-h-screen bg-gray-50 lg:ml-64">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
-        <div className="space-y-6">
-          {/* Breadcrumb Navigation */}
-          <nav className="flex items-center space-x-2 text-sm text-gray-600">
-            <Link href="/feed"
-              className="hover:text-blue-600 transition-colors duration-200"
-            >
-              <i className="fas fa-home mr-1"></i>
-              Feed
-            </Link>
-            <span className="text-gray-400">/</span>
-            <span className="text-gray-900 font-medium">
-              {internship.company} - {internship.positionTitle || "Position Not Specified"}
-            </span>
-          </nav>
+      <div className="max-w-4xl px-4 sm:px-6 py-4">
 
-          {/* Back Button */}
-          <div className="flex items-center">
-            <Link href="/feed"
-              className="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 transition-colors duration-200"
-            >
-              <i className="fas fa-arrow-left mr-2"></i>
-              Back to Feed
-            </Link>
+        {/* Compact Top Navigation */}
+        <div className="flex items-center justify-between mb-4">
+          <Link
+            href="/feed"
+            className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition-colors"
+          >
+            <i className="fas fa-arrow-left text-xs"></i>
+            <span>Back to Feed</span>
+          </Link>
+
+          {isOwner && (
+            <div className="flex items-center gap-2">
+              <Link
+                href={`/internship/edit/${internship._id}`}
+                className="px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              >
+                <i className="fas fa-edit mr-1.5"></i>Edit
+              </Link>
+              <button
+                onClick={() => setShowDeleteModal(true)}
+                className="px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              >
+                <i className="fas fa-trash mr-1.5"></i>Delete
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Main Content Card */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+
+          {/* Header Section - Left Aligned with Company Logo */}
+          <div className="p-6 border-b border-gray-100">
+            <div className="flex items-start gap-4">
+              {/* Company Logo Placeholder */}
+              <div className="hidden sm:flex w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl items-center justify-center flex-shrink-0 shadow-sm">
+                <span className="text-white font-bold text-xl">
+                  {internship.company?.charAt(0)?.toUpperCase() || 'C'}
+                </span>
+              </div>
+
+              <div className="flex-1 min-w-0">
+                {/* Company & Position */}
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-sm font-medium text-blue-600">{internship.company}</span>
+                  {internship.locationType && (
+                    <span className="px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded-full capitalize">
+                      {internship.locationType}
+                    </span>
+                  )}
+                </div>
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
+                  {internship.positionTitle || "Position Not Specified"}
+                </h1>
+
+                {/* Quick Info Row */}
+                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                  {internship.location && (
+                    <div className="flex items-center gap-1.5">
+                      <i className="fas fa-map-marker-alt text-gray-400 text-xs"></i>
+                      <span>{internship.location}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-1.5">
+                    <i className="fas fa-calendar text-gray-400 text-xs"></i>
+                    <span>Due {new Date(internship.applicationDeadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                  </div>
+                  {internship.salaryRange?.min && internship.salaryRange?.max && (
+                    <div className="flex items-center gap-1.5">
+                      <i className="fas fa-dollar-sign text-gray-400 text-xs"></i>
+                      <span>{internship.salaryRange.currency || "USD"} {internship.salaryRange.min.toLocaleString()} - {internship.salaryRange.max.toLocaleString()}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Deadline Badge */}
+              <DeadlineBadge deadline={internship.applicationDeadline} size="md" />
+            </div>
           </div>
 
-          {/* Main Internship Card */}
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-            <div className="p-6 md:p-8">
-              {/* Header */}
-              <div className="border-b border-gray-100 pb-8 mb-8">
-                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
-                  <div>
-                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 tracking-tight">
-                      {internship.company}
-                    </h1>
-                    <h2 className="text-xl md:text-2xl font-medium text-gray-600">
-                      {internship.positionTitle || "Position Not Specified"}
-                    </h2>
-                  </div>
-                  <DeadlineBadge deadline={internship.applicationDeadline} size="lg" />
-                </div>
-
-                {/* Key Details Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {internship.location && (
-                    <div className="flex items-center gap-3 text-gray-700">
-                      <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
-                        <i className="fas fa-map-marker-alt text-lg"></i>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Location</p>
-                        <p className="font-medium">{internship.location}</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {internship.locationType && (
-                    <div className="flex items-center gap-3 text-gray-700">
-                      <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
-                        <i className="fas fa-laptop-house text-lg"></i>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Type</p>
-                        <p className="font-medium capitalize">{internship.locationType}</p>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="flex items-center gap-3 text-gray-700">
-                    <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
-                      <i className="fas fa-calendar-alt text-lg"></i>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Deadline</p>
-                      <p className="font-medium">
-                        {new Date(internship.applicationDeadline).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-
-                  {internship.salaryRange && internship.salaryRange.min && internship.salaryRange.max && (
-                    <div className="flex items-center gap-3 text-gray-700">
-                      <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600">
-                        <i className="fas fa-dollar-sign text-lg"></i>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Salary</p>
-                        <p className="font-medium">
-                          {internship.salaryRange.currency || "USD"} {internship.salaryRange.min.toLocaleString()} - {internship.salaryRange.max.toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Tags */}
-              {internship.tags && internship.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {internship.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-
-              {/* Content Section */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-12">
-                {/* Left Column: Description */}
-                <div className="lg:col-span-2 space-y-8">
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                      <i className="fas fa-align-left text-blue-600"></i>
-                      Description
-                    </h3>
-                    <div className="prose prose-blue max-w-none text-gray-600 leading-relaxed whitespace-pre-wrap">
-                      {internship.description}
-                    </div>
-                  </div>
-
-                  {internship.requirements && internship.requirements.length > 0 && (
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        <i className="fas fa-list-check text-blue-600"></i>
-                        Requirements
-                      </h3>
-                      <ul className="space-y-3">
-                        {internship.requirements.map((req, index) => (
-                          <li key={index} className="flex items-start gap-3 text-gray-600">
-                            <i className="fas fa-check-circle text-green-500 mt-1 flex-shrink-0"></i>
-                            <span className="leading-relaxed">{req}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-
-                {/* Right Column: Tags & Meta */}
-                <div className="space-y-8">
-                  {internship.tags && internship.tags.length > 0 && (
-                    <div className="bg-gray-50 rounded-xl p-6 border border-gray-100">
-                      <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-4">
-                        Skills & Tags
-                      </h3>
-                      <div className="flex flex-wrap gap-2">
-                        {internship.tags.map((tag, index) => (
-                          <span
-                            key={index}
-                            className="px-3 py-1.5 bg-white text-gray-700 border border-gray-200 rounded-lg text-sm font-medium shadow-sm"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Posted By Card */}
-                  <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-                    <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-4">
-                      Posted By
-                    </h3>
-                    <div className="flex items-center gap-4">
-                      <Avatar
-                        userId={internship.postedBy?._id || (typeof internship.user === 'string' ? internship.user : internship.user?._id)}
-                        userName={internship.postedBy?.name || internship.name}
-                        avatar={internship.postedBy?.avatar}
-                        profile={internship.postedBy}
-                        size={48}
-                      />
-                      <div>
-                        <p className="text-base font-bold text-gray-900">
-                          {internship.postedBy?.name || internship.name}
-                        </p>
-                        <p className="text-xs text-gray-500 mt-0.5">
-                          Posted {formatRelativeTime(internship.date)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Anonymous Insights */}
-              <div className="mb-6 pb-6 border-b border-gray-200">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
-                  <div className="flex items-center text-gray-600">
-                    <i className="fas fa-chart-line mr-2 text-blue-600"></i>
-                    <span className="font-semibold text-gray-900">
-                      Community Insights
-                    </span>
-                  </div>
-                  <ReactionButton
-                    hasLiked={hasLiked}
-                    likesCount={internship.likes?.length || 0}
-                    onLike={handleLike}
-                    size="lg"
-                    showLabel={true}
-                  />
-                </div>
-
-                {/* Tracking Status */}
-                <div className="flex items-center gap-2 text-sm">
-                  <i className={`fas fa-bookmark ${isTracking ? 'text-blue-600' : 'text-gray-400'}`}></i>
-                  <span className="text-gray-700">
-                    {isTracking ? 'You are tracking this internship' : 'Track this to save it'}
+          {/* Tags - Compact */}
+          {internship.tags && internship.tags.length > 0 && (
+            <div className="px-6 py-3 bg-gray-50 border-b border-gray-100">
+              <div className="flex flex-wrap gap-1.5">
+                {internship.tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="px-2.5 py-1 text-xs font-medium bg-white text-gray-700 border border-gray-200 rounded-full"
+                  >
+                    {tag}
                   </span>
-                </div>
+                ))}
               </div>
+            </div>
+          )}
 
-
-
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3">
-                {/* Edit and Delete Buttons - Only show for owner */}
-                {!users.loading && users.user && (typeof internship.user === 'string' ? internship.user : internship.user?._id) === users.user._id && (
+          {/* Description Section */}
+          <div className="p-6">
+            <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">
+              About this role
+            </h2>
+            <div className="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap">
+              {getDisplayDescription()}
+            </div>
+            {isLongDescription && (
+              <button
+                onClick={() => setShowFullDescription(!showFullDescription)}
+                className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+              >
+                {showFullDescription ? (
                   <>
-                    <Link href={`/internship/edit/${internship._id}`}
-                      className="flex-1 inline-flex items-center justify-center px-6 py-3 text-base font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                      aria-label="Edit this internship"
-                    >
-                      <i className="fas fa-edit mr-2" aria-hidden="true"></i>
-                      Edit
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={() => setShowDeleteModal(true)}
-                      className="flex-1 inline-flex items-center justify-center px-6 py-3 text-base font-medium bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2"
-                      aria-label="Delete this internship"
-                    >
-                      <i className="fas fa-trash mr-2" aria-hidden="true"></i>
-                      Delete
-                    </button>
+                    <i className="fas fa-chevron-up text-xs"></i>
+                    Show Less
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-chevron-down text-xs"></i>
+                    Show More
                   </>
                 )}
+              </button>
+            )}
+          </div>
 
-                <button
-                  type="button"
-                  className={`flex-1 inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 ${isTracking
-                    ? "bg-gray-600 text-white hover:bg-gray-700"
-                    : "bg-blue-600 text-white hover:bg-blue-700"
-                    }`}
-                  onClick={handleTrack}
-                  aria-label={isTracking ? "Stop tracking this internship" : "Track this internship"}
-                >
-                  <i
-                    className={`fas ${isTracking ? "fa-bookmark-slash" : "fa-bookmark"
-                      } mr-2`}
-                    aria-hidden="true"
-                  ></i>
-                  {isTracking ? "Untrack" : "Track This Opportunity"}
-                </button>
+          {/* Requirements Section */}
+          {internship.requirements && internship.requirements.length > 0 && (
+            <div className="px-6 pb-6">
+              <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">
+                Requirements
+              </h2>
+              <ul className="space-y-2">
+                {internship.requirements.map((req, index) => (
+                  <li key={index} className="flex items-start gap-2.5 text-sm text-gray-600">
+                    <i className="fas fa-check text-green-500 mt-0.5 text-xs"></i>
+                    <span>{req}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
-                <ApplyNowButton
-                  internship={internship}
-                  className="flex-1"
-                  size="lg"
+          {/* Footer: Posted By & Actions */}
+          <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              {/* Posted By - Compact */}
+              <div className="flex items-center gap-3">
+                <Avatar
+                  userId={internship.postedBy?._id || (typeof internship.user === 'string' ? internship.user : internship.user?._id)}
+                  userName={internship.postedBy?.name || internship.name}
+                  avatar={internship.postedBy?.avatar}
+                  profile={internship.postedBy}
+                  size={36}
                 />
+                <div>
+                  <p className="text-sm font-medium text-gray-900">
+                    {internship.postedBy?.name || internship.name}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Posted {formatRelativeTime(internship.date)}
+                  </p>
+                </div>
+              </div>
+
+              {/* Engagement */}
+              <div className="flex items-center gap-3">
+                <ReactionButton
+                  hasLiked={hasLiked}
+                  likesCount={internship.likes?.length || 0}
+                  onLike={handleLike}
+                  size="sm"
+                  showLabel={false}
+                />
+                <span className="text-xs text-gray-500">
+                  {internship.comments?.length || 0} comments
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Comment Form */}
-          <CommentForm internshipId={id} />
+          {/* Action Buttons */}
+          <div className="px-6 py-4 border-t border-gray-100 flex flex-col sm:flex-row gap-3">
+            <button
+              type="button"
+              onClick={handleTrack}
+              className={`flex-1 inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold rounded-lg transition-colors ${isTracking
+                ? "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                }`}
+            >
+              <i className={`fas ${isTracking ? "fa-bookmark" : "fa-bookmark"} mr-2 ${isTracking ? "text-blue-600" : ""}`}></i>
+              {isTracking ? "Saved" : "Save"}
+            </button>
+            <ApplyNowButton
+              internship={internship}
+              className="flex-1"
+              size="md"
+            />
+          </div>
+        </div>
 
-          {/* Comments Section */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">
+        {/* Comments Section - Compact Card */}
+        <div className="mt-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="p-4 border-b border-gray-100">
+            <h3 className="text-sm font-semibold text-gray-900">
               Comments ({internship.comments?.length || 0})
             </h3>
-            <CommentSection
-              comments={internship.comments}
-              internshipId={id}
-            />
+          </div>
+          <div className="p-4">
+            <CommentForm internshipId={id} />
+            <div className="mt-4">
+              <CommentSection
+                comments={internship.comments}
+                internshipId={id}
+              />
+            </div>
           </div>
         </div>
       </div>
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-            <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-100 rounded-full">
-              <i className="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-black/50">
+          <div className="bg-white rounded-xl shadow-xl max-w-sm w-full p-6">
+            <div className="flex items-center justify-center w-10 h-10 mx-auto mb-3 bg-red-100 rounded-full">
+              <i className="fas fa-exclamation-triangle text-red-600"></i>
             </div>
-            <h3 className="text-xl font-bold text-gray-900 text-center mb-2">
+            <h3 className="text-lg font-bold text-gray-900 text-center mb-2">
               Delete Internship?
             </h3>
-            <p className="text-gray-600 text-center mb-6">
-              Are you sure you want to delete this internship? This action cannot be undone and all associated comments and tracking data will be lost.
+            <p className="text-sm text-gray-600 text-center mb-5">
+              This action cannot be undone. All comments and tracking data will be lost.
             </p>
             <div className="flex gap-3">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 px-4 py-2.5 bg-gray-200 text-gray-800 rounded-lg font-medium hover:bg-gray-300 transition-colors duration-200"
+                className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-200 transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
-                className="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors duration-200"
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium text-sm hover:bg-red-700 transition-colors"
               >
                 Delete
               </button>

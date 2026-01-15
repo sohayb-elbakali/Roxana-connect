@@ -92,8 +92,8 @@ const HomeFeed = ({
               key={tab.id}
               onClick={() => setFeedType(tab.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${feedType === tab.id
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
+                ? "bg-blue-600 text-white"
+                : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
                 }`}
             >
               <i className={`fas ${tab.icon} text-xs`}></i>
@@ -136,7 +136,7 @@ const HomeFeed = ({
                 : "Content will appear here as people post."}
           </p>
           {feedType !== "internships" && (
-            <a href="/posts/create" className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors">
+            <a href="/posts" className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors">
               <i className="fas fa-plus"></i>
               Create First Post
             </a>
