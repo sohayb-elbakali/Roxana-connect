@@ -58,22 +58,21 @@ const ExperienceModal = ({ isOpen, onClose, addExperience, updateExperience, exp
       {/* Modal */}
       <div className="relative bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-scaleIn">
         {/* Header */}
-        <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6 z-10">
+        <div className="sticky top-0 bg-gradient-to-r from-blue-500 to-blue-600 px-8 py-6 z-10">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
-                <i className="fas fa-briefcase text-white text-xl"></i>
+              <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center">
+                <i className="fas fa-briefcase text-white text-2xl"></i>
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-white">
                   {experience ? "Edit Experience" : "Add Experience"}
                 </h2>
-                <p className="text-blue-100 text-sm">* = required field</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-all"
+              className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-xl flex items-center justify-center transition-all hover:cursor-pointer"
             >
               <i className="fas fa-times text-white text-lg"></i>
             </button>
@@ -188,7 +187,7 @@ const ExperienceModal = ({ isOpen, onClose, addExperience, updateExperience, exp
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold text-sm rounded-xl shadow-md hover:shadow-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transform"
+              className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold text-sm rounded-xl shadow-md hover:shadow-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transform hover:cursor-pointer"
             >
               {loading ? (
                 <>
@@ -206,7 +205,7 @@ const ExperienceModal = ({ isOpen, onClose, addExperience, updateExperience, exp
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-6 py-3.5 bg-gray-100 text-gray-700 font-bold text-sm rounded-xl hover:bg-gray-200 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3.5 bg-gray-100 text-gray-700 font-bold text-sm rounded-xl hover:bg-gray-200 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer"
             >
               Cancel
             </button>

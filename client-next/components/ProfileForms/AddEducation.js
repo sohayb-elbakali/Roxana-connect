@@ -37,57 +37,66 @@ const AddEducation = ({ addEducation }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 pt-20 lg:pl-16">
-      <div className="w-full max-w-lg bg-white rounded-xl border border-gray-200 shadow-sm p-8 mt-8">
-        <div className="text-center mb-6">
-          <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-            <i className="fas fa-graduation-cap text-blue-600 text-xl"></i>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100/50 pt-20 lg:pl-16">
+      <div className="w-full max-w-lg bg-white rounded-2xl shadow-sm border border-gray-100/50 p-8 mt-8">
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+            <i className="fas fa-graduation-cap text-blue-500 text-2xl"></i>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">
             Add Education
           </h2>
-          <p className="text-gray-600 text-sm">* = required field</p>
+          <p className="text-gray-600 text-sm">Add your educational background</p>
         </div>
-        <form className="space-y-4" onSubmit={onSubmit}>
+        <form className="space-y-5" onSubmit={onSubmit}>
           <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              School or University <span className="text-red-500">*</span>
+            </label>
             <input
               type="text"
-              placeholder="* School or University"
+              placeholder="e.g., Harvard University"
               name="school"
               value={school}
               onChange={onChange}
               required
-              className="text-gray-900 bg-white w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="text-gray-900 bg-white w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm hover:border-gray-400"
             />
           </div>
           
           <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Degree or Certificate <span className="text-red-500">*</span>
+            </label>
             <input
               type="text"
-              placeholder="* Degree or Certificate"
+              placeholder="e.g., Bachelor's Degree"
               name="degree"
               value={degree}
               onChange={onChange}
               required
-              className="text-gray-900 bg-white w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="text-gray-900 bg-white w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm hover:border-gray-400"
             />
           </div>
           
           <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Field of Study <span className="text-red-500">*</span>
+            </label>
             <input
               type="text"
-              placeholder="* Field of Study (e.g., Computer Science)"
+              placeholder="e.g., Computer Science"
               name="fieldofstudy"
               value={fieldofstudy}
               onChange={onChange}
               required
-              className="text-gray-900 bg-white w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="text-gray-900 bg-white w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm hover:border-gray-400"
             />
           </div>
           
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Start Date
               </label>
               <input
@@ -95,12 +104,12 @@ const AddEducation = ({ addEducation }) => {
                 name="from"
                 value={from}
                 onChange={onChange}
-                className="text-gray-900 bg-white w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="text-gray-900 bg-white w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm hover:border-gray-400"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
                 End Date
               </label>
               <input
@@ -109,12 +118,12 @@ const AddEducation = ({ addEducation }) => {
                 value={to}
                 onChange={onChange}
                 disabled={current}
-                className="text-gray-900 bg-white w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="text-gray-900 bg-white w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-sm hover:border-gray-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
             </div>
           </div>
           
-          <div className="flex items-center py-2">
+          <div className="flex items-center py-3 px-4 bg-gray-50 rounded-xl border border-gray-200">
             <input
               type="checkbox"
               name="current"
@@ -122,21 +131,24 @@ const AddEducation = ({ addEducation }) => {
               value={current}
               checked={current}
               onChange={() => setFormData({ ...formData, current: !current })}
-              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              className="w-5 h-5 text-blue-500 border-gray-300 rounded focus:ring-blue-500 hover:cursor-pointer"
             />
-            <label htmlFor="current" className="ml-2 text-sm text-gray-700">
+            <label htmlFor="current" className="ml-3 text-sm font-medium text-gray-700 hover:cursor-pointer">
               I currently study here
             </label>
           </div>
 
           <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Description <span className="text-gray-400 text-xs font-normal">(optional)</span>
+            </label>
             <textarea
-              placeholder="Description (optional)"
+              placeholder="Tell us about your studies, achievements, or relevant coursework..."
               name="description"
               value={description}
               onChange={onChange}
               rows="4"
-              className="text-gray-900 bg-white w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+              className="text-gray-900 bg-white w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none shadow-sm hover:border-gray-400"
             />
           </div>
           
@@ -144,7 +156,7 @@ const AddEducation = ({ addEducation }) => {
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 inline-flex items-center justify-center px-6 py-2.5 bg-blue-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200 disabled:bg-blue-400 disabled:cursor-not-allowed"
+              className="flex-1 inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold text-sm rounded-xl shadow-md hover:from-blue-600 hover:to-blue-700 transition-all duration-200 disabled:from-blue-300 disabled:to-blue-400 disabled:cursor-not-allowed hover:shadow-lg hover:scale-105 transform hover:cursor-pointer"
             >
               {loading ? (
                 <>
@@ -162,7 +174,7 @@ const AddEducation = ({ addEducation }) => {
               type="button"
               onClick={() => router.back()}
               disabled={loading}
-              className="px-6 py-2.5 bg-gray-100 text-gray-700 font-semibold text-sm rounded-lg hover:bg-gray-200 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 bg-gray-100 text-gray-700 font-bold text-sm rounded-xl hover:bg-gray-200 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer"
             >
               Cancel
             </button>

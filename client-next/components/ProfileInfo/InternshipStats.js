@@ -57,16 +57,16 @@ const InternshipStats = ({ userId, isOwnProfile }) => {
           trackingStats.rejected,
         ],
         backgroundColor: [
-          'rgba(59, 130, 246, 0.8)',   // Blue
-          'rgba(168, 85, 247, 0.8)',   // Purple
-          'rgba(16, 185, 129, 0.8)',   // Green
-          'rgba(239, 68, 68, 0.8)',    // Red
+          'rgba(96, 165, 250, 0.8)',   // Light Blue
+          'rgba(196, 181, 253, 0.8)',  // Light Purple
+          'rgba(52, 211, 153, 0.8)',   // Light Green
+          'rgba(252, 165, 165, 0.8)',  // Light Red
         ],
         borderColor: [
-          'rgba(59, 130, 246, 1)',
-          'rgba(168, 85, 247, 1)',
-          'rgba(16, 185, 129, 1)',
-          'rgba(239, 68, 68, 1)',
+          'rgba(96, 165, 250, 1)',
+          'rgba(196, 181, 253, 1)',
+          'rgba(52, 211, 153, 1)',
+          'rgba(252, 165, 165, 1)',
         ],
         borderWidth: 2,
       },
@@ -117,16 +117,16 @@ const InternshipStats = ({ userId, isOwnProfile }) => {
           trackingStats.offer_received + trackingStats.accepted,
         ],
         backgroundColor: [
-          'rgba(148, 163, 184, 0.8)',
-          'rgba(59, 130, 246, 0.8)',
-          'rgba(168, 85, 247, 0.8)',
-          'rgba(16, 185, 129, 0.8)',
+          'rgba(203, 213, 225, 0.8)',
+          'rgba(96, 165, 250, 0.8)',
+          'rgba(196, 181, 253, 0.8)',
+          'rgba(52, 211, 153, 0.8)',
         ],
         borderColor: [
-          'rgba(148, 163, 184, 1)',
-          'rgba(59, 130, 246, 1)',
-          'rgba(168, 85, 247, 1)',
-          'rgba(16, 185, 129, 1)',
+          'rgba(203, 213, 225, 1)',
+          'rgba(96, 165, 250, 1)',
+          'rgba(196, 181, 253, 1)',
+          'rgba(52, 211, 153, 1)',
         ],
         borderWidth: 2,
         borderRadius: 8,
@@ -188,32 +188,32 @@ const InternshipStats = ({ userId, isOwnProfile }) => {
       {trackingStats.total > 0 && (
         <div>
           <h4 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-            <i className="fas fa-chart-pie text-blue-600"></i>
+            <i className="fas fa-chart-pie text-blue-500"></i>
             Application Statistics
           </h4>
           
           {/* Stats Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-5 border border-gray-200/50 shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="text-3xl font-bold text-gray-700 mb-1">
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-5 border border-gray-200/50 shadow-sm hover:shadow-md transition-all duration-300 hover:cursor-pointer hover:scale-105 transform">
+              <div className="text-3xl font-bold text-gray-600 mb-1">
                 {trackingStats.total}
               </div>
               <div className="text-xs font-bold text-gray-600 uppercase tracking-wider">Total Tracked</div>
             </div>
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-5 border border-blue-200/50 shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="text-3xl font-bold text-blue-700 mb-1">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-5 border border-blue-200/50 shadow-sm hover:shadow-md transition-all duration-300 hover:cursor-pointer hover:scale-105 transform">
+              <div className="text-3xl font-bold text-blue-600 mb-1">
                 {trackingStats.applied}
               </div>
               <div className="text-xs font-bold text-blue-600 uppercase tracking-wider">Applied</div>
             </div>
-            <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-5 border border-purple-200/50 shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="text-3xl font-bold text-purple-700 mb-1">
+            <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-5 border border-purple-200/50 shadow-sm hover:shadow-md transition-all duration-300 hover:cursor-pointer hover:scale-105 transform">
+              <div className="text-3xl font-bold text-purple-600 mb-1">
                 {trackingStats.interviewing}
               </div>
               <div className="text-xs font-bold text-purple-600 uppercase tracking-wider">Interviewing</div>
             </div>
-            <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl p-5 border border-emerald-200/50 shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="text-3xl font-bold text-emerald-700 mb-1">
+            <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl p-5 border border-emerald-200/50 shadow-sm hover:shadow-md transition-all duration-300 hover:cursor-pointer hover:scale-105 transform">
+              <div className="text-3xl font-bold text-emerald-600 mb-1">
                 {trackingStats.offer_received + trackingStats.accepted}
               </div>
               <div className="text-xs font-bold text-emerald-600 uppercase tracking-wider">Offers</div>
@@ -223,9 +223,9 @@ const InternshipStats = ({ userId, isOwnProfile }) => {
           {/* Charts Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             {/* Doughnut Chart - Status Distribution */}
-            <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 border border-gray-200/50 shadow-sm">
+            <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 border border-gray-200/50 shadow-sm hover:shadow-md transition-all duration-300">
               <h5 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <i className="fas fa-chart-pie text-blue-600"></i>
+                <i className="fas fa-chart-pie text-blue-500"></i>
                 Status Distribution
               </h5>
               <div className="h-64">
@@ -234,9 +234,9 @@ const InternshipStats = ({ userId, isOwnProfile }) => {
             </div>
 
             {/* Bar Chart - Application Funnel */}
-            <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 border border-gray-200/50 shadow-sm">
+            <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 border border-gray-200/50 shadow-sm hover:shadow-md transition-all duration-300">
               <h5 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <i className="fas fa-chart-bar text-blue-600"></i>
+                <i className="fas fa-chart-bar text-blue-500"></i>
                 Application Funnel
               </h5>
               <div className="h-64">
@@ -247,13 +247,13 @@ const InternshipStats = ({ userId, isOwnProfile }) => {
 
           {/* Success Rate */}
           {trackingStats.applied > 0 && (
-            <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl p-6 border border-blue-200/50 shadow-sm">
+            <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl p-6 border border-blue-200/50 shadow-sm hover:shadow-md transition-all duration-300">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-bold text-gray-900 flex items-center gap-2">
                   <i className="fas fa-trophy text-yellow-500"></i>
                   Success Rate
                 </span>
-                <span className="text-2xl font-bold text-blue-700">
+                <span className="text-2xl font-bold text-blue-600">
                   {Math.round(
                     ((trackingStats.offer_received + trackingStats.accepted) /
                       trackingStats.applied) *
@@ -264,7 +264,7 @@ const InternshipStats = ({ userId, isOwnProfile }) => {
               </div>
               <div className="w-full bg-blue-200 rounded-full h-3 overflow-hidden shadow-inner">
                 <div
-                  className="bg-gradient-to-r from-blue-600 to-blue-700 h-3 rounded-full transition-all duration-500 shadow-sm"
+                  className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500 shadow-sm"
                   style={{
                     width: `${Math.round(
                       ((trackingStats.offer_received + trackingStats.accepted) /
@@ -322,16 +322,15 @@ const InternshipStats = ({ userId, isOwnProfile }) => {
               Recently Tracked
             </h4>
             <Link href="/tracker"
-              className="text-sm text-blue-600 hover:text-blue-700 font-bold hover:cursor-pointer flex items-center gap-1 hover:gap-2 transition-all"
+              className="text-sm text-blue-500 hover:text-blue-600 font-bold hover:cursor-pointer flex items-center gap-1 hover:gap-2 transition-all"
             >
               View All <i className="fas fa-arrow-right"></i>
             </Link>
           </div>
           <div className="space-y-3">
             {trackedInternships.slice(0, 3).map((tracking) => (
-              <div
-                key={tracking._id}
-                className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-200/50 hover:border-blue-300 hover:shadow-sm transition-all duration-300"
+              <div key={tracking._id}
+                className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-200/50 hover:border-blue-300 hover:shadow-sm transition-all duration-300 hover:cursor-pointer"
               >
                 <div className="flex-1">
                   <div className="font-bold text-gray-900">
@@ -381,7 +380,7 @@ const InternshipStats = ({ userId, isOwnProfile }) => {
                 className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-200/50 hover:border-blue-300 hover:bg-blue-50 transition-all duration-300 hover:shadow-sm hover:cursor-pointer group"
               >
                 <div className="flex-1">
-                  <div className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                  <div className="font-bold text-gray-900 group-hover:text-blue-500 transition-colors">
                     {internship.company}
                   </div>
                   <div className="text-sm text-gray-600 font-medium">
@@ -398,7 +397,7 @@ const InternshipStats = ({ userId, isOwnProfile }) => {
                       Expired
                     </span>
                   )}
-                  <i className="fas fa-arrow-right text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all"></i>
+                  <i className="fas fa-arrow-right text-gray-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all"></i>
                 </div>
               </Link>
             ))}
@@ -410,7 +409,7 @@ const InternshipStats = ({ userId, isOwnProfile }) => {
       {trackingStats.total === 0 && postedInternships.length === 0 && (
         <div className="text-center py-16">
           <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-blue-200 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-sm">
-            <i className="fas fa-briefcase text-blue-600 text-3xl"></i>
+            <i className="fas fa-briefcase text-blue-500 text-3xl"></i>
           </div>
           <p className="text-gray-500 text-base mb-8">
             {isOwnProfile
@@ -420,13 +419,13 @@ const InternshipStats = ({ userId, isOwnProfile }) => {
           {isOwnProfile && (
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/feed"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl hover:from-blue-700 hover:to-blue-800 transition-all text-sm font-bold shadow-md hover:shadow-lg hover:scale-105 transform hover:cursor-pointer"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl hover:from-blue-600 hover:to-blue-700 transition-all text-sm font-bold shadow-md hover:shadow-lg hover:scale-105 transform hover:cursor-pointer"
               >
                 <i className="fas fa-search"></i>
                 Browse Opportunities
               </Link>
               <Link href="/internship/create"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-600 border-2 border-blue-600 rounded-2xl hover:bg-blue-50 transition-all text-sm font-bold hover:scale-105 transform hover:cursor-pointer"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-500 border-2 border-blue-500 rounded-2xl hover:bg-blue-50 transition-all text-sm font-bold hover:scale-105 transform hover:cursor-pointer"
               >
                 <i className="fas fa-plus"></i>
                 Post Opportunity
