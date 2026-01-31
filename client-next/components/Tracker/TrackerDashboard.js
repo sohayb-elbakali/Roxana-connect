@@ -79,20 +79,20 @@ const TrackerDashboard = ({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header Skeleton */}
           <div className="mb-8">
-            <div className="h-9 bg-gray-200 rounded w-80 mb-2 animate-pulse"></div>
-            <div className="h-5 bg-gray-100 rounded w-96 animate-pulse"></div>
+            <div className="h-10 bg-gray-200 rounded-xl w-80 mb-3 animate-pulse"></div>
+            <div className="h-5 bg-gray-100 rounded-lg w-96 animate-pulse"></div>
           </div>
 
           {/* Stats Widget Skeleton */}
-          <div className="bg-white rounded-xl p-6 mb-8 animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-64 mb-6"></div>
+          <div className="bg-white rounded-2xl shadow-sm p-6 mb-8 animate-pulse">
+            <div className="h-8 bg-gray-200 rounded-xl w-64 mb-6"></div>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
               {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="bg-slate-50 rounded-xl p-5">
+                <div key={i} className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-5 shadow-sm">
                   <div className="h-4 bg-gray-100 rounded w-20 mb-2"></div>
                   <div className="h-8 bg-gray-200 rounded w-12"></div>
                 </div>
@@ -101,13 +101,13 @@ const TrackerDashboard = ({
           </div>
 
           {/* Status Columns Skeleton */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
             {[1, 2, 3, 4, 5].map((col) => (
               <div key={col} className="flex flex-col">
-                <div className="bg-white rounded-t-xl p-4 animate-pulse">
-                  <div className="h-5 bg-gray-200 rounded w-24"></div>
+                <div className="bg-white rounded-t-2xl p-4 animate-pulse shadow-sm">
+                  <div className="h-5 bg-gray-200 rounded-xl w-24"></div>
                 </div>
-                <div className="flex-1 bg-white rounded-b-xl p-3 space-y-3 min-h-[200px]">
+                <div className="flex-1 bg-white rounded-b-2xl p-4 space-y-4 min-h-[200px] shadow-sm">
                   <TrackerCardSkeleton />
                 </div>
               </div>
@@ -174,27 +174,27 @@ const TrackerDashboard = ({
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mb-6">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100/50 p-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-columns text-blue-600"></i>
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl flex items-center justify-center shadow-sm">
+                  <i className="fas fa-columns text-blue-600 text-lg"></i>
                 </div>
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                   Application Tracker
                 </h1>
               </div>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 ml-15">
                 Track your journey from application to offer • Manage {items.length} {items.length === 1 ? 'application' : 'applications'}
               </p>
             </div>
-            <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 px-4 py-2 rounded-lg border border-gray-200">
+            <div className="flex items-center gap-2 text-xs text-gray-600 bg-gradient-to-r from-blue-50 to-blue-100/50 px-4 py-2.5 rounded-xl border border-blue-200/50 shadow-sm">
               <i className="fas fa-info-circle text-blue-600"></i>
-              <span className="font-medium">Click status to update</span>
+              <span className="font-semibold">Click status to update</span>
             </div>
           </div>
         </div>
@@ -207,56 +207,58 @@ const TrackerDashboard = ({
 
         {/* Empty State */}
         {items.length === 0 ? (
-          <div className="bg-white rounded-2xl p-16 text-center">
-            <div className="mb-6">
-              <i className="fas fa-bookmark text-slate-200 text-7xl"></i>
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-100/50 p-20 text-center">
+            <div className="mb-8">
+              <div className="w-24 h-24 bg-gradient-to-br from-slate-100 to-slate-200 rounded-3xl flex items-center justify-center mx-auto shadow-sm">
+                <i className="fas fa-bookmark text-slate-400 text-4xl"></i>
+              </div>
             </div>
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">
+            <h2 className="text-3xl font-bold text-slate-900 mb-3">
               No Tracked Internships
             </h2>
-            <p className="text-slate-600 mb-8">
+            <p className="text-slate-600 mb-10 text-lg">
               Start tracking internships from the feed to see them here
             </p>
             <a
               href="/feed"
-              className="inline-flex items-center px-6 py-3 text-sm font-semibold text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition-all duration-200"
+              className="inline-flex items-center gap-2 px-8 py-4 text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 transform"
             >
-              <i className="fas fa-search mr-2"></i>
+              <i className="fas fa-search"></i>
               Browse Internships
             </a>
           </div>
         ) : (
           <>
             {/* Status Columns */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
               {statusColumns.map((column) => (
                 <div key={column.key} className="flex flex-col h-full">
                   {/* Column Header */}
-                  <div className={`${column.headerColor} rounded-t-xl px-4 py-3 border-t-4 ${column.accentColor} shadow-sm z-10`}>
+                  <div className={`${column.headerColor} rounded-t-2xl px-5 py-4 border-t-4 ${column.accentColor} shadow-sm z-10`}>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <i className={`fas ${column.icon} ${column.color} text-sm`}></i>
+                      <div className="flex items-center gap-2.5">
+                        <i className={`fas ${column.icon} ${column.color} text-base`}></i>
                         <h3 className="font-bold text-gray-800 text-sm tracking-wide uppercase">
                           {column.title}
                         </h3>
                       </div>
-                      <span className={`px-2 py-0.5 rounded-md text-xs font-bold ${column.color} bg-white border border-gray-100 shadow-sm`}>
+                      <span className={`px-2.5 py-1 rounded-xl text-xs font-bold ${column.color} bg-white border border-gray-100 shadow-sm`}>
                         {groupedInternships[column.key].length}
                       </span>
                     </div>
                   </div>
 
                   {/* Column Content */}
-                  <div className={`flex-1 ${column.bgColor} border-x border-b ${column.borderColor} rounded-b-xl p-3 space-y-3 min-h-[500px] transition-colors duration-200`}>
+                  <div className={`flex-1 ${column.bgColor} border-x border-b ${column.borderColor} rounded-b-2xl p-4 space-y-4 min-h-[500px] transition-colors duration-200 shadow-sm`}>
                     {groupedInternships[column.key].length === 0 ? (
                       <div className="flex flex-col items-center justify-center h-48 opacity-50">
-                        <div className="w-12 h-12 rounded-full bg-white/50 flex items-center justify-center mb-2">
-                          <i className={`fas ${column.icon} text-gray-400 text-xl`}></i>
+                        <div className="w-14 h-14 rounded-2xl bg-white/50 flex items-center justify-center mb-3 shadow-sm">
+                          <i className={`fas ${column.icon} text-gray-400 text-2xl`}></i>
                         </div>
-                        <p className="text-xs text-gray-500 font-medium">No items</p>
+                        <p className="text-xs text-gray-500 font-semibold">No items</p>
                       </div>
                     ) : (
-                      <div className="space-y-3">
+                      <div className="space-y-4">
                         {groupedInternships[column.key].map((tracking) => (
                           <TrackerCard key={tracking._id} tracking={tracking} />
                         ))}
