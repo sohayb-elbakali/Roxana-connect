@@ -44,7 +44,7 @@ const PostForm = ({addPost}) => {
           <div className="flex justify-end">
             <button
               type="submit"
-              className="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200 flex items-center disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer"
               disabled={!text.trim() || isPosting}
             >
               {isPosting ? (

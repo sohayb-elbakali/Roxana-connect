@@ -95,22 +95,23 @@ const InternshipCard = ({
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+    <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100/50">
       <div className="p-6">
         {/* Header with Company, Position, and Deadline Badge */}
         <div className="flex items-start justify-between gap-4 mb-5">
           <div className="flex-1 min-w-0">
-            <h3 className="text-xl font-bold text-gray-900 mb-1 truncate">
+            <h3 className="text-xl font-bold text-gray-900 mb-2 truncate">
               {positionTitle || "Position Not Specified"}
             </h3>
-            <p className="text-base text-gray-600 font-medium">
+            <p className="text-base text-gray-600 font-semibold flex items-center gap-2">
+              <i className="fas fa-building text-blue-600 text-sm"></i>
               {company}
             </p>
           </div>
           <div className="flex flex-col items-end gap-2">
             <DeadlineBadge deadline={applicationDeadline} />
             {applicationStatus && (
-              <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${getStatusConfig(applicationStatus).color}`}>
+              <span className={`inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm ${getStatusConfig(applicationStatus).color}`}>
                 <i className={`fas ${getStatusConfig(applicationStatus).icon} mr-1.5 text-xs`}></i>
                 {getStatusConfig(applicationStatus).label}
               </span>
@@ -119,23 +120,23 @@ const InternshipCard = ({
         </div>
 
         {/* Metadata Row */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-5 text-sm text-gray-600">
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mb-5 text-sm">
           {location && (
-            <div className="flex items-center">
-              <i className="fas fa-map-marker-alt mr-1.5 text-blue-600 text-xs"></i>
+            <div className="flex items-center text-gray-600 font-medium">
+              <i className="fas fa-map-marker-alt mr-2 text-blue-600"></i>
               <span>{location}</span>
             </div>
           )}
           {locationType && (
-            <div className="flex items-center">
-              <i className="fas fa-laptop-house mr-1.5 text-blue-600 text-xs"></i>
+            <div className="flex items-center text-gray-600 font-medium">
+              <i className="fas fa-laptop-house mr-2 text-blue-600"></i>
               <span className="capitalize">{locationType}</span>
             </div>
           )}
           {salaryRange && salaryRange.min && salaryRange.max && (
             <div className="flex items-center">
-              <i className="fas fa-dollar-sign mr-1.5 text-green-600 text-xs"></i>
-              <span className="font-medium text-green-700">
+              <i className="fas fa-dollar-sign mr-2 text-green-600"></i>
+              <span className="font-bold text-green-700">
                 {salaryRange.currency || "USD"} {salaryRange.min.toLocaleString()}-{salaryRange.max.toLocaleString()}
               </span>
             </div>
@@ -144,17 +145,17 @@ const InternshipCard = ({
 
         {/* Tags */}
         {tags && tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-5">
+          <div className="flex flex-wrap gap-2 mb-6">
             {tags.slice(0, 5).map((tag, index) => (
               <span
                 key={index}
-                className="px-2.5 py-1 bg-blue-50 text-blue-700 rounded-md text-xs font-medium border border-blue-200"
+                className="px-3 py-1.5 bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 rounded-xl text-xs font-bold border border-blue-200/50 shadow-sm"
               >
                 {tag}
               </span>
             ))}
             {tags.length > 5 && (
-              <span className="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-md text-xs font-medium">
+              <span className="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold">
                 +{tags.length - 5} more
               </span>
             )}
@@ -162,24 +163,24 @@ const InternshipCard = ({
         )}
 
         {/* Posted By and Metadata Footer */}
-        <div className="flex items-center justify-between py-4 mb-4 border-t border-b border-gray-200">
-          <div className="flex items-center space-x-2.5">
+        <div className="flex items-center justify-between py-4 mb-5 border-t border-b border-gray-100">
+          <div className="flex items-center space-x-3">
             <Avatar
               userId={internship.postedBy?._id || (typeof user === 'string' ? user : user?._id)}
               userName={internship.postedBy?.name || name}
               avatar={internship.postedBy?.avatar || internship.userProfile?.avatar}
               profile={internship.postedBy || internship.userProfile}
-              size={36}
+              size={40}
             />
             <div>
-              <p className="text-xs text-gray-500">Posted by</p>
-              <p className="text-sm font-medium text-gray-900">{name}</p>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Posted by</p>
+              <p className="text-sm font-bold text-gray-900">{name}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 text-xs text-gray-500">
-            <div className="flex items-center gap-1" title="Students who saved this">
+          <div className="flex items-center gap-4 text-xs text-gray-500">
+            <div className="flex items-center gap-1.5" title="Students who saved this">
               <i className="fas fa-bookmark text-blue-500"></i>
-              <span className="font-semibold text-gray-700">{insights?.saved || 0}</span>
+              <span className="font-bold text-gray-700">{insights?.saved || 0}</span>
             </div>
             <ReactionButton
               hasLiked={hasLiked}
@@ -188,7 +189,10 @@ const InternshipCard = ({
               size="sm"
               showLabel={false}
             />
-            <span className="ml-auto">{formatRelativeTime(date)}</span>
+            <span className="ml-auto flex items-center gap-1.5">
+              <i className="far fa-clock"></i>
+              {formatRelativeTime(date)}
+            </span>
           </div>
         </div>
 
@@ -196,9 +200,9 @@ const InternshipCard = ({
         <div className="flex items-center gap-3">
           <button
             type="button"
-            className={`flex-1 inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${isTracking
-                ? "bg-gray-100 text-gray-500 cursor-not-allowed border border-gray-300"
-                : "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-600 shadow-sm"
+            className={`flex-1 inline-flex items-center justify-center px-5 py-3 text-sm font-bold rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${isTracking
+                ? "bg-gray-100 text-gray-500 cursor-not-allowed border border-gray-200"
+                : "bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 focus:ring-blue-600 shadow-md hover:shadow-lg hover:scale-105 transform"
               }`}
             onClick={handleTrack}
             disabled={isTracking}
@@ -206,7 +210,7 @@ const InternshipCard = ({
           >
             <i
               className={`fas ${isTracking ? "fa-check" : "fa-bookmark"
-                } mr-2 text-xs`}
+                } mr-2`}
             ></i>
             {isTracking ? "Tracking" : "Track"}
           </button>
@@ -218,10 +222,10 @@ const InternshipCard = ({
           />
 
           <Link href={`/internship/${_id}`}
-            className="px-4 py-2.5 text-sm font-medium text-blue-600 bg-white border-2 border-blue-600 rounded-lg hover:bg-blue-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+            className="px-5 py-3 text-sm font-bold text-blue-600 bg-white border-2 border-blue-600 rounded-xl hover:bg-blue-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 hover:scale-105 transform shadow-sm hover:shadow-md"
             aria-label={`View details for ${positionTitle} at ${company}`}
           >
-            <i className="fas fa-arrow-right text-xs"></i>
+            <i className="fas fa-arrow-right"></i>
           </Link>
         </div>
       </div>

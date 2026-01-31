@@ -425,7 +425,7 @@ const AdminDashboard = ({ users: { user } }) => {
                         <button
                           onClick={() => handleDeleteUser(u._id, u.name)}
                           disabled={u._id === user._id}
-                          className="text-red-600 hover:text-red-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                          className="text-red-600 hover:text-red-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors hover:cursor-pointer"
                           title="Delete user"
                         >
                           <i className="fas fa-trash"></i>
@@ -448,7 +448,7 @@ const AdminDashboard = ({ users: { user } }) => {
                 <button
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors hover:cursor-pointer"
                 >
                   <i className="fas fa-chevron-left mr-2"></i>
                   Previous
@@ -456,7 +456,7 @@ const AdminDashboard = ({ users: { user } }) => {
                 <button
                   onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
-                  className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors hover:cursor-pointer"
                 >
                   Next
                   <i className="fas fa-chevron-right ml-2"></i>
@@ -527,13 +527,13 @@ const AdminDashboard = ({ users: { user } }) => {
               <div className="flex space-x-3">
                 <button
                   onClick={closeConfirmation}
-                  className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-medium transition-colors"
+                  className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-medium transition-colors hover:cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={confirmAction}
-                  className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${confirmModal.type === 'delete'
+                  className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors hover:cursor-pointer ${confirmModal.type === 'delete'
                       ? 'bg-red-600 text-white hover:bg-red-700'
                       : 'bg-blue-600 text-white hover:bg-blue-700'
                     }`}

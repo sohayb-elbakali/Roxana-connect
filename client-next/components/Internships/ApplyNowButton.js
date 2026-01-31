@@ -74,10 +74,10 @@ const ApplyNowButton = ({
         href={applicationLink || "#"}
         target="_blank"
         rel="noopener noreferrer"
-        className={`inline-flex items-center justify-center font-medium rounded-lg transition-colors duration-200 ${
+        className={`inline-flex items-center justify-center font-medium rounded-lg transition-colors duration-200 hover:cursor-pointer ${
           hasApplicationLink
             ? "bg-blue-600 text-white hover:bg-blue-700 shadow-sm"
-            : "bg-gray-300 text-gray-600 cursor-pointer hover:bg-gray-400"
+            : "bg-gray-300 text-gray-600 hover:bg-gray-400"
         } ${sizeClasses[size]} ${className}`}
         onClick={handleApplyClick}
       >
@@ -106,7 +106,7 @@ const ApplyNowButton = ({
             <div className="space-y-3 mb-6">
               <button
                 onClick={() => handleStatusUpdate("applied")}
-                className="w-full flex items-center justify-between px-4 py-3 text-left bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 rounded-lg transition-colors"
+                className="w-full flex items-center justify-between px-4 py-3 text-left bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 rounded-lg transition-colors hover:cursor-pointer"
               >
                 <div className="flex items-center">
                   <i className="fas fa-paper-plane text-blue-600 mr-3"></i>
@@ -120,7 +120,7 @@ const ApplyNowButton = ({
 
               <button
                 onClick={() => handleStatusUpdate("not_applied")}
-                className="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 hover:bg-gray-100 border-2 border-gray-200 rounded-lg transition-colors"
+                className="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 hover:bg-gray-100 border-2 border-gray-200 rounded-lg transition-colors hover:cursor-pointer"
               >
                 <div className="flex items-center">
                   <i className="fas fa-bookmark text-gray-600 mr-3"></i>
@@ -135,7 +135,7 @@ const ApplyNowButton = ({
 
             <button
               onClick={handleSkipStatusUpdate}
-              className="w-full px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              className="w-full px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors hover:cursor-pointer"
             >
               Skip for Now
             </button>
@@ -183,7 +183,7 @@ const ApplyNowButton = ({
 
             <button
               onClick={handleCloseContactInfo}
-              className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+              className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors hover:cursor-pointer"
             >
               Got It
             </button>

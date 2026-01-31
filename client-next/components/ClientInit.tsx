@@ -26,14 +26,21 @@ const ClientInit = () => {
 
       if (authToken) {
         setAuthToken(authToken);
-        // Load user data first, then load profile and tracking in parallel
-        await dispatch(loadUser() as any);
-
-        // Load profile and tracking data in parallel for faster loading
-        await Promise.all([
-          dispatch(getCurrentProfile() as any),
-          dispatch(fetchTrackedInternships() as any)
-        ]);
+        
+        // Load user data first
+        const userResult: any = await dispatch(loadUser() as any);
+        
+        // Only load profile and tracking if user loaded successfully
+        if (userResult?.success) {
+          // Load profile and tracking data in parallel for faster loading
+          await Promise.all([
+            dispatch(getCurrentProfile(true) as any), // Pass true for silent mode
+            dispatch(fetchTrackedInternships() as any)
+          ]);
+        } else {
+          // User load failed (401 or other error), signal auth check complete
+          dispatch(authCheckComplete() as any);
+        }
       } else {
         // If no token, signal that auth check is complete
         dispatch(authCheckComplete() as any);

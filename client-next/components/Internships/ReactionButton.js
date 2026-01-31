@@ -30,7 +30,7 @@ const ReactionButton = ({
       type="button"
       onClick={handleClick}
       aria-label={hasLiked ? "Remove interest" : "Mark as interested"}
-      className={`flex items-center gap-1.5 rounded-lg transition-colors cursor-pointer ${sizeClasses[size]} ${hasLiked
+      className={`flex items-center gap-1.5 rounded-lg transition-colors hover:cursor-pointer ${sizeClasses[size]} ${hasLiked
           ? "bg-pink-100 text-pink-600"
           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
         }`}

@@ -17,11 +17,13 @@ export const loadUser = () => async (dispatch) => {
     dispatch({
       type: USER_LOADED,
       payload: res.data
-    })
+    });
+    return { success: true, data: res.data };
   } catch (error) {
     dispatch({
       type: USER_ERROR
-    })
+    });
+    return { success: false, error };
   }
 };
 

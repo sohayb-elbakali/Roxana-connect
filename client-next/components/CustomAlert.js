@@ -101,14 +101,14 @@ const CustomAlert = ({
             {hasConfirm && (
               <button
                 onClick={onClose}
-                className="flex-1 px-6 py-3 text-sm font-medium rounded-lg text-gray-700 bg-gray-100 hover:bg-gray-200 transition-all duration-200"
+                className="flex-1 px-6 py-3 text-sm font-medium rounded-lg text-gray-700 bg-gray-100 hover:bg-gray-200 transition-all duration-200 hover:cursor-pointer"
               >
                 {cancelText}
               </button>
             )}
             <button
               onClick={handleConfirm}
-              className={`flex-1 px-6 py-3 text-sm font-medium rounded-lg text-white ${styles.buttonBg} transition-all duration-200 shadow-sm hover:shadow-md`}
+              className={`flex-1 px-6 py-3 text-sm font-medium rounded-lg text-white ${styles.buttonBg} transition-all duration-200 shadow-sm hover:shadow-md hover:cursor-pointer`}
             >
               {confirmText}
             </button>

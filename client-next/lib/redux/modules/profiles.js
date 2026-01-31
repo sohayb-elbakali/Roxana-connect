@@ -25,6 +25,15 @@ export const getCurrentProfile = (silent = false) => async (dispatch) => {
       payload: res.data,
     });
   } catch (err) {
+    // Handle 401 Unauthorized - user not logged in or token expired
+    if (err.response && err.response.status === 401) {
+      // Silently clear profile - user needs to log in
+      dispatch({
+        type: CLEAR_PROFILE,
+      });
+      return;
+    }
+    
     // Don't show error if user doesn't have a profile yet (status 400)
     // This is a normal state for new users
     if (err.response && err.response.status === 400) {
@@ -33,7 +42,7 @@ export const getCurrentProfile = (silent = false) => async (dispatch) => {
         type: CLEAR_PROFILE,
       });
     } else if (!silent) {
-      // Only log non-400 errors when not in silent mode
+      // Only log non-400/401 errors when not in silent mode
       console.error("Error fetching profile:", err);
       // Don't dispatch PROFILE_ERROR for network issues
       // Just log it and keep the current state
