@@ -24,6 +24,28 @@
     overflow-y: scroll;
   }
 
+  /* Global cursor pointer for all interactive elements */
+  button,
+  a,
+  [role="button"],
+  [type="button"],
+  [type="submit"],
+  [type="reset"],
+  input[type="checkbox"],
+  input[type="radio"],
+  select {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  a:disabled,
+  [role="button"]:disabled,
+  [type="button"]:disabled,
+  [type="submit"]:disabled,
+  [type="reset"]:disabled {
+    cursor: not-allowed;
+  }
+
   /* Typography scale */
   h1 {
     @apply text-3xl font-bold text-gray-900;
