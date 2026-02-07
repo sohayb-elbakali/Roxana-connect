@@ -29,68 +29,68 @@ const Landing = ({ isAuthenticated }) => {
       </div>
 
       {/* Main Content */}
-      <div className={`relative z-10 w-full max-w-3xl mx-auto text-center px-6 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+      <div className={`relative z-10 w-full max-w-3xl mx-auto text-center px-4 sm:px-6 transition-all duration-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
 
         {/* Logo & Brand */}
-        <div className="flex flex-col items-center mb-6">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-xl mb-4">
-            <i className="fas fa-briefcase text-white text-2xl sm:text-3xl"></i>
+        <div className="flex flex-col items-center mb-4 sm:mb-6">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-xl mb-3 sm:mb-4">
+            <i className="fas fa-briefcase text-white text-xl sm:text-2xl md:text-3xl"></i>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-2">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-2">
             <span className="text-gray-900">Roxana</span>{" "}
             <span className="text-blue-600">Connect</span>
           </h1>
 
-          <p className="text-lg sm:text-xl text-gray-500 font-medium">
+          <p className="text-base sm:text-lg md:text-xl text-gray-500 font-medium">
             Track • Collaborate • Succeed
           </p>
         </div>
 
         {/* Description */}
-        <p className={`text-base sm:text-lg text-gray-600 mb-8 max-w-xl mx-auto leading-relaxed transition-opacity duration-700 delay-100 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
+        <p className={`text-sm sm:text-base md:text-lg text-gray-600 mb-6 sm:mb-8 max-w-xl mx-auto leading-relaxed transition-opacity duration-700 delay-100 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
           Your community-powered internship tracker. Discover opportunities,
           share insights, and manage your career journey.
         </p>
 
         {/* Features */}
-        <div className={`flex flex-wrap justify-center gap-3 mb-8 transition-opacity duration-700 delay-200 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
-          <div className="flex items-center gap-2 px-4 py-2 bg-white/80 rounded-full border border-gray-200 shadow-sm">
-            <i className="fas fa-search text-blue-600 text-sm"></i>
-            <span className="text-sm font-medium text-gray-700">Discover Jobs</span>
+        <div className={`flex flex-wrap justify-center gap-2 sm:gap-3 mb-6 sm:mb-8 transition-opacity duration-700 delay-200 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/80 rounded-full border border-gray-200 shadow-sm">
+            <i className="fas fa-search text-blue-600 text-xs sm:text-sm"></i>
+            <span className="text-xs sm:text-sm font-medium text-gray-700">Discover Jobs</span>
           </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-white/80 rounded-full border border-gray-200 shadow-sm">
-            <i className="fas fa-chart-line text-blue-600 text-sm"></i>
-            <span className="text-sm font-medium text-gray-700">Track Progress</span>
+          <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/80 rounded-full border border-gray-200 shadow-sm">
+            <i className="fas fa-chart-line text-blue-600 text-xs sm:text-sm"></i>
+            <span className="text-xs sm:text-sm font-medium text-gray-700">Track Progress</span>
           </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-white/80 rounded-full border border-gray-200 shadow-sm">
-            <i className="fas fa-users text-blue-600 text-sm"></i>
-            <span className="text-sm font-medium text-gray-700">Collaborate</span>
+          <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/80 rounded-full border border-gray-200 shadow-sm">
+            <i className="fas fa-users text-blue-600 text-xs sm:text-sm"></i>
+            <span className="text-xs sm:text-sm font-medium text-gray-700">Collaborate</span>
           </div>
         </div>
 
         {/* CTA Buttons */}
-        <div className={`flex flex-col sm:flex-row justify-center gap-3 transition-opacity duration-700 delay-300 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
+        <div className={`flex flex-col sm:flex-row justify-center gap-2.5 sm:gap-3 transition-opacity duration-700 delay-300 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
           <Link
             href="/register"
-            className="px-8 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg transition-colors flex items-center justify-center gap-2"
+            className="px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base font-bold shadow-lg transition-colors flex items-center justify-center gap-2"
           >
-            <i className="fas fa-user-plus"></i>
+            <i className="fas fa-user-plus text-sm"></i>
             Get Started Free
           </Link>
 
           <Link
             href="/login"
-            className="px-8 py-3.5 rounded-xl bg-white border border-gray-200 text-gray-700 font-bold shadow-sm hover:bg-gray-50 hover:border-gray-300 transition-colors flex items-center justify-center gap-2"
+            className="px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl bg-white border border-gray-200 text-gray-700 text-sm sm:text-base font-bold shadow-sm hover:bg-gray-50 hover:border-gray-300 transition-colors flex items-center justify-center gap-2"
           >
-            <i className="fas fa-sign-in-alt"></i>
+            <i className="fas fa-sign-in-alt text-sm"></i>
             Sign In
           </Link>
         </div>
 
         {/* Trust Badge */}
-        <div className={`mt-8 flex items-center justify-center gap-2 text-gray-400 text-sm transition-opacity duration-700 delay-400 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
-          <i className="fas fa-shield-alt text-green-500"></i>
+        <div className={`mt-6 sm:mt-8 flex items-center justify-center gap-2 text-gray-400 text-xs sm:text-sm transition-opacity duration-700 delay-400 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
+          <i className="fas fa-shield-alt text-green-500 text-sm"></i>
           <span>Secure & Free Forever</span>
         </div>
       </div>

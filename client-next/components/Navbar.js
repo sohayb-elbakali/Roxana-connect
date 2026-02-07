@@ -47,15 +47,15 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
           <Link
             key={link.to}
             href={link.to}
-            className={`relative px-4 py-2 rounded-lg font-medium text-sm transition-colors ${isActive(link.to)
+            className={`relative px-3 py-2 rounded-lg font-medium text-sm transition-colors ${isActive(link.to)
               ? "bg-white text-blue-600"
               : "text-white/90 hover:bg-white/10 hover:text-white"
               }`}
           >
             {link.label}
             {link.badge > 0 && (
-              <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                {link.badge > 99 ? '99+' : link.badge}
+              <span className="absolute -top-1 -right-1 bg-green-500 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">
+                {link.badge > 99 ? '99' : link.badge}
               </span>
             )}
           </Link>
@@ -63,31 +63,31 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
       </div>
 
       {/* Profile Section */}
-      <div className="hidden lg:flex items-center space-x-3">
+      <div className="hidden lg:flex items-center space-x-2">
         {(user?.role === 'admin' || (user?.level && user.level >= 2)) && (
           <Link
             href="/internship/create"
-            className="px-4 py-2 bg-white text-blue-600 rounded-lg font-semibold text-sm hover:bg-gray-50 transition-colors cursor-pointer"
+            className="px-3 py-1.5 bg-white text-blue-600 rounded-lg font-semibold text-xs hover:bg-gray-50 transition-colors cursor-pointer"
           >
-            <i className="fas fa-plus mr-2"></i>
-            Post Internship
+            <i className="fas fa-plus mr-1.5 text-xs"></i>
+            Post
           </Link>
         )}
 
         <div className="relative">
           <button
             onClick={() => setShowProfileMenu(!showProfileMenu)}
-            className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
+            className="flex items-center space-x-1.5 px-2 py-1.5 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
           >
             <Avatar
               userId={user?._id}
               userName={user?.name || "User"}
               avatar={profile?.avatar}
               profile={profile}
-              size={32}
+              size={28}
               className="border-2 border-white/30"
             />
-            <i className={`fas fa-chevron-down text-white text-xs transition-transform ${showProfileMenu ? 'rotate-180' : ''}`}></i>
+            <i className={`fas fa-chevron-down text-white text-[10px] transition-transform ${showProfileMenu ? 'rotate-180' : ''}`}></i>
           </button>
 
           {showProfileMenu && (
@@ -220,33 +220,34 @@ const Navbar = ({ users: { isAuthenticated, user }, profiles: { profile }, track
   );
 
   const links = (
-    <div className="flex items-center space-x-3">
+    <div className="flex items-center space-x-2">
       <Link href="/login"
-        className="px-4 py-2 text-white font-medium text-sm hover:bg-white/10 rounded-lg cursor-pointer"
+        className="px-3 py-1.5 text-white font-medium text-xs sm:text-sm hover:bg-white/10 rounded-lg cursor-pointer"
       >
         Login
       </Link>
       <Link href="/register"
-        className="px-4 py-2 bg-white text-blue-600 rounded-lg font-semibold text-sm hover:bg-gray-50 cursor-pointer"
+        className="px-3 py-1.5 bg-white text-blue-600 rounded-lg font-semibold text-xs sm:text-sm hover:bg-gray-50 cursor-pointer"
       >
-        Get Started
+        <span className="hidden sm:inline">Get Started</span>
+        <span className="sm:hidden">Sign Up</span>
       </Link>
     </div>
   );
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-blue-600 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+        <div className="flex justify-between items-center h-14 sm:h-16">
           <Link
-            className="flex items-center gap-2 px-2 py-1"
+            className="flex items-center gap-1.5 sm:gap-2 px-1 sm:px-2 py-1"
             href={isAuthenticated ? "/home" : "/"}
           >
-            <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center">
-              <i className="fas fa-briefcase text-blue-600"></i>
+            <div className="w-8 h-8 sm:w-9 sm:h-9 bg-white rounded-lg flex items-center justify-center">
+              <i className="fas fa-briefcase text-blue-600 text-sm sm:text-base"></i>
             </div>
-            <span className="text-xl font-bold text-white">
-              Roxana<span className="font-normal opacity-80">Connect</span>
+            <span className="text-base sm:text-xl font-bold text-white">
+              Roxana<span className="font-normal opacity-80 hidden xs:inline">Connect</span>
             </span>
           </Link>
           <Fragment>{isAuthenticated ? authLinks : links}</Fragment>

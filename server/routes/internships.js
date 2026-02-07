@@ -274,6 +274,10 @@ router.put(
       if (req.body.salaryRange !== undefined) updateFields.salaryRange = req.body.salaryRange;
       if (req.body.tags !== undefined) updateFields.tags = req.body.tags;
       if (req.body.isActive !== undefined) updateFields.isActive = req.body.isActive;
+      
+      // Mark as edited
+      updateFields.edited = true;
+      updateFields.editedAt = new Date();
 
       const updatedInternship = await Internship.findByIdAndUpdate(
         req.params.id,

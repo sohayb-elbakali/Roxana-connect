@@ -12,12 +12,15 @@ import {
 } from "../../lib/redux/modules/internships";
 import { trackInternship, untrackInternship } from "../../lib/redux/modules/tracking";
 import { formatRelativeTime, getProfileImage } from "../../lib/utils";
+import { showAlertMessage } from "../../lib/redux/modules/alerts";
 import Avatar from "../Avatar";
 import CommentSection from "./CommentSection";
 import CommentForm from "./CommentForm";
 import DeadlineBadge from "./DeadlineBadge";
 import ApplyNowButton from "./ApplyNowButton";
 import ReactionButton from "./ReactionButton";
+import DropdownMenu from "../DropdownMenu";
+import InternshipEditModal from "./InternshipEditModal";
 
 const InternshipDetail = ({
   fetchInternship,
@@ -31,12 +34,17 @@ const InternshipDetail = ({
   tracking,
   insights: reduxInsights,
   dispatch,
+  showAlertMessage,
 }) => {
   const { id } = useParams();
   const router = useRouter();
+  
+  // All useState hooks must be at the top, before any conditional logic
   const [imageError, setImageError] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showFullDescription, setShowFullDescription] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Check if description is long (more than 10 lines or 500 chars)
   const isLongDescription = internship?.description &&
@@ -83,6 +91,32 @@ const InternshipDetail = ({
       router.push('/feed');
     } catch (error) {
       console.error('Error deleting internship:', error);
+    }
+  };
+
+  const handleSaveEdit = async (formData) => {
+    setIsSaving(true);
+    try {
+      const response = await fetch(`/api/internships/${internship._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      
+      if (response.ok) {
+        const updated = await response.json();
+        dispatch({
+          type: 'internships/UPDATE_INTERNSHIP',
+          payload: updated,
+        });
+        setShowEditModal(false);
+        showAlertMessage('Internship updated successfully', 'success');
+      }
+    } catch (error) {
+      console.error('Error updating internship:', error);
+      showAlertMessage('Error updating internship', 'error');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -180,6 +214,20 @@ const InternshipDetail = ({
   const isOwner = !users.loading && users.user &&
     (typeof internship.user === 'string' ? internship.user : internship.user?._id) === users.user._id;
 
+  const menuItems = [
+    {
+      label: 'Edit Internship',
+      icon: 'fas fa-edit',
+      onClick: () => setShowEditModal(true),
+    },
+    {
+      label: 'Delete Internship',
+      icon: 'fas fa-trash',
+      onClick: () => setShowDeleteModal(true),
+      danger: true,
+    },
+  ];
+
   return (
     <div className="pt-16 min-h-screen bg-gray-50 lg:ml-64">
       <div className="max-w-4xl px-4 sm:px-6 py-4">
@@ -194,22 +242,7 @@ const InternshipDetail = ({
             <span>Back to Feed</span>
           </Link>
 
-          {isOwner && (
-            <div className="flex items-center gap-2">
-              <Link
-                href={`/internship/edit/${internship._id}`}
-                className="px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-              >
-                <i className="fas fa-edit mr-1.5"></i>Edit
-              </Link>
-              <button
-                onClick={() => setShowDeleteModal(true)}
-                className="px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-              >
-                <i className="fas fa-trash mr-1.5"></i>Delete
-              </button>
-            </div>
-          )}
+          {isOwner && <DropdownMenu items={menuItems} />}
         </div>
 
         {/* Main Content Card */}
@@ -342,8 +375,13 @@ const InternshipDetail = ({
                   <p className="text-sm font-medium text-gray-900">
                     {internship.postedBy?.name || internship.name}
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-500 flex items-center gap-1.5">
                     Posted {formatRelativeTime(internship.date)}
+                    {internship.edited && (
+                      <span className="ml-1 px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-medium">
+                        Edited
+                      </span>
+                    )}
                   </p>
                 </div>
               </div>
@@ -434,6 +472,16 @@ const InternshipDetail = ({
           </div>
         </div>
       )}
+
+      {/* Edit Modal */}
+      {showEditModal && (
+        <InternshipEditModal
+          internship={internship}
+          onSave={handleSaveEdit}
+          onClose={() => setShowEditModal(false)}
+          isSaving={isSaving}
+        />
+      )}
     </div>
   );
 };
@@ -452,6 +500,7 @@ const mapDispatchToProps = (dispatch) => ({
   untrackInternship: (trackingId) => dispatch(untrackInternship(trackingId)),
   likeInternship: (internshipId) => dispatch(likeInternship(internshipId)),
   deleteInternship: (id) => dispatch(deleteInternship(id)),
+  showAlertMessage: (msg, type) => dispatch(showAlertMessage(msg, type)),
   dispatch,
 });
 

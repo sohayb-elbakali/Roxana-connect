@@ -158,31 +158,32 @@ const InternshipFeed = ({
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100/50 p-6 mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100/50 p-4 sm:p-6 mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
             <div>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl flex items-center justify-center shadow-sm">
-                  <i className="fas fa-briefcase text-blue-500 text-lg"></i>
+              <div className="flex items-center gap-2 sm:gap-3 mb-1.5 sm:mb-2">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-sm">
+                  <i className="fas fa-briefcase text-blue-500 text-base sm:text-lg"></i>
                 </div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">Internships</h1>
+                <h1 className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">Internships</h1>
               </div>
-              <p className="text-sm text-gray-600 ml-15 font-medium">
+              <p className="text-xs sm:text-sm text-gray-600 ml-12 sm:ml-15 font-medium">
                 {internships.length} {internships.length === 1 ? "opportunity" : "opportunities"} available
               </p>
             </div>
             <Link
               href="/internship/create"
-              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold text-sm rounded-2xl hover:from-blue-600 hover:to-blue-700 transition-all shadow-md hover:shadow-lg hover:scale-105 transform hover:cursor-pointer"
+              className="inline-flex items-center justify-center px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl hover:from-blue-600 hover:to-blue-700 transition-all shadow-md hover:shadow-lg hover:scale-105 transform hover:cursor-pointer"
             >
-              <i className="fas fa-plus mr-2"></i>
-              Post Internship
+              <i className="fas fa-plus mr-1.5 sm:mr-2 text-xs"></i>
+              <span className="hidden sm:inline">Post Internship</span>
+              <span className="sm:hidden">Post</span>
             </Link>
           </div>
         </div>
 
         {/* Content */}
-        <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
           {/* Filters Sidebar */}
           <aside className="lg:w-64 flex-shrink-0">
             <div className="lg:sticky lg:top-24">
@@ -192,7 +193,7 @@ const InternshipFeed = ({
 
           {/* Cards */}
           <main className="flex-1">
-            <div className="space-y-5">
+            <div className="space-y-4 sm:space-y-5">
               {sortedInternships.map((internship) => (
                 <InternshipCard key={internship._id} internship={internship} />
               ))}

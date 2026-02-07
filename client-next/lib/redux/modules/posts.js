@@ -6,6 +6,7 @@ export const GET_POSTS = "posts/GET_POSTS";
 export const GET_POST = "posts/GET_POST";
 export const POST_ERROR = "posts/POST_ERROR";
 export const UPDATE_LIKES = "posts/UPDATE_LIKES";
+export const UPDATE_POST = "posts/UPDATE_POST";
 export const DELETE_POST = "posts/DELETE_POST";
 export const ADD_POST = "posts/ADD_POST";
 export const ADD_COMMENT = "posts/ADD_COMMENT";
@@ -134,6 +135,36 @@ export const deletePost = (id) => async (dispatch) => {
         status: err.response?.status || 500,
       },
     });
+  }
+};
+
+// Update post
+export const updatePost = (id, formData) => async (dispatch) => {
+  try {
+    const res = await api.put(`/posts/${id}`, formData);
+
+    dispatch({
+      type: UPDATE_POST,
+      payload: res.data,
+    });
+
+    dispatch(showAlertMessage("Post Updated", "success"));
+    return res.data;
+  } catch (err) {
+    console.error("Error updating post:", err);
+    if (err.response && err.response.data && err.response.data.msg) {
+      dispatch(showAlertMessage(err.response.data.msg, "error"));
+    } else {
+      dispatch(showAlertMessage("Error updating post", "error"));
+    }
+    dispatch({
+      type: POST_ERROR,
+      payload: {
+        msg: err.response?.statusText || "Error updating post",
+        status: err.response?.status || 500,
+      },
+    });
+    throw err;
   }
 };
 
@@ -294,6 +325,15 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         posts: state.posts.filter((post) => post._id !== payload),
+        loading: false,
+      };
+    case UPDATE_POST:
+      return {
+        ...state,
+        posts: state.posts.map((post) =>
+          post._id === payload._id ? payload : post
+        ),
+        post: state.post && state.post._id === payload._id ? payload : state.post,
         loading: false,
       };
     case POST_ERROR:

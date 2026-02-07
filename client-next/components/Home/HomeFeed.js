@@ -14,6 +14,7 @@ const HomeFeed = ({
   internships: { items: internships, loading: internshipsLoading },
 }) => {
   const [feedType, setFeedType] = useState("all");
+  const [sortBy, setSortBy] = useState("recent"); // recent, popular, deadline
 
   useEffect(() => {
     getPosts();
@@ -29,6 +30,7 @@ const HomeFeed = ({
           type: "post",
           data: post,
           date: new Date(post.date),
+          likes: post.likes?.length || 0,
         });
       });
     }
@@ -39,23 +41,47 @@ const HomeFeed = ({
           type: "internship",
           data: internship,
           date: new Date(internship.date),
+          likes: internship.likes?.length || 0,
+          deadline: internship.applicationDeadline ? new Date(internship.applicationDeadline) : null,
         });
       });
     }
 
-    return combined.sort((a, b) => b.date - a.date);
+    return combined;
+  };
+
+  const getSortedFeed = (feed) => {
+    const sorted = [...feed];
+    
+    switch (sortBy) {
+      case "popular":
+        return sorted.sort((a, b) => b.likes - a.likes);
+      case "deadline":
+        // Only for internships, sort by deadline
+        return sorted.sort((a, b) => {
+          if (a.type === "internship" && b.type === "internship") {
+            if (!a.deadline) return 1;
+            if (!b.deadline) return -1;
+            return a.deadline - b.deadline;
+          }
+          return b.date - a.date;
+        });
+      case "recent":
+      default:
+        return sorted.sort((a, b) => b.date - a.date);
+    }
   };
 
   const getFilteredFeed = () => {
     const combined = getCombinedFeed();
 
     if (feedType === "posts") {
-      return combined.filter((item) => item.type === "post");
+      return getSortedFeed(combined.filter((item) => item.type === "post"));
     } else if (feedType === "internships") {
-      return combined.filter((item) => item.type === "internship");
+      return getSortedFeed(combined.filter((item) => item.type === "internship"));
     }
 
-    return combined;
+    return getSortedFeed(combined);
   };
 
   const filteredFeed = getFilteredFeed();
@@ -67,45 +93,71 @@ const HomeFeed = ({
     { id: "internships", label: "Jobs", count: internships?.length || 0, icon: "fa-briefcase" }
   ];
 
+  const sortOptions = [
+    { id: "recent", label: "Recent", icon: "fa-clock" },
+    { id: "popular", label: "Popular", icon: "fa-fire" },
+    { id: "deadline", label: "Deadline", icon: "fa-calendar", onlyFor: "internships" },
+  ];
+
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 sm:space-y-5">
       {/* Feed Header */}
-      <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100/50">
-        <div className="p-6 pb-5">
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm overflow-hidden border border-gray-100/50">
+        <div className="p-4 sm:p-6 pb-4 sm:pb-5">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Your Feed</h2>
-              <p className="text-sm text-gray-500 mt-1">
+              <h2 className="text-lg sm:text-2xl font-bold text-gray-900">Your Feed</h2>
+              <p className="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1">
                 Latest from the community
               </p>
             </div>
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl flex items-center justify-center shadow-sm">
-              <i className="fas fa-rss text-blue-600 text-lg"></i>
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-sm">
+              <i className="fas fa-rss text-blue-600 text-base sm:text-lg"></i>
             </div>
           </div>
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex items-center gap-2 px-6 pb-5 pt-4 bg-gradient-to-b from-gray-50/50 to-transparent border-t border-gray-100/50">
+        <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-6 pb-3 sm:pb-4 pt-2 sm:pt-3 bg-gradient-to-b from-gray-50/50 to-transparent border-t border-gray-100/50 overflow-x-auto">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setFeedType(tab.id)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:cursor-pointer ${feedType === tab.id
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 hover:cursor-pointer whitespace-nowrap ${feedType === tab.id
                 ? "bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md hover:shadow-lg transform hover:scale-105"
                 : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200/50 shadow-sm hover:shadow"
                 }`}
             >
-              <i className={`fas ${tab.icon} text-xs`}></i>
+              <i className={`fas ${tab.icon} text-[10px] sm:text-xs`}></i>
               {tab.label}
               {tab.count !== undefined && (
-                <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${feedType === tab.id ? "bg-white/20 text-white" : "bg-gray-100 text-gray-600"
+                <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full font-bold ${feedType === tab.id ? "bg-white/20 text-white" : "bg-gray-100 text-gray-600"
                   }`}>
                   {tab.count}
                 </span>
               )}
             </button>
           ))}
+        </div>
+
+        {/* Sort Options */}
+        <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-6 pb-4 sm:pb-5 overflow-x-auto">
+          <span className="text-xs text-gray-500 font-medium whitespace-nowrap mr-1">Sort by:</span>
+          {sortOptions
+            .filter(option => !option.onlyFor || feedType === option.onlyFor || feedType === "all")
+            .map((option) => (
+              <button
+                key={option.id}
+                onClick={() => setSortBy(option.id)}
+                className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs font-medium transition-all duration-200 hover:cursor-pointer whitespace-nowrap ${sortBy === option.id
+                  ? "bg-blue-100 text-blue-700 border border-blue-200"
+                  : "bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200"
+                  }`}
+              >
+                <i className={`fas ${option.icon} text-[10px]`}></i>
+                {option.label}
+              </button>
+            ))}
         </div>
       </div>
 
@@ -146,7 +198,7 @@ const HomeFeed = ({
 
       {/* Feed Items */}
       {!loading && filteredFeed.length > 0 && (
-        <div className="space-y-5">
+        <div className="space-y-4 sm:space-y-5">
           {filteredFeed.map((item, index) => (
             <div key={`${item.type}-${item.data._id}-${index}`}>
               {item.type === "post" ? (

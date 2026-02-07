@@ -231,75 +231,88 @@ const InternshipForm = ({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20 lg:pl-16 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-20 lg:pl-16 py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 md:p-8">
-          {/* Back Navigation */}
-          <div className="mb-6">
-            <Link
-              href={isEditMode ? `/internship/${id}` : '/feed'}
-              className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition-colors"
-            >
-              <i className="fas fa-arrow-left text-xs"></i>
-              <span>{isEditMode ? 'Back to Internship' : 'Back to Feed'}</span>
-            </Link>
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-xl overflow-hidden">
+          {/* Header with Gradient */}
+          <div className="px-6 md:px-8 py-6 bg-gradient-to-r from-blue-600 to-blue-700 border-b border-blue-800">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                  <i className="fas fa-briefcase text-white text-2xl"></i>
+                </div>
+                <div>
+                  <h2 className="text-2xl md:text-3xl font-bold text-white">
+                    {isEditMode ? "Edit Internship" : "Post New Internship"}
+                  </h2>
+                  <p className="text-blue-100 text-sm mt-1">
+                    {isEditMode ? "Update internship details" : "Share an opportunity with the community"}
+                  </p>
+                </div>
+              </div>
+              <Link
+                href={isEditMode ? `/internship/${id}` : '/feed'}
+                className="hidden sm:flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-colors backdrop-blur-sm"
+              >
+                <i className="fas fa-times text-sm"></i>
+              </Link>
+            </div>
           </div>
 
-          {/* Header */}
-          <div className="flex items-center mb-8">
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-              <i className="fas fa-briefcase text-blue-600 text-xl"></i>
-            </div>
-            <h2 className="text-3xl font-bold text-gray-900 ml-4">
-              {isEditMode ? "Edit Internship" : "Post New Internship"}
-            </h2>
-          </div>
-
-          <form onSubmit={onSubmit} className="space-y-6">
-            {/* Company Name */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Company Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                name="company"
-                value={company}
-                onChange={onChange}
-                placeholder="e.g., Google, Microsoft, Amazon"
-                className={`w-full px-4 py-3 border ${errors.company ? "border-red-500" : "border-gray-300"
-                  } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
-              />
-              {errors.company && (
-                <p className="text-red-500 text-sm mt-1">{errors.company}</p>
-              )}
-            </div>
-
-            {/* Position Title */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Position Title <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                name="positionTitle"
-                value={positionTitle}
-                onChange={onChange}
-                placeholder="e.g., Software Engineering Intern"
-                className={`w-full px-4 py-3 border ${errors.positionTitle ? "border-red-500" : "border-gray-300"
-                  } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
-              />
-              {errors.positionTitle && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.positionTitle}
-                </p>
-              )}
-            </div>
-
-            {/* Location and Type */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Form Content */}
+          <form onSubmit={onSubmit} className="p-6 md:p-8 space-y-6">
+            {/* Company & Position */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <i className="fas fa-building text-blue-500 mr-2"></i>
+                  Company Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="company"
+                  value={company}
+                  onChange={onChange}
+                  placeholder="e.g., Google"
+                  className={`w-full px-4 py-3 border ${errors.company ? "border-red-500 bg-red-50" : "border-gray-300"
+                    } rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all`}
+                />
+                {errors.company && (
+                  <p className="text-red-500 text-xs mt-1.5 flex items-center gap-1">
+                    <i className="fas fa-exclamation-circle"></i>
+                    {errors.company}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <i className="fas fa-briefcase text-blue-500 mr-2"></i>
+                  Position Title <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="positionTitle"
+                  value={positionTitle}
+                  onChange={onChange}
+                  placeholder="e.g., Software Engineer Intern"
+                  className={`w-full px-4 py-3 border ${errors.positionTitle ? "border-red-500 bg-red-50" : "border-gray-300"
+                    } rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all`}
+                />
+                {errors.positionTitle && (
+                  <p className="text-red-500 text-xs mt-1.5 flex items-center gap-1">
+                    <i className="fas fa-exclamation-circle"></i>
+                    {errors.positionTitle}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Location & Type */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <i className="fas fa-map-marker-alt text-blue-500 mr-2"></i>
                   Location
                 </label>
                 <input
@@ -308,27 +321,31 @@ const InternshipForm = ({
                   value={location}
                   onChange={onChange}
                   placeholder="e.g., San Francisco, CA"
-                  className={`w-full px-4 py-3 border ${errors.location ? "border-red-500" : "border-gray-300"
-                    } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
+                  className={`w-full px-4 py-3 border ${errors.location ? "border-red-500 bg-red-50" : "border-gray-300"
+                    } rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all`}
                 />
                 {errors.location && (
-                  <p className="text-red-500 text-sm mt-1">{errors.location}</p>
+                  <p className="text-red-500 text-xs mt-1.5 flex items-center gap-1">
+                    <i className="fas fa-exclamation-circle"></i>
+                    {errors.location}
+                  </p>
                 )}
               </div>
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Location Type
+                  <i className="fas fa-laptop-house text-blue-500 mr-2"></i>
+                  Work Type
                 </label>
                 <select
                   name="locationType"
                   value={locationType}
                   onChange={onChange}
-                  className="text-gray-900 bg-white w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all bg-white text-gray-900"
                 >
-                  <option value="onsite">On-site</option>
-                  <option value="remote">Remote</option>
-                  <option value="hybrid">Hybrid</option>
+                  <option value="onsite">🏢 On-site</option>
+                  <option value="remote">🏠 Remote</option>
+                  <option value="hybrid">🔄 Hybrid</option>
                 </select>
               </div>
             </div>
@@ -336,6 +353,7 @@ const InternshipForm = ({
             {/* Application Deadline */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <i className="fas fa-calendar-alt text-blue-500 mr-2"></i>
                 Application Deadline <span className="text-red-500">*</span>
               </label>
               <input
@@ -343,13 +361,12 @@ const InternshipForm = ({
                 name="applicationDeadline"
                 value={applicationDeadline}
                 onChange={onChange}
-                className={`w-full px-4 py-3 border ${errors.applicationDeadline
-                    ? "border-red-500"
-                    : "border-gray-300"
-                  } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
+                className={`w-full px-4 py-3 border ${errors.applicationDeadline ? "border-red-500 bg-red-50" : "border-gray-300"
+                  } rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all`}
               />
               {errors.applicationDeadline && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="text-red-500 text-xs mt-1.5 flex items-center gap-1">
+                  <i className="fas fa-exclamation-circle"></i>
                   {errors.applicationDeadline}
                 </p>
               )}
@@ -358,25 +375,30 @@ const InternshipForm = ({
             {/* Description */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <i className="fas fa-align-left text-blue-500 mr-2"></i>
                 Description <span className="text-red-500">*</span>
               </label>
               <textarea
                 name="description"
                 value={description}
                 onChange={onChange}
-                placeholder="Describe the internship opportunity, responsibilities, and what the intern will learn..."
-                rows="5"
-                className={`w-full px-4 py-3 border ${errors.description ? "border-red-500" : "border-gray-300"
-                  } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 resize-none`}
+                placeholder="Describe the role, responsibilities, and what makes this opportunity great..."
+                rows="6"
+                className={`w-full px-4 py-3 border ${errors.description ? "border-red-500 bg-red-50" : "border-gray-300"
+                  } rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-y transition-all`}
               />
               {errors.description && (
-                <p className="text-red-500 text-sm mt-1">{errors.description}</p>
+                <p className="text-red-500 text-xs mt-1.5 flex items-center gap-1">
+                  <i className="fas fa-exclamation-circle"></i>
+                  {errors.description}
+                </p>
               )}
             </div>
 
             {/* Application Link */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <i className="fas fa-link text-blue-500 mr-2"></i>
                 Application Link
               </label>
               <input
@@ -385,40 +407,47 @@ const InternshipForm = ({
                 value={applicationLink}
                 onChange={onChange}
                 placeholder="https://company.com/careers/apply"
-                className={`w-full px-4 py-3 border ${errors.applicationLink ? "border-red-500" : "border-gray-300"
-                  } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600`}
+                className={`w-full px-4 py-3 border ${errors.applicationLink ? "border-red-500 bg-red-50" : "border-gray-300"
+                  } rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all`}
               />
               {errors.applicationLink && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="text-red-500 text-xs mt-1.5 flex items-center gap-1">
+                  <i className="fas fa-exclamation-circle"></i>
                   {errors.applicationLink}
                 </p>
               )}
+              <p className="text-xs text-gray-500 mt-1.5">
+                <i className="fas fa-info-circle mr-1"></i>
+                Optional: Direct link to the application page
+              </p>
             </div>
 
             {/* Tags */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Tags
+                <i className="fas fa-tags text-blue-500 mr-2"></i>
+                Skills & Tags
               </label>
               <input
                 type="text"
                 name="tags"
                 value={tags}
                 onChange={onChange}
-                placeholder="e.g., software, frontend, paid, summer-2026 (comma-separated)"
-                className="text-gray-900 bg-white w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                placeholder="JavaScript, React, Node.js, TypeScript..."
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all bg-white text-gray-900"
               />
-              <p className="text-sm text-gray-500 mt-1">
-                Separate tags with commas
+              <p className="text-xs text-gray-500 mt-1.5">
+                <i className="fas fa-info-circle mr-1"></i>
+                Separate each tag with a comma
               </p>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-6 border-t border-gray-200">
               <button
                 type="submit"
                 disabled={loading}
-                className={`flex-1 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 ${loading ? "opacity-50 cursor-not-allowed" : ""
+                className={`flex-1 px-6 py-3.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 ${loading ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                 aria-label={isEditMode ? "Update internship" : "Post internship"}
               >
@@ -438,9 +467,10 @@ const InternshipForm = ({
               <button
                 type="button"
                 onClick={() => router.push(isEditMode ? `/internship/${id}` : '/feed')}
-                className="px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                className="px-6 py-3.5 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 shadow-sm"
                 aria-label="Cancel and return"
               >
+                <i className="fas fa-times mr-2"></i>
                 Cancel
               </button>
             </div>

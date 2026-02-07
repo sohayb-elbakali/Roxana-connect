@@ -222,6 +222,50 @@ router.delete("/comment/:id/:comment_id", auth, async (req, res) => {
   }
 });
 
+router.put(
+  "/:id",
+  auth,
+  check("text", "Text is required").notEmpty(),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const post = await Post.findById(req.params.id);
+
+      if (!post) {
+        return res.status(404).json({ msg: "Post not found" });
+      }
+
+      if (post.user.toString() !== req.user.id) {
+        return res.status(401).json({ msg: "User is not authorized to update this post" });
+      }
+
+      // Update post text and mark as edited
+      post.text = req.body.text;
+      post.edited = true;
+      post.editedAt = new Date();
+
+      await post.save();
+
+      // Populate user profile
+      const Profile = require("../models/Profile");
+      const profile = await Profile.findOne({ user: post.user }).select("avatar");
+      
+      const postWithProfile = {
+        ...post.toObject(),
+        userProfile: profile
+      };
+
+      res.json(postWithProfile);
+    } catch (err) {
+      res.status(500).send("Server error updating post");
+    }
+  }
+);
+
 router.delete("/:id", auth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);

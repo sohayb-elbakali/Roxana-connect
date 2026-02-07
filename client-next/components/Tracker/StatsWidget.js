@@ -63,34 +63,34 @@ const StatsWidget = ({ stats }) => {
   ];
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100/50 p-6 mb-8">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-slate-900">
+    <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-gray-100/50 p-4 sm:p-6 mb-6 sm:mb-8">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+        <h2 className="text-lg sm:text-xl font-bold text-slate-900">
           Overview
         </h2>
-        <div className="flex items-center gap-2.5 px-4 py-2 bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-xl border border-emerald-200/50 shadow-sm">
-          <span className="text-xs text-slate-600 font-semibold">Success Rate</span>
-          <span className="text-lg font-bold text-emerald-600">
+        <div className="flex items-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-lg sm:rounded-xl border border-emerald-200/50 shadow-sm">
+          <span className="text-[10px] sm:text-xs text-slate-600 font-semibold">Success Rate</span>
+          <span className="text-base sm:text-lg font-bold text-emerald-600">
             {successRate}%
           </span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5">
         {statCards.map((stat, index) => (
           <div 
             key={index} 
-            className={`${stat.bgColor} rounded-2xl p-6 hover:scale-105 transition-all duration-300 cursor-default border border-white shadow-sm hover:shadow-md`}
+            className={`${stat.bgColor} rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:scale-105 transition-all duration-300 cursor-default border border-white shadow-sm hover:shadow-md`}
             style={{ animationDelay: `${index * 50}ms` }}
           >
-            <div className="flex flex-col items-center text-center gap-3">
-              <div className={`w-14 h-14 rounded-2xl ${stat.iconBg} flex items-center justify-center shadow-sm`}>
-                <i className={`fas ${stat.icon} ${stat.textColor} text-xl`}></i>
+            <div className="flex flex-col items-center text-center gap-2 sm:gap-3">
+              <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl ${stat.iconBg} flex items-center justify-center shadow-sm`}>
+                <i className={`fas ${stat.icon} ${stat.textColor} text-base sm:text-xl`}></i>
               </div>
-              <p className={`text-4xl font-bold ${stat.textColor} tabular-nums leading-none`}>
+              <p className={`text-2xl sm:text-4xl font-bold ${stat.textColor} tabular-nums leading-none`}>
                 {stat.value}
               </p>
-              <p className="text-xs font-bold text-gray-600 uppercase tracking-wider">
+              <p className="text-[10px] sm:text-xs font-bold text-gray-600 uppercase tracking-wider">
                 {stat.label}
               </p>
             </div>

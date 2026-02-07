@@ -24,22 +24,22 @@ function Developers({ user, getProfiles, profiles: { profiles, loading } }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6">
         {/* Header */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 mb-4 sm:mb-6">
           <div className="flex items-center justify-between">
             <div>
-              <div className="flex items-center gap-3 mb-1">
-                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-users text-blue-600"></i>
+              <div className="flex items-center gap-2 sm:gap-3 mb-1">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                  <i className="fas fa-users text-blue-600 text-sm sm:text-base"></i>
                 </div>
-                <h1 className="text-2xl font-bold text-gray-900">Developers</h1>
+                <h1 className="text-lg sm:text-2xl font-bold text-gray-900">Developers</h1>
               </div>
-              <p className="text-sm text-gray-500 ml-13">
+              <p className="text-xs sm:text-sm text-gray-500 ml-10 sm:ml-13">
                 Connect with {profiles?.length || 0} developers
                 {newUsersCount > 0 && (
-                  <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                    {newUsersCount} new this week
+                  <span className="ml-1 sm:ml-2 inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold bg-green-100 text-green-800">
+                    {newUsersCount} new
                   </span>
                 )}
               </p>
@@ -68,7 +68,7 @@ function Developers({ user, getProfiles, profiles: { profiles, loading } }) {
 
         {/* Developers Grid */}
         {!loading && profiles && profiles.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
             {profiles
               .filter(
                 (profile) =>
@@ -95,9 +95,9 @@ function DeveloperCard({ profile }) {
     (new Date() - new Date(profile.user.date)) < 7 * 24 * 60 * 60 * 1000;
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 text-center hover:border-blue-200 transition-colors cursor-pointer relative">
+    <div className="bg-white rounded-xl border border-gray-200 p-3 sm:p-5 text-center hover:border-blue-200 transition-colors cursor-pointer relative">
       {isNewUser && (
-        <div className="absolute top-2 right-2 bg-green-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
+        <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 bg-green-500 text-white text-[9px] sm:text-[10px] font-bold px-1 sm:px-1.5 py-0.5 rounded">
           NEW
         </div>
       )}
@@ -106,13 +106,13 @@ function DeveloperCard({ profile }) {
         userName={profile?.user?.name || "Developer"}
         avatar={profile?.avatar}
         profile={profile}
-        size={72}
-        className="mx-auto mb-3"
+        size={56}
+        className="mx-auto mb-2 sm:mb-3 sm:w-[72px] sm:h-[72px]"
       />
-      <h3 className="text-sm font-semibold text-gray-900 mb-0.5 truncate">
+      <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-0.5 truncate">
         {profile?.user?.name || "Unknown User"}
       </h3>
-      <p className="text-xs text-blue-600 font-medium truncate">
+      <p className="text-[10px] sm:text-xs text-blue-600 font-medium truncate">
         {profile?.status || "Developer"}
       </p>
     </div>
