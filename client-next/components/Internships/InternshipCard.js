@@ -13,6 +13,7 @@ import ReactionButton from "./ReactionButton";
 import Avatar from "../Avatar";
 import DropdownMenu from "../DropdownMenu";
 import InternshipEditModal from "./InternshipEditModal";
+import DiscussionButton from "../DiscussionButton";
 
 const InternshipCard = ({
   internship,
@@ -147,126 +148,135 @@ const InternshipCard = ({
 
   return (
     <>
-      <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100/50">
-        <div className="p-4 sm:p-6">
-          {/* Header with Company, Position, and Deadline Badge */}
-          <div className="flex items-start justify-between gap-3 sm:gap-4 mb-4 sm:mb-5">
-            <div className="flex-1 min-w-0">
-              <h3 className="text-base sm:text-xl font-bold text-gray-900 mb-1.5 sm:mb-2 line-clamp-2">
-                {positionTitle || "Position Not Specified"}
-              </h3>
-              <p className="text-sm sm:text-base text-gray-600 font-semibold flex items-center gap-1.5 sm:gap-2">
-                <i className="fas fa-building text-blue-600 text-xs sm:text-sm"></i>
-                <span className="truncate">{company}</span>
-              </p>
-            </div>
-            <div className="flex items-start gap-2 flex-shrink-0">
-              <div className="flex flex-col items-end gap-1.5 sm:gap-2">
-                <DeadlineBadge deadline={applicationDeadline} />
-                {applicationStatus && (
-                  <span className={`inline-flex items-center px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold shadow-sm ${getStatusConfig(applicationStatus).color}`}>
-                    <i className={`fas ${getStatusConfig(applicationStatus).icon} mr-1 sm:mr-1.5 text-[9px] sm:text-xs`}></i>
-                    <span className="hidden sm:inline">{getStatusConfig(applicationStatus).label}</span>
-                    <span className="sm:hidden">{getStatusConfig(applicationStatus).label.slice(0, 3)}</span>
-                  </span>
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100/50 hover:border-blue-200 group cursor-pointer">
+        {/* Clickable Card Wrapper */}
+        <Link href={`/internship/${_id}`} className="block">
+          <div className="p-4 sm:p-6">
+            {/* Header with Company, Position, and Deadline Badge */}
+            <div className="flex items-start justify-between gap-3 sm:gap-4 mb-4 sm:mb-5">
+              <div className="flex-1 min-w-0">
+                <h3 className="text-base sm:text-xl font-bold text-gray-900 mb-1.5 sm:mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                  {positionTitle || "Position Not Specified"}
+                </h3>
+                <p className="text-sm sm:text-base text-gray-600 font-semibold flex items-center gap-1.5 sm:gap-2">
+                  <i className="fas fa-building text-blue-600 text-xs sm:text-sm"></i>
+                  <span className="truncate">{company}</span>
+                </p>
+              </div>
+              <div className="flex items-start gap-2 flex-shrink-0">
+                <div className="flex flex-col items-end gap-1.5 sm:gap-2">
+                  <DeadlineBadge deadline={applicationDeadline} />
+                  {applicationStatus && (
+                    <span className={`inline-flex items-center px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold shadow-sm ${getStatusConfig(applicationStatus).color}`}>
+                      <i className={`fas ${getStatusConfig(applicationStatus).icon} mr-1 sm:mr-1.5 text-[9px] sm:text-xs`}></i>
+                      <span className="hidden sm:inline">{getStatusConfig(applicationStatus).label}</span>
+                      <span className="sm:hidden">{getStatusConfig(applicationStatus).label.slice(0, 3)}</span>
+                    </span>
+                  )}
+                </div>
+                {isOwner && (
+                  <div onClick={(e) => e.preventDefault()}>
+                    <DropdownMenu items={menuItems} />
+                  </div>
                 )}
               </div>
-              {isOwner && <DropdownMenu items={menuItems} />}
             </div>
-          </div>
 
-          {/* Metadata Row */}
-          <div className="flex flex-wrap items-center gap-x-3 sm:gap-x-5 gap-y-1.5 sm:gap-y-2 mb-4 sm:mb-5 text-xs sm:text-sm">
-            {location && (
-              <div className="flex items-center text-gray-600 font-medium">
-                <i className="fas fa-map-marker-alt mr-1.5 sm:mr-2 text-blue-600 text-xs"></i>
-                <span className="truncate max-w-[120px] sm:max-w-none">{location}</span>
-              </div>
-            )}
-            {locationType && (
-              <div className="flex items-center text-gray-600 font-medium">
-                <i className="fas fa-laptop-house mr-1.5 sm:mr-2 text-blue-600 text-xs"></i>
-                <span className="capitalize">{locationType}</span>
-              </div>
-            )}
-            {salaryRange && salaryRange.min && salaryRange.max && (
-              <div className="flex items-center">
-                <i className="fas fa-dollar-sign mr-1.5 sm:mr-2 text-green-600 text-xs"></i>
-                <span className="font-bold text-green-700 text-xs sm:text-sm">
-                  {salaryRange.currency || "USD"} {salaryRange.min.toLocaleString()}-{salaryRange.max.toLocaleString()}
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Tags */}
-          {tags && tags.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
-              {tags.slice(0, 5).map((tag, index) => (
-                <span
-                  key={index}
-                  className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold border border-blue-200/50 shadow-sm"
-                >
-                  {tag}
-                </span>
-              ))}
-              {tags.length > 5 && (
-                <span className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 text-gray-600 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold">
-                  +{tags.length - 5}
-                </span>
+            {/* Metadata Row */}
+            <div className="flex flex-wrap items-center gap-x-3 sm:gap-x-5 gap-y-1.5 sm:gap-y-2 mb-4 sm:mb-5 text-xs sm:text-sm">
+              {location && (
+                <div className="flex items-center text-gray-600 font-medium">
+                  <i className="fas fa-map-marker-alt mr-1.5 sm:mr-2 text-blue-600 text-xs"></i>
+                  <span className="truncate max-w-[120px] sm:max-w-none">{location}</span>
+                </div>
+              )}
+              {locationType && (
+                <div className="flex items-center text-gray-600 font-medium">
+                  <i className="fas fa-laptop-house mr-1.5 sm:mr-2 text-blue-600 text-xs"></i>
+                  <span className="capitalize">{locationType}</span>
+                </div>
+              )}
+              {salaryRange && salaryRange.min && salaryRange.max && (
+                <div className="flex items-center">
+                  <i className="fas fa-dollar-sign mr-1.5 sm:mr-2 text-green-600 text-xs"></i>
+                  <span className="font-bold text-green-700 text-xs sm:text-sm">
+                    {salaryRange.currency || "USD"} {salaryRange.min.toLocaleString()}-{salaryRange.max.toLocaleString()}
+                  </span>
+                </div>
               )}
             </div>
-          )}
 
-          {/* Posted By and Metadata Footer */}
-          <div className="flex items-center justify-between py-3 sm:py-4 mb-4 sm:mb-5 border-t border-b border-gray-100">
-            <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
-              <Avatar
-                userId={internship.postedBy?._id || (typeof user === 'string' ? user : user?._id)}
-                userName={internship.postedBy?.name || name}
-                avatar={internship.postedBy?.avatar || internship.userProfile?.avatar}
-                profile={internship.postedBy || internship.userProfile}
-                size={32}
-                className="flex-shrink-0 sm:w-10 sm:h-10"
-              />
-              <div className="min-w-0 flex-1">
-                <p className="text-[9px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider">Posted by</p>
-                <p className="text-xs sm:text-sm font-bold text-gray-900 truncate">{name}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 sm:gap-4 text-[10px] sm:text-xs text-gray-500 flex-shrink-0">
-              <div className="flex items-center gap-1 sm:gap-1.5" title="Students who saved this">
-                <i className="fas fa-bookmark text-blue-500 text-xs"></i>
-                <span className="font-bold text-gray-700">{insights?.saved || 0}</span>
-              </div>
-              <ReactionButton
-                hasLiked={hasLiked}
-                likesCount={likes?.length || 0}
-                onLike={handleLike}
-                size="sm"
-                showLabel={false}
-              />
-              <span className="hidden sm:flex items-center gap-1.5">
-                <i className="far fa-clock"></i>
-                {formatRelativeTime(date)}
-                {edited && (
-                  <span className="ml-1 px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-medium">
-                    Edited
+            {/* Tags */}
+            {tags && tags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
+                {tags.slice(0, 5).map((tag, index) => (
+                  <span
+                    key={index}
+                    className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold border border-blue-200/50 shadow-sm"
+                  >
+                    {tag}
+                  </span>
+                ))}
+                {tags.length > 5 && (
+                  <span className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 text-gray-600 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold">
+                    +{tags.length - 5}
                   </span>
                 )}
-              </span>
+              </div>
+            )}
+
+            {/* Posted By and Metadata Footer */}
+            <div className="flex items-center justify-between py-3 sm:py-4 mb-4 sm:mb-5 border-t border-b border-gray-100">
+              <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
+                <Avatar
+                  userId={internship.postedBy?._id || (typeof user === 'string' ? user : user?._id)}
+                  userName={internship.postedBy?.name || name}
+                  avatar={internship.postedBy?.avatar || internship.userProfile?.avatar}
+                  profile={internship.postedBy || internship.userProfile}
+                  size={32}
+                  className="flex-shrink-0 sm:w-10 sm:h-10"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="text-[9px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider">Posted by</p>
+                  <p className="text-xs sm:text-sm font-bold text-gray-900 truncate">{name}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 sm:gap-4 text-[10px] sm:text-xs text-gray-500 flex-shrink-0">
+                <div className="flex items-center gap-1 sm:gap-1.5" title="Students who saved this">
+                  <i className="fas fa-bookmark text-blue-500 text-xs"></i>
+                  <span className="font-bold text-gray-700">{insights?.saved || 0}</span>
+                </div>
+                <div className="flex items-center gap-1 sm:gap-1.5" title="Students interested">
+                  <i className="fas fa-heart text-red-500 text-xs"></i>
+                  <span className="font-bold text-gray-700">{likes?.length || 0}</span>
+                </div>
+                <span className="hidden sm:flex items-center gap-1.5">
+                  <i className="far fa-clock"></i>
+                  {formatRelativeTime(date)}
+                  {edited && (
+                    <span className="ml-1 px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-medium">
+                      Edited
+                    </span>
+                  )}
+                </span>
+              </div>
             </div>
           </div>
+        </Link>
 
-          {/* Action Buttons - Clean CTAs */}
-          <div className="flex items-center gap-2 sm:gap-3">
+        {/* Action Buttons - Not clickable for navigation */}
+        <div className="px-4 sm:px-6 pb-4 sm:pb-6">
+          <div className="flex items-center gap-2 sm:gap-3" onClick={(e) => e.preventDefault()}>
             <button
               type="button"
               className={`flex-1 inline-flex items-center justify-center px-3 sm:px-5 py-2.5 sm:py-3 text-xs sm:text-sm font-bold rounded-lg sm:rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${isTracking
                   ? "bg-gray-100 text-gray-500 cursor-not-allowed border border-gray-200"
                   : "bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 focus:ring-blue-600 shadow-md hover:shadow-lg hover:scale-105 transform"
                 }`}
-              onClick={handleTrack}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleTrack();
+              }}
               disabled={isTracking}
               aria-label={isTracking ? "Already tracking this internship" : "Track this internship"}
             >
@@ -277,18 +287,39 @@ const InternshipCard = ({
               {isTracking ? "Tracking" : "Track"}
             </button>
 
-            <ApplyNowButton
-              internship={internship}
-              className="flex-1"
-              size="md"
-            />
-
-            <Link href={`/internship/${_id}`}
-              className="px-3 sm:px-5 py-2.5 sm:py-3 text-xs sm:text-sm font-bold text-blue-600 bg-white border-2 border-blue-600 rounded-lg sm:rounded-xl hover:bg-blue-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 hover:scale-105 transform shadow-sm hover:shadow-md flex items-center justify-center"
-              aria-label={`View details for ${positionTitle} at ${company}`}
+            <button
+              type="button"
+              className={`inline-flex items-center justify-center px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-bold rounded-lg sm:rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 border-2 hover:scale-105 active:scale-95 transform ${
+                hasLiked
+                  ? "bg-red-50 text-red-600 border-red-200 hover:bg-red-100 focus:ring-red-200"
+                  : "bg-white text-gray-700 border-gray-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 focus:ring-red-200"
+              }`}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleLike();
+              }}
+              aria-label={hasLiked ? "Remove from interested" : "Mark as interested"}
             >
-              <i className="fas fa-arrow-right text-xs sm:text-sm"></i>
-            </Link>
+              <i className={`${hasLiked ? "fas" : "far"} fa-heart mr-1.5 sm:mr-2 text-xs sm:text-sm transition-all duration-200`}></i>
+              <span className="hidden sm:inline">{likes?.length || 0}</span>
+              <span className="sm:hidden">{likes?.length || 0}</span>
+            </button>
+
+            <div className="flex-1" onClick={(e) => e.stopPropagation()}>
+              <ApplyNowButton
+                internship={internship}
+                className="w-full"
+                size="md"
+              />
+            </div>
+
+            <DiscussionButton 
+              href={`/internship/${_id}`}
+              commentCount={internship.comments?.length || 0}
+              size="md"
+              variant="default"
+              className="px-3 sm:px-4"
+            />
           </div>
         </div>
       </div>

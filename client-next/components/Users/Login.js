@@ -19,11 +19,31 @@ const Login = ({ isAuthenticated, login, clearError, fetchTrackedInternships, er
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [isWakingServer, setIsWakingServer] = useState(false);
 
   const { email, password } = formData;
 
   useEffect(() => {
     setMounted(true);
+    
+    // Wake up the backend server on component mount (production optimization)
+    const wakeUpServer = async () => {
+      if (process.env.NODE_ENV === 'production' || process.env.NEXT_PUBLIC_API_URL?.includes('render')) {
+        try {
+          setIsWakingServer(true);
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
+          // Simple health check to wake up Render backend
+          await fetch(`${apiUrl}/users`, { 
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+          }).catch(() => {}); // Ignore errors, just wake it up
+        } finally {
+          setIsWakingServer(false);
+        }
+      }
+    };
+    
+    wakeUpServer();
   }, []);
 
   useEffect(() => {
@@ -91,6 +111,16 @@ const Login = ({ isAuthenticated, login, clearError, fetchTrackedInternships, er
         <div className={`absolute -top-32 -right-32 w-64 h-64 bg-blue-200/40 rounded-full blur-3xl transition-opacity duration-1000 ${mounted ? 'opacity-100' : 'opacity-0'}`}></div>
         <div className={`absolute -bottom-32 -left-32 w-72 h-72 bg-indigo-200/30 rounded-full blur-3xl transition-opacity duration-1000 delay-300 ${mounted ? 'opacity-100' : 'opacity-0'}`}></div>
       </div>
+
+      {/* Server Waking Notice */}
+      {isWakingServer && (
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-2 shadow-lg flex items-center gap-2">
+            <i className="fas fa-circle-notch fa-spin text-blue-600 text-sm"></i>
+            <p className="text-sm text-blue-700 font-medium">Connecting to server...</p>
+          </div>
+        </div>
+      )}
 
       {/* Login Card */}
       <div className={`relative z-10 w-full max-w-md transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>

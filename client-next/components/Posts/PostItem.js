@@ -7,6 +7,7 @@ import { addLike, deletePost, removeLike, updatePost } from "../../lib/redux/mod
 import { formatRelativeTime } from "../../lib/utils";
 import Avatar from "../Avatar";
 import DropdownMenu from "../DropdownMenu";
+import DiscussionButton from "../DiscussionButton";
 
 const PostItem = ({
   addLike,
@@ -71,117 +72,129 @@ const PostItem = ({
 
   return (
     <>
-      <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100/50">
-        <div className="p-4 sm:p-6">
-          <div className="flex items-start space-x-3 sm:space-x-4">
-            <Avatar
-              userId={user}
-              userName={name}
-              avatar={userProfile?.avatar}
-              profile={userProfile}
-              size={40}
-              className="sm:w-12 sm:h-12"
-            />
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between mb-2 sm:mb-3">
-                <div>
-                  <p className="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider mb-0.5 sm:mb-1">Posted by</p>
-                  <h3 className="text-sm sm:text-base font-bold text-gray-900">{name}</h3>
-                </div>
-                {isOwner && !isEditing && <DropdownMenu items={menuItems} />}
-              </div>
-
-              {/* Edit Mode */}
-              {isEditing ? (
-                <div className="mb-3 sm:mb-4">
-                  <textarea
-                    value={editText}
-                    onChange={(e) => setEditText(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base text-gray-700 min-h-[100px] resize-y"
-                    placeholder="What's on your mind?"
-                    disabled={isSaving}
-                  />
-                  <div className="flex items-center gap-2 mt-2">
-                    <button
-                      onClick={handleSaveEdit}
-                      disabled={isSaving || !editText.trim()}
-                      className="px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-600 text-white rounded-lg text-xs sm:text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {isSaving ? (
-                        <>
-                          <i className="fas fa-spinner fa-spin mr-1.5"></i>
-                          Saving...
-                        </>
-                      ) : (
-                        <>
-                          <i className="fas fa-check mr-1.5"></i>
-                          Save
-                        </>
-                      )}
-                    </button>
-                    <button
-                      onClick={handleCancelEdit}
-                      disabled={isSaving}
-                      className="px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-100 text-gray-700 rounded-lg text-xs sm:text-sm font-semibold hover:bg-gray-200 transition-colors disabled:opacity-50"
-                    >
-                      Cancel
-                    </button>
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100/50 hover:border-blue-200 group cursor-pointer">
+        {/* Clickable Card Wrapper */}
+        <Link href={`/posts/${_id}`} className="block">
+          <div className="p-4 sm:p-6">
+            <div className="flex items-start space-x-3 sm:space-x-4">
+              <Avatar
+                userId={user}
+                userName={name}
+                avatar={userProfile?.avatar}
+                profile={userProfile}
+                size={40}
+                className="sm:w-12 sm:h-12"
+              />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between mb-2 sm:mb-3">
+                  <div>
+                    <p className="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wider mb-0.5 sm:mb-1">Posted by</p>
+                    <h3 className="text-sm sm:text-base font-bold text-gray-900">{name}</h3>
                   </div>
+                  {isOwner && !isEditing && (
+                    <div onClick={(e) => e.preventDefault()}>
+                      <DropdownMenu items={menuItems} />
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-3 sm:mb-4 whitespace-pre-wrap">{text}</p>
-              )}
 
-              <p className="text-xs text-gray-500 mb-4 sm:mb-5 flex items-center gap-1.5">
-                <i className="far fa-clock"></i>
-                {formatRelativeTime(date)}
-                {post.edited && (
-                  <span className="ml-2 px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-medium">
-                    Edited
-                  </span>
-                )}
-              </p>
-
-              {showActions && (
-                <div className="flex items-center gap-2 flex-wrap">
-                  <button
-                    type="button"
-                    className="inline-flex items-center px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-gray-700 bg-gray-50 rounded-lg sm:rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 hover:cursor-pointer border border-gray-200/50 hover:border-blue-200 hover:shadow-sm"
-                    onClick={() => addLike(_id)}
-                  >
-                    <i className="fas fa-thumbs-up mr-1.5 sm:mr-2 text-blue-600 text-xs" />
-                    <span>{likes.length > 0 && <span>{likes.length}</span>}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    className="inline-flex items-center px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-gray-700 bg-gray-50 rounded-lg sm:rounded-xl hover:bg-red-50 hover:text-red-600 transition-all duration-200 hover:cursor-pointer border border-gray-200/50 hover:border-red-200 hover:shadow-sm"
-                    onClick={() => removeLike(_id)}
-                  >
-                    <i className="fas fa-thumbs-down mr-1.5 sm:mr-2 text-red-600 text-xs" />
-                    <span>
-                      {unlikes && unlikes.length > 0 && (
-                        <span>{unlikes.length}</span>
+                {/* Edit Mode */}
+                {isEditing ? (
+                  <div className="mb-3 sm:mb-4" onClick={(e) => e.preventDefault()}>
+                    <textarea
+                      value={editText}
+                      onChange={(e) => setEditText(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base text-gray-700 min-h-[100px] resize-y"
+                      placeholder="What's on your mind?"
+                      disabled={isSaving}
+                    />
+                    <div className="flex items-center gap-2 mt-2">
+                      <button
+                        onClick={handleSaveEdit}
+                        disabled={isSaving || !editText.trim()}
+                        className="px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-600 text-white rounded-lg text-xs sm:text-sm font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isSaving ? (
+                          <>
+                            <i className="fas fa-spinner fa-spin mr-1.5"></i>
+                            Saving...
+                          </>
+                        ) : (
+                          <>
+                            <i className="fas fa-check mr-1.5"></i>
+                            Save
+                          </>
+                        )}
+                      </button>
+                      <button
+                        onClick={handleCancelEdit}
+                        disabled={isSaving}
+                        className="px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-100 text-gray-700 rounded-lg text-xs sm:text-sm font-semibold hover:bg-gray-200 transition-colors disabled:opacity-50"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-3 sm:mb-4 whitespace-pre-wrap group-hover:text-gray-900 transition-colors">{text}</p>
+                    
+                    <p className="text-xs text-gray-500 mb-4 sm:mb-5 flex items-center gap-1.5">
+                      <i className="far fa-clock"></i>
+                      {formatRelativeTime(date)}
+                      {post.edited && (
+                        <span className="ml-2 px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px] font-medium">
+                          Edited
+                        </span>
                       )}
-                    </span>
-                  </button>
-
-                  <Link href={`/posts/${_id}`}
-                    className="inline-flex items-center px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg sm:rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 hover:cursor-pointer shadow-sm hover:shadow-md hover:scale-105 transform"
-                  >
-                    <span className="hidden sm:inline">Discussion</span>
-                    <span className="sm:hidden">View</span>
-                    {comments.length > 0 && (
-                      <span className="ml-1.5 sm:ml-2 bg-white/20 text-white px-1.5 sm:px-2 py-0.5 rounded-lg text-[10px] sm:text-xs font-bold">
-                        {comments.length}
-                      </span>
-                    )}
-                  </Link>
-                </div>
-              )}
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        </Link>
+
+        {/* Action Bar - Not clickable for navigation */}
+        {showActions && !isEditing && (
+          <div className="px-4 sm:px-6 pb-4 sm:pb-6">
+            <div className="flex items-center gap-2 flex-wrap" onClick={(e) => e.preventDefault()}>
+              <button
+                type="button"
+                className="inline-flex items-center px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-gray-700 bg-gray-50 rounded-lg sm:rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 hover:cursor-pointer border border-gray-200/50 hover:border-blue-200 hover:shadow-sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  addLike(_id);
+                }}
+              >
+                <i className="fas fa-thumbs-up mr-1.5 sm:mr-2 text-blue-600 text-xs" />
+                <span>{likes.length > 0 && <span>{likes.length}</span>}</span>
+              </button>
+
+              <button
+                type="button"
+                className="inline-flex items-center px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-gray-700 bg-gray-50 rounded-lg sm:rounded-xl hover:bg-red-50 hover:text-red-600 transition-all duration-200 hover:cursor-pointer border border-gray-200/50 hover:border-red-200 hover:shadow-sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removeLike(_id);
+                }}
+              >
+                <i className="fas fa-thumbs-down mr-1.5 sm:mr-2 text-red-600 text-xs" />
+                <span>
+                  {unlikes && unlikes.length > 0 && (
+                    <span>{unlikes.length}</span>
+                  )}
+                </span>
+              </button>
+
+              <DiscussionButton 
+                href={`/posts/${_id}`}
+                commentCount={comments.length}
+                size="md"
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Delete Confirmation Modal */}

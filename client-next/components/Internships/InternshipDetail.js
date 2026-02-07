@@ -415,6 +415,26 @@ const InternshipDetail = ({
               <i className={`fas ${isTracking ? "fa-bookmark" : "fa-bookmark"} mr-2 ${isTracking ? "text-blue-600" : ""}`}></i>
               {isTracking ? "Saved" : "Save"}
             </button>
+            
+            <button
+              type="button"
+              onClick={handleLike}
+              className={`inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 border-2 hover:scale-105 active:scale-95 transform ${
+                hasLiked
+                  ? "bg-red-50 text-red-600 border-red-200 hover:bg-red-100"
+                  : "bg-white text-gray-700 border-gray-300 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+              }`}
+              aria-label={hasLiked ? "Remove from interested" : "Mark as interested"}
+            >
+              <i className={`${hasLiked ? "fas" : "far"} fa-heart mr-2 transition-all duration-200`}></i>
+              <span>{hasLiked ? "Interested" : "Interested"}</span>
+              {internship.likes?.length > 0 && (
+                <span className="ml-2 px-2 py-0.5 bg-white/50 rounded-full text-xs font-bold">
+                  {internship.likes.length}
+                </span>
+              )}
+            </button>
+            
             <ApplyNowButton
               internship={internship}
               className="flex-1"
@@ -423,21 +443,46 @@ const InternshipDetail = ({
           </div>
         </div>
 
-        {/* Comments Section - Compact Card */}
-        <div className="mt-4 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="p-4 border-b border-gray-100">
-            <h3 className="text-sm font-semibold text-gray-900">
-              Comments ({internship.comments?.length || 0})
-            </h3>
-          </div>
-          <div className="p-4">
-            <CommentForm internshipId={id} />
-            <div className="mt-4">
-              <CommentSection
-                comments={internship.comments}
-                internshipId={id}
-              />
+        {/* Comments Section - Reddit Style */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          {/* Discussion Header */}
+          <div className="px-4 sm:px-6 py-4 border-b border-gray-100 bg-gray-50">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <i className="far fa-comment-dots text-gray-600"></i>
+                <h3 className="text-base sm:text-lg font-bold text-gray-900">
+                  Discussion
+                </h3>
+                <span className="px-2 py-0.5 bg-gray-200 text-gray-700 rounded-full text-xs font-bold">
+                  {internship.comments?.length || 0}
+                </span>
+              </div>
             </div>
+          </div>
+
+          {/* Comment Form */}
+          <div className="px-4 sm:px-6 py-4 border-b border-gray-100 bg-white">
+            <CommentForm internshipId={id} />
+          </div>
+
+          {/* Comments List */}
+          <div className="divide-y divide-gray-100">
+            {(!internship.comments || internship.comments.length === 0) ? (
+              <div className="text-center py-12 px-4">
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <i className="far fa-comment-dots text-2xl text-gray-400"></i>
+                </div>
+                <p className="text-gray-500 font-medium mb-1">No comments yet</p>
+                <p className="text-sm text-gray-400">Be the first to share your thoughts!</p>
+              </div>
+            ) : (
+              <div className="px-4 sm:px-6 py-4">
+                <CommentSection
+                  comments={internship.comments}
+                  internshipId={id}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
